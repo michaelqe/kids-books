@@ -301,7 +301,12 @@ def make_handler(app: App):
         def user(self) -> str:
             return (self.headers.get("X-Remote-User") or "").strip() or app.dev_user
 
+        _deferred: list | None = None
+
         def send_json(self, status: int, payload) -> None:
+            if self._deferred is not None:  # inside a lists transaction: send after commit
+                self._deferred.append((status, payload))
+                return
             body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
             self.send_response(status)
             self.send_header("Content-Type", "application/json; charset=utf-8")
@@ -434,11 +439,16 @@ def make_handler(app: App):
 
         def lists_api(self, method: str, parts: list[str]) -> None:
             lists = dbm.connect_lists(app.db_path)
+            self._deferred = []
             try:
-                with lists:
+                with lists:  # commits on success, rolls back on ApiError
                     self._lists(lists, method, parts)
+                responses = self._deferred
             finally:
+                self._deferred = None
                 lists.close()
+            for status, payload in responses:
+                self.send_json(status, payload)
 
         def _lists(self, lists: sqlite3.Connection, method: str, parts: list[str]) -> None:
             if not parts:
