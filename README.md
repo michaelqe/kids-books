@@ -52,7 +52,7 @@ Droplet, once (needs sudo; installs the unit, a sudoers line so deploys can rest
 block and the nightly lists backup):
 
 ```sh
-ssh michael@142.93.133.110
+ssh michael@running.app.kennedy.ee
 git clone https://github.com/michaelqe/kids-books.git ~/kids-books   # or let deploy.sh clone it
 sudo ~/kids-books/deploy/droplet/install.sh
 ```

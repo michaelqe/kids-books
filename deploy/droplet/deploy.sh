@@ -7,8 +7,7 @@
 # First time only: clone on the droplet and run `sudo ~/kids-books/deploy/droplet/install.sh`.
 set -euo pipefail
 
-# TODO(DNS): back to michael@running.app.kennedy.ee once it resolves again (14 Nov 2026).
-HOST="${KIDS_BOOKS_HOST:-michael@142.93.133.110}"
+HOST="${KIDS_BOOKS_HOST:-michael@running.app.kennedy.ee}"
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$ROOT"
 

@@ -10,8 +10,7 @@
 # notifications (project childrens-books) when ~/.config/magpie/poller.env has a token.
 set -uo pipefail
 
-# TODO(DNS): back to michael@running.app.kennedy.ee once it resolves again (14 Nov 2026).
-HOST="${KIDS_BOOKS_HOST:-michael@142.93.133.110}"
+HOST="${KIDS_BOOKS_HOST:-michael@running.app.kennedy.ee}"
 REPO="$(cd "$(dirname "$0")/../.." && pwd)"
 CATALOG="$REPO/data/catalog.db"
 LOCK="${XDG_RUNTIME_DIR:-/tmp}/kids-books-crawl.lock"
