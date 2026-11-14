@@ -26,17 +26,19 @@ import argparse
 import datetime as dt
 import json
 import os
+import re
 import sqlite3
 import sys
 import time
 import zlib
 from pathlib import Path
 
+from . import classify
 from . import enrich as enrich_mod
 from . import ester
 from .terms import LANGUAGES, branch_name, genre_en, status_en, subject_en
 
-SCHEMA_VERSION = "1"
+SCHEMA_VERSION = "2"
 HERE = Path(__file__).resolve().parent
 DEFAULT_CACHE = Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache")) / "kids-books"
 
@@ -178,9 +180,9 @@ def crawl_records(client: ester.Client, state: sqlite3.Connection, ids: list[str
 # --- build catalog.db ----------------------------------------------------------------
 
 
-def book_row(rec: dict, fetched_at: str) -> tuple[dict, list[dict]]:
+def book_row(rec: dict, fetched_at: str, facets: dict | None = None) -> tuple[dict, list[dict]]:
     holdings = []
-    for h in ester.tallinn_holdings(rec["holdings"]):
+    for h in ester.lendable_tallinn_holdings(rec["holdings"]):
         holdings.append(
             {
                 "location": h["location"],
@@ -197,6 +199,7 @@ def book_row(rec: dict, fetched_at: str) -> tuple[dict, list[dict]]:
     who = " ".join(a.split(",")[0] for a in rec["authors"][:1])
     q = isbn or f"{rec['title']} {who}".strip()
     links = {"goodreads": "https://www.goodreads.com/search?q=" + ester.urllib.parse.quote_plus(q)}
+    facets = facets or classify.classify(rec)
     book = {
         "id": rec["id"],
         "url": rec["url"],
@@ -222,11 +225,50 @@ def book_row(rec: dict, fetched_at: str) -> tuple[dict, list[dict]]:
         "available_copies": sum(h["available"] for h in holdings),
         "holdings_checked_at": fetched_at,
         "links": json.dumps(links),
+        "audience": facets["audience"],
+        "type": facets["type"],
+        "topics": json.dumps(facets["topics"], ensure_ascii=False),
+        "nature": int(facets["nature"]),
+        "reasons": json.dumps(facets["reasons"], ensure_ascii=False),
     }
     return book, holdings
 
 
-def build(state: sqlite3.Connection, out: Path, status: str, requests: int, enrich=None) -> dict:
+def ester_signals(rec: dict) -> list[tuple[str, str, str]]:
+    """(scheme, code, label) rows for the classifications table, source 'ester'."""
+    rows: list[tuple[str, str, str]] = []
+    rows += [("udc", u, "") for u in rec.get("udc", [])]
+    rows += [("udc_bt", u, "") for u in rec.get("udc_bt", [])]
+    rows += [("ems_genre", g, genre_en(g)) for g in rec.get("genres", [])]
+    rows += [("ems_subject", s, subject_en(s)) for s in rec.get("subjects", [])]
+    for name in ("form", "audience", "contents"):
+        if rec.get(name):
+            rows.append(("marc008", f"{name}={rec[name]}", ""))
+    seen = set()
+    for h in ester.tallinn_holdings(rec.get("holdings", [])):
+        dept = re.sub(r"^TlnRK\s+\S+\s*", "", h["location"]).strip()
+        prefix = re.match(r"[^\s/]*", h["call_number"]).group(0)
+        for row in (("location", dept, ""), ("callno", prefix, "")):
+            if row[1] and row not in seen:
+                seen.add(row)
+                rows.append(row)
+    return rows
+
+
+def load_records(state: sqlite3.Connection):
+    """(id, parsed record, fetched_at) for every cached Tallinn record."""
+    rows = state.execute(
+        """SELECT p.id, p.body, p.holdings, p.fetched_at FROM pages p JOIN listed l ON l.id = p.id
+           WHERE l.tallinn = 1"""
+    )
+    for rid, body, holdings, fetched_at in rows:
+        hold = zlib.decompress(holdings).decode("utf-8") if holdings else None
+        yield rid, ester.parse_record(zlib.decompress(body).decode("utf-8"), rid, hold), fetched_at
+
+
+def build(state: sqlite3.Connection, out: Path, status: str, requests: int, enrich=None, signals=None) -> dict:
+    """Write catalog.db from the cache. `signals(rec) -> list[dict]` adds outside signals
+    (crawler/enrich.py) to the classification; `enrich(db)` fills covers and summaries."""
     out.parent.mkdir(parents=True, exist_ok=True)
     tmp = out.with_suffix(out.suffix + ".tmp")
     if tmp.exists():
@@ -235,20 +277,17 @@ def build(state: sqlite3.Connection, out: Path, status: str, requests: int, enri
     db.executescript((HERE / "schema.sql").read_text(encoding="utf-8"))
     kept = dropped = 0
     reasons: dict[str, int] = {}
-    rows = state.execute(
-        "SELECT p.id, p.body, p.fetched_at FROM pages p JOIN listed l ON l.id = p.id WHERE l.tallinn = 1"
-    )
-    for rid, body, fetched_at in rows:
-        rec = ester.parse_record(zlib.decompress(body).decode("utf-8"), rid)
-        ok, why = ester.is_picture_book(rec)
-        if ok and not ester.tallinn_holdings(rec["holdings"]):
-            ok, why = False, "no Tallinn copy"
+    verdicts: list[tuple[int, str]] = []
+    for rid, rec, fetched_at in list(load_records(state)):
+        extra = signals(rec) if signals and rec.get("language") == "eng" else []
+        facets = classify.classify(rec, extra)
+        ok, why = classify.in_scope(rec, facets)
+        verdicts.append((int(ok), rid))
         if not ok:
             dropped += 1
-            key = "too long" if why[0].isdigit() else why
-            reasons[key] = reasons.get(key, 0) + 1
+            reasons[why] = reasons.get(why, 0) + 1
             continue
-        book, holdings = book_row(rec, fetched_at)
+        book, holdings = book_row(rec, fetched_at, facets)
         cols = ", ".join(book)
         db.execute(f"INSERT INTO books ({cols}) VALUES ({', '.join('?' * len(book))})", list(book.values()))
         for h in holdings:
@@ -259,25 +298,39 @@ def build(state: sqlite3.Connection, out: Path, status: str, requests: int, enri
             )
         for s in rec["subjects"]:
             db.execute("INSERT INTO subjects (book_id, subject, subject_en) VALUES (?, ?, ?)", (rid, s, subject_en(s)))
+        db.executemany("INSERT INTO topics (book_id, topic) VALUES (?, ?)", [(rid, t) for t in facets["topics"]])
+        rows = [(rid, "ester", *r) for r in ester_signals(rec)]
+        rows += [
+            (rid, sig["source"], sig["scheme"], sig["code"], sig.get("label", ""))
+            for sig in extra
+        ]
+        db.executemany("INSERT INTO classifications (book_id, source, scheme, code, label) VALUES (?, ?, ?, ?, ?)", rows)
         kept += 1
+    # Remember the verdict so the crawl refreshes kept books often and the rest rarely.
+    state.executemany("UPDATE pages SET kept = ? WHERE id = ?", verdicts)
+    state.commit()
     if enrich:
         enrich(db)
     index_fts(db)
+    q = lambda sql: db.execute(sql).fetchone()[0]  # noqa: E731
     counts = {
         "books": kept,
-        "english_books": db.execute("SELECT count(*) FROM books WHERE language = 'eng'").fetchone()[0],
-        "available_books": db.execute("SELECT count(*) FROM books WHERE available_copies > 0").fetchone()[0],
-        "covers": db.execute("SELECT count(*) FROM books WHERE cover_url != ''").fetchone()[0],
-        "summaries": db.execute("SELECT count(*) FROM books WHERE summary != ''").fetchone()[0],
+        "english_books": q("SELECT count(*) FROM books WHERE language = 'eng'"),
+        "available_books": q("SELECT count(*) FROM books WHERE available_copies > 0"),
+        "covers": q("SELECT count(*) FROM books WHERE cover_url != ''"),
+        "summaries": q("SELECT count(*) FROM books WHERE summary != ''"),
+        "nature_books": q("SELECT count(*) FROM books WHERE nature = 1"),
+        "audiences": dict(db.execute("SELECT audience, count(*) FROM books GROUP BY audience").fetchall()),
+        "types": dict(db.execute("SELECT type, count(*) FROM books GROUP BY type").fetchall()),
         "dropped": dropped,
-        "dropped_reasons": reasons,
+        "dropped_reasons": dict(sorted(reasons.items(), key=lambda kv: -kv[1])),
     }
     meta = {
         "schema_version": SCHEMA_VERSION,
         "crawled_at": now(),
         "crawl_status": status,
         "requests": str(requests),
-        **{k: (json.dumps(v) if isinstance(v, dict) else str(v)) for k, v in counts.items()},
+        **{k: (json.dumps(v, ensure_ascii=False) if isinstance(v, dict) else str(v)) for k, v in counts.items()},
     }
     db.executemany("INSERT INTO meta (key, value) VALUES (?, ?)", list(meta.items()))
     db.commit()
@@ -289,9 +342,9 @@ def build(state: sqlite3.Connection, out: Path, status: str, requests: int, enri
 
 def index_fts(db: sqlite3.Connection) -> None:
     db.execute("DELETE FROM books_fts")
-    for rowid, title, subtitle, series, original_title, authors, illustrators, subjects, subjects_en, genres_en, notes, summary in db.execute(
+    for rowid, title, subtitle, series, original_title, authors, illustrators, subjects, subjects_en, genres_en, notes, summary, topics in db.execute(
         """SELECT rowid, title, subtitle, series, original_title, authors, illustrators, subjects, subjects_en,
-                  genres_en, notes, summary FROM books"""
+                  genres_en, notes, summary, topics FROM books"""
     ).fetchall():
         names = json.loads(authors) + json.loads(illustrators)
         # "Marshall, Natalie" also as "Natalie Marshall"
@@ -302,7 +355,7 @@ def index_fts(db: sqlite3.Connection) -> None:
                 rowid,
                 " ".join(x for x in (title, subtitle, series, original_title) if x),
                 " ".join(names),
-                " ".join(json.loads(subjects) + json.loads(subjects_en) + json.loads(genres_en)),
+                " ".join(json.loads(subjects) + json.loads(subjects_en) + json.loads(genres_en) + json.loads(topics)),
                 " ".join(x for x in (summary, notes) if x),
             ),
         )
@@ -363,7 +416,8 @@ def main(argv: list[str] | None = None) -> int:
     state.commit()
     langs = ", ".join(f"{LANGUAGES.get(k, k)} {v}" for k, v in _languages(args.out))
     log(
-        f"catalog: {counts['books']} picture books ({langs}); {counts['available_books']} on a shelf now; "
+        f"catalog: {counts['books']} books {counts['audiences']} ({langs}), {counts['nature_books']} about nature; "
+        f"{counts['available_books']} on a shelf now; "
         f"{counts['covers']} covers, {counts['summaries']} English summaries; "
         f"dropped {counts['dropped']} {counts['dropped_reasons']}; {client.requests} requests in "
         f"{time.monotonic() - t0:.0f}s; status {status}"

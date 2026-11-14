@@ -1,7 +1,9 @@
 # Kids Books
 
-A simple English UI for finding **picture books** in Tallinn's libraries (from the Estonian
-ESTER catalogue), with covers and summaries from Open Library, and shared reading lists.
+A simple English UI for finding **English children's books** (and adult nature non-fiction such
+as field guides) that can be borrowed from Tallinn's libraries, from the Estonian ESTER catalogue,
+with covers and summaries from Open Library, categories from several sources, and shared reading
+lists.
 
 - Live: https://books.app.kennedy.ee (droplet, behind Caddy `import protected`)
 - Dev: X1 (`~/src/personal/kids-books`), http://127.0.0.1:8512 via `kids-books-dev`
@@ -16,11 +18,15 @@ X1 (nightly 03:30, kids-books-crawl.timer)            droplet
                                                           data/books.db  (shared lists, backed up nightly)
 ```
 
-- `crawler/` (**X1 only**, Python 3 stdlib): walks ESTER's picture-book genre list, keeps books a
-  Tallinn library holds, reads each book's MARC view (data + holdings), applies the picture-book
-  rule, adds covers and English summaries, and writes `data/catalog.db` (SQLite + FTS5, schema in
-  `crawler/schema.sql`). Fetched pages are cached in `~/.cache/kids-books/`, so nightly runs only
-  fetch new books and a rotating seventh of the holdings.
+- `crawler/` (**X1 only**, Python 3 stdlib): searches ESTER for every English book in Tallinn's
+  libraries (by imprint decade, about 34.5k records), reads each record's Tallinn-scoped MARC view
+  (data + Tallinn copies, plus the full holdings page when it stops at 10), classifies it
+  (`crawler/classify.py`: audience, type, topics, nature, each with a reason), keeps children's
+  books and adult nature non-fiction with a lendable copy, adds covers, summaries and outside
+  categories, and writes `data/catalog.db` (SQLite + FTS5, schema in `crawler/schema.sql`).
+  Fetched pages are cached in `~/.cache/kids-books/`. The first crawl takes about 10 hours at
+  1 request a second. After that, nightly runs fetch new records, a seventh of the kept books'
+  holdings, and re-check out-of-scope records every 60 days.
 - `server/` (droplet; X1 for dev, Python 3 stdlib): serves `web/` and the JSON API. Search reads
   `catalog.db`; lists live in `books.db`. **It never calls ESTER or any other site.**
 - `web/`: plain HTML, CSS and an ES module. No build step, no npm.
@@ -35,7 +41,7 @@ python3 server/app.py --port 8512 --db data/books.db --catalog data/catalog.db
 ```
 
 Useful crawl flags: `--max-list-pages N`, `--max-records N`, `--skip-list`, `--no-enrich`,
-`--enrich-max N`, `--refresh-days N`. Set `GOOGLE_BOOKS_API_KEY` to add Google Books summaries
+`--enrich-max N`, `--refresh-days N`, `--recheck-days N`, `--no-build` (fetch only). Set `GOOGLE_BOOKS_API_KEY` to add Google Books summaries
 (the keyless quota is shared and usually exhausted).
 
 ## Tests

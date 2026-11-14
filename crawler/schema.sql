@@ -33,11 +33,19 @@ CREATE TABLE books (
     cover_url       TEXT NOT NULL DEFAULT '',
     summary         TEXT NOT NULL DEFAULT '',   -- English summary
     summary_source  TEXT NOT NULL DEFAULT '',   -- openlibrary | google_books | ''
-    links           TEXT NOT NULL DEFAULT '{}'  -- JSON object: goodreads, openlibrary, google_books
+    links           TEXT NOT NULL DEFAULT '{}', -- JSON object: goodreads, openlibrary, google_books
+    -- v2 facets (crawler/classify.py, BOOKS-11)
+    audience        TEXT NOT NULL DEFAULT '',   -- baby_toddler | picture_book | early_reader | middle_grade | teen | adult
+    type            TEXT NOT NULL DEFAULT '',   -- fiction | nonfiction | poetry | comics | activity
+    topics          TEXT NOT NULL DEFAULT '[]', -- JSON, English topic tags
+    nature          INTEGER NOT NULL DEFAULT 0, -- about the natural world (weather, animals, plants, space, ...)
+    reasons         TEXT NOT NULL DEFAULT '[]'  -- JSON, why each facet was chosen
 );
 
 CREATE INDEX books_language ON books(language);
 CREATE INDEX books_year ON books(year);
+CREATE INDEX books_audience ON books(audience);
+CREATE INDEX books_type ON books(type);
 
 CREATE TABLE holdings (
     book_id     TEXT NOT NULL REFERENCES books(id),
@@ -50,6 +58,8 @@ CREATE TABLE holdings (
 );
 
 CREATE INDEX holdings_book ON holdings(book_id);
+-- Only lendable Tallinn copies are stored: library-use-only, reading-room and archive
+-- copies are left out (v2), and tallinn_copies / available_copies count lendable ones.
 
 CREATE TABLE subjects (
     book_id    TEXT NOT NULL REFERENCES books(id),
@@ -58,6 +68,27 @@ CREATE TABLE subjects (
 );
 
 CREATE INDEX subjects_subject_en ON subjects(subject_en);
+
+CREATE TABLE topics (
+    book_id TEXT NOT NULL REFERENCES books(id),
+    topic   TEXT NOT NULL      -- English tag, same as books.topics
+);
+
+CREATE INDEX topics_topic ON topics(topic);
+
+-- Every classification signal, per source, so facets can be traced and re-derived.
+-- source: ester | loc | google | openlibrary
+-- scheme: udc, udc_bt, ems_genre, ems_subject, marc008, location, callno (ester);
+--         lcc, ddc, lcsh, marc008, audience_note (loc); bisac (google); subject, ddc, lcc (openlibrary)
+CREATE TABLE classifications (
+    book_id TEXT NOT NULL REFERENCES books(id),
+    source  TEXT NOT NULL,
+    scheme  TEXT NOT NULL,
+    code    TEXT NOT NULL,
+    label   TEXT NOT NULL DEFAULT ''
+);
+
+CREATE INDEX classifications_book ON classifications(book_id);
 
 -- Full-text search. rowid = books.rowid. Columns hold both Estonian and English text
 -- so either language finds a book.
@@ -71,4 +102,5 @@ CREATE TABLE meta (
     value TEXT NOT NULL
 );
 -- keys: schema_version, crawled_at (ISO UTC), books, english_books, available_books,
---       requests, crawl_status (ok | partial: <reason>)
+--       requests, crawl_status (ok | partial: <reason>), dropped, dropped_reasons (JSON),
+--       audiences (JSON counts), types (JSON counts), nature_books

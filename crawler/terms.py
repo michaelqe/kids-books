@@ -56,6 +56,17 @@ SUBJECTS = {
     "kummitused": "ghosts", "robotid": "robots", "koletised": "monsters",
     "päkapikud": "elves", "haldjad": "fairies", "superkangelased": "superheroes",
     "muusika": "music", "sport": "sport", "jalgpall": "football",
+    # the natural world (v2: adult nature non-fiction)
+    "imetajad": "mammals", "roomajad": "reptiles", "kahepaiksed": "amphibians", "seened": "fungi",
+    "ilmastik": "weather", "meteoroloogia": "weather", "kliima": "climate",
+    "kliimamuutused": "climate change", "pilved": "clouds", "äike": "thunderstorms", "tormid": "storms",
+    "astronoomia": "astronomy", "tähed": "stars", "planeedid": "planets", "päikesesüsteem": "the solar system",
+    "kuu": "the moon", "geoloogia": "geology", "kivimid": "rocks", "mineraalid": "minerals",
+    "vulkaanid": "volcanoes", "maavärinad": "earthquakes", "mäed": "mountains", "jõed": "rivers",
+    "järved": "lakes", "ookeanid": "oceans", "metsad": "forests", "sood": "bogs", "rannad": "beaches",
+    "ökoloogia": "ecology", "looduskaitse": "nature conservation", "fossiilid": "fossils",
+    "loomade käitumine": "animal behaviour", "linnuvaatlus": "birdwatching", "evolutsioon": "evolution",
+    "inimkeha": "the human body", "teadus": "science", "eksperimendid": "experiments",
 }
 
 GENRES = {
@@ -72,6 +83,14 @@ GENRES = {
     "liisusalmid": "nursery rhymes", "piltsõnastikud": "picture dictionaries",
     "sõnaraamatud": "dictionaries", "entsüklopeediad": "encyclopaedias",
     "värvimisraamatud": "colouring books", "kleepsuraamatud": "sticker books",
+    "noorsookirjandus": "teen fiction", "koomiksid": "comics", "graafilised romaanid": "graphic novels",
+    "mangad": "manga", "fantaasiaromaanid": "fantasy", "seiklusromaanid": "adventure",
+    "põnevusromaanid": "thrillers", "kriminaalromaanid": "crime", "ulmeromaanid": "science fiction",
+    "loomajutud": "animal stories", "vigurraamatud": "novelty books", "teatmikud": "reference",
+    "määrajad": "field guides", "käsiraamatud": "handbooks", "biograafiad": "biographies",
+    "suurtähtraamatud": "early readers", "lektüür": "graded readers", "tegelusraamatud": "activity books",
+    "nuputamisülesanded": "puzzles", "piltmõistatused": "picture puzzles", "huumor": "humour",
+    "romaanid": "novels", "aimekirjandus": "non-fiction", "õppematerjalid": "learning books",
 }
 
 LANGUAGES = {
@@ -131,3 +150,48 @@ def branch_name(location: str) -> str:
 
 # Genres that make a "picture book" not worth showing to parents of toddlers.
 EXCLUDED_GENRES = {"värvimisraamatud", "kleepsuraamatud"}
+
+
+# --- v2 classification (crawler/classify.py) -------------------------------------------
+
+# UDC classes that count as "the natural world" for adult non-fiction. Matched as a prefix
+# of the main number (080 $a before any auxiliary). 91 (geography) is left out on purpose:
+# in ESTER it is mostly travel guides (913). Add prefixes here to widen the adult scope.
+ADULT_NATURE_UDC = (
+    "502", "504",   # nature, the environment, conservation
+    "52",           # astronomy
+    "549",          # minerals
+    "55",           # earth sciences: 551.5 weather, 551.21 volcanoes, 552 rocks
+    "56",           # palaeontology, fossils
+    "57",           # biology, natural history
+    "58",           # botany
+    "59",           # zoology
+    "630", "635.9", # forestry; flowers (gardening as such is out)
+)
+
+# Estonian subject headings (650, base form) that mark a book about the natural world.
+NATURE_SUBJECTS = {
+    "loodus", "loomad", "linnud", "taimed", "puud", "lilled", "seened", "putukad", "liblikad",
+    "kalad", "imetajad", "roomajad", "kahepaiksed", "metsloomad", "ilm", "ilmastik",
+    "meteoroloogia", "kliima", "kliimamuutused", "pilved", "vihm", "lumi", "äike", "tormid",
+    "aastaajad", "kosmos", "astronoomia", "tähed", "planeedid", "päikesesüsteem", "geoloogia",
+    "kivimid", "mineraalid", "vulkaanid", "maavärinad", "mäed", "jõed", "järved", "meri",
+    "ookeanid", "mets", "metsad", "sood", "keskkonnakaitse", "ökoloogia", "looduskaitse",
+    "dinosaurused", "fossiilid", "loomade käitumine", "linnuvaatlus", "evolutsioon", "vaalad",
+    "haid", "mesilased", "elevandid", "karud", "hundid", "rebased", "öökullid",
+}
+
+# English topic tags from UDC (longest matching prefix wins).
+UDC_TOPICS = {
+    "502": "nature", "504": "the environment", "52": "space", "523": "the solar system",
+    "524": "stars", "549": "minerals", "55": "the earth", "551.5": "weather", "551.21": "volcanoes",
+    "551.4": "landscapes", "551.46": "oceans", "552": "rocks", "56": "fossils", "567": "dinosaurs",
+    "568": "dinosaurs", "57": "nature", "574": "ecology", "575": "evolution", "58": "plants",
+    "582": "plants", "59": "animals", "591": "animals", "594": "sea creatures", "595.7": "insects",
+    "595.78": "butterflies", "597": "fish", "598.1": "reptiles", "598.2": "birds", "599": "mammals",
+    "61": "the human body", "611": "the human body", "612": "the human body",
+    "62": "machines", "629": "vehicles", "629.7": "aircraft", "629.78": "space travel",
+    "004": "computers", "641.5": "cooking", "7": "art", "74": "drawing", "78": "music",
+    "79": "sport", "9": "history", "91": "geography", "912": "maps", "93": "history", "94": "history",
+    "030": "reference", "811": "language learning",
+}
