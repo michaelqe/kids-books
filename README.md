@@ -10,14 +10,20 @@ with covers and summaries from English sources, and shared reading lists.
 ## Stack
 
 - `web/`: plain HTML, CSS and ES modules. No build step, no npm.
-- `server/`: Python 3 **standard library only** (`http.server`, `sqlite3`, `urllib`).
-  Serves `web/`, a JSON API, the ESTER search adapter and the cover/summary lookup.
-- `data/books.db`: SQLite (lists, cache). Not in git.
+- `crawler/` (runs on **X1 only**): Python 3 stdlib. Crawls ESTER for picture books, adds
+  covers and summaries (Open Library, Google Books), and writes `data/catalog.db` (SQLite + FTS5).
+  A nightly `systemd --user` timer on X1 runs it, then uploads `catalog.db` to the droplet.
+- `server/` (droplet; also X1 for dev): Python 3 **standard library only** (`http.server`, `sqlite3`).
+  Serves `web/` and a JSON API. Search reads `catalog.db` read-only; lists live in `data/books.db`.
+  **The server never calls ESTER or any other outside site.**
+- `data/`: `catalog.db` (rebuilt by the crawler, replaceable) and `books.db` (shared lists,
+  back this one up). Not in git.
 
 ## Run locally
 
 ```sh
-python3 server/app.py --port 8512 --db data/books.db
+python3 -m crawler.run --out data/catalog.db     # X1 only
+python3 server/app.py --port 8512 --db data/books.db --catalog data/catalog.db
 # open http://127.0.0.1:8512
 ```
 
