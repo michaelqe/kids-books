@@ -196,3 +196,13 @@ dialog.sheet::backdrop { background: rgba(0, 0, 0, .7); }
 .foot { max-width: 1180px; margin: 0 auto; padding: 0 var(--gutter) 32px; color: var(--muted); font-size: 13px; }
 .error { color: #ff8a80; }
 .skeleton { background: var(--tile); border-radius: 6px; aspect-ratio: 3 / 4; }
+
+/* v2 facets */
+.facets { display: flex; flex-direction: column; gap: 8px; }
+.facets:empty { display: none; }
+.chip .count { margin-left: 6px; color: var(--muted); font-size: 13px; }
+.seg[hidden] { display: none; }
+.why { margin: 4px 0 12px; }
+.why summary { cursor: pointer; }
+.why ul { margin: 6px 0 0; padding-left: 18px; }
+.gone { color: var(--warn); }

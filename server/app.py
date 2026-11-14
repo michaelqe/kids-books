@@ -35,6 +35,16 @@ LANGUAGES = {
 }
 FIELDS = {"title": "title", "author": "authors", "subject": "subjects"}
 PER_PAGE = 48
+# v2 facets (crawler/classify.py). Order is display order.
+AUDIENCES = {
+    "baby_toddler": "Baby & toddler",
+    "picture_book": "Picture books",
+    "early_reader": "Early readers",
+    "middle_grade": "Older children",
+    "teen": "Teen",
+    "adult": "Adult nature",
+}
+TYPES = {"fiction": "Fiction", "nonfiction": "Non-fiction", "poetry": "Poetry", "comics": "Comics", "activity": "Activity"}
 
 
 class ApiError(Exception):
@@ -78,8 +88,20 @@ def fts_query(q: str, field: str) -> str:
     return " AND ".join(terms)
 
 
+def has_facets(cat: sqlite3.Connection) -> bool:
+    """A v2 catalogue (audience/type columns). v1 catalogues still work, without facets."""
+    return any(r[1] == "audience" for r in cat.execute("PRAGMA table_info(books)"))
+
+
+def _multi(params: dict, name: str, allowed: dict) -> list[str]:
+    return [v for v in params.get(name, "").split(",") if v in allowed]
+
+
 def book_card(row: sqlite3.Row) -> dict:
     authors = [display_name(a) for a in dbm.loads(row["authors"], [])]
+    keys = row.keys()
+    audience = row["audience"] if "audience" in keys else ""
+    typ = row["type"] if "type" in keys else ""
     return {
         "id": row["id"],
         "title": row["title"],
@@ -93,50 +115,98 @@ def book_card(row: sqlite3.Row) -> dict:
         "tallinn_copies": row["tallinn_copies"],
         "available_copies": row["available_copies"],
         "url": row["url"],
+        "audience": audience,
+        "audience_label": AUDIENCES.get(audience, "").replace("Adult nature", "Adult"),
+        "type": typ,
+        "type_label": TYPES.get(typ, ""),
+        "nature": bool(row["nature"]) if "nature" in keys else False,
     }
 
 
 def search(cat: sqlite3.Connection, params: dict) -> dict:
+    """Full-text search plus filters. v2 filters: audience and type (comma-separated, any of),
+    topic, and nature=1. `lang` is accepted and ignored on a v2 catalogue (all English)."""
     q = params.get("q", "").strip()
     field = params.get("field", "any")
     lang = params.get("lang", "any")
     subject = params.get("subject", "").strip()
+    topic = params.get("topic", "").strip()
     available = params.get("available") in ("1", "true", "yes")
+    nature = params.get("nature") in ("1", "true", "yes")
+    facets_on = has_facets(cat)
+    audiences = _multi(params, "audience", AUDIENCES) if facets_on else []
+    types = _multi(params, "type", TYPES) if facets_on else []
     try:
         page = max(1, int(params.get("page", "1")))
     except ValueError:
         page = 1
-    where, args = [], []
     join = ""
     order = "b.year DESC, b.title"
+    base: list[tuple[str, list]] = []  # (condition, args) shared by the results and the facet counts
     if q:
         match = fts_query(q, field)
         if not match:
-            return {"total": 0, "page": page, "per_page": PER_PAGE, "results": []}
+            return {"total": 0, "page": page, "per_page": PER_PAGE, "results": [], "facets": empty_facets(facets_on)}
         join = "JOIN books_fts f ON f.rowid = b.rowid"
-        where.append("books_fts MATCH ?")
-        args.append(match)
+        base.append(("books_fts MATCH ?", [match]))
         order = "f.rank"
-    if lang in ("eng", "est", "rus"):
-        where.append("b.language = ?")
-        args.append(lang)
-    elif lang == "other":
-        where.append("b.language NOT IN ('eng', 'est')")
+    if not facets_on:
+        if lang in ("eng", "est", "rus"):
+            base.append(("b.language = ?", [lang]))
+        elif lang == "other":
+            base.append(("b.language NOT IN ('eng', 'est')", []))
     if available:
-        where.append("b.available_copies > 0")
-    if subject:
-        where.append("b.id IN (SELECT book_id FROM subjects WHERE subject_en = ? OR subject = ?)")
-        args += [subject, subject]
-    sql_where = ("WHERE " + " AND ".join(where)) if where else ""
+        base.append(("b.available_copies > 0", []))
+    if subject and facets_on:  # the chips are v2 topics; Estonian headings still match
+        base.append((
+            "(b.id IN (SELECT book_id FROM topics WHERE topic = ?) OR b.id IN (SELECT book_id FROM subjects WHERE subject = ?))",
+            [subject, subject],
+        ))
+    elif subject:
+        base.append(("b.id IN (SELECT book_id FROM subjects WHERE subject_en = ? OR subject = ?)", [subject, subject]))
+    if topic and facets_on:
+        base.append(("b.id IN (SELECT book_id FROM topics WHERE topic = ?)", [topic]))
+    if nature and facets_on:
+        base.append(("b.nature = 1", []))
+    aud_cond = (f"b.audience IN ({','.join('?' * len(audiences))})", audiences) if audiences else None
+    type_cond = (f"b.type IN ({','.join('?' * len(types))})", types) if types else None
+
+    def where(*conds) -> tuple[str, list]:
+        parts = [c for c in conds if c]
+        sql = " AND ".join(c[0] for c in parts)
+        return ("WHERE " + sql) if sql else "", [a for c in parts for a in c[1]]
+
+    sql_where, args = where(*base, aud_cond, type_cond)
     try:
         total = cat.execute(f"SELECT count(*) FROM books b {join} {sql_where}", args).fetchone()[0]
         rows = cat.execute(
             f"SELECT b.* FROM books b {join} {sql_where} ORDER BY {order} LIMIT ? OFFSET ?",
             args + [PER_PAGE, (page - 1) * PER_PAGE],
         ).fetchall()
+        facets = empty_facets(facets_on)
+        if facets_on:
+            # Each facet counts with every other filter applied, so its options stay pickable.
+            w, a = where(*base, type_cond)
+            counts = dict(cat.execute(f"SELECT b.audience, count(*) FROM books b {join} {w} GROUP BY b.audience", a).fetchall())
+            facets["audience"] = [{"value": k, "label": v, "count": counts.get(k, 0)} for k, v in AUDIENCES.items()]
+            w, a = where(*base, aud_cond)
+            counts = dict(cat.execute(f"SELECT b.type, count(*) FROM books b {join} {w} GROUP BY b.type", a).fetchall())
+            facets["type"] = [{"value": k, "label": v, "count": counts.get(k, 0)} for k, v in TYPES.items()]
     except sqlite3.OperationalError as e:  # a query FTS5 can't parse
         raise ApiError(400, f"bad search: {e}") from e
-    return {"total": total, "page": page, "per_page": PER_PAGE, "results": [book_card(r) for r in rows]}
+    return {
+        "total": total, "page": page, "per_page": PER_PAGE,
+        "results": [book_card(r) for r in rows], "facets": facets,
+    }
+
+
+def empty_facets(facets_on: bool) -> dict:
+    if not facets_on:
+        return {}
+    return {
+        "audience": [{"value": k, "label": v, "count": 0} for k, v in AUDIENCES.items()],
+        "type": [{"value": k, "label": v, "count": 0} for k, v in TYPES.items()],
+    }
 
 
 def book_detail(cat: sqlite3.Connection, book_id: str) -> dict | None:
@@ -162,6 +232,8 @@ def book_detail(cat: sqlite3.Connection, book_id: str) -> dict | None:
             "genres_en": dbm.loads(row["genres_en"], []),
             "links": dbm.loads(row["links"], {}),
             "holdings_checked_at": row["holdings_checked_at"],
+            "topics": dbm.loads(row["topics"], []) if "topics" in row.keys() else [],
+            "reasons": dbm.loads(row["reasons"], []) if "reasons" in row.keys() else [],
         }
     )
     branches: dict[str, dict] = {}
@@ -183,10 +255,17 @@ def book_detail(cat: sqlite3.Connection, book_id: str) -> dict | None:
 
 
 def subjects(cat: sqlite3.Connection) -> list[dict]:
-    rows = cat.execute(
-        """SELECT subject_en, count(DISTINCT book_id) AS n FROM subjects
-           WHERE subject_en != '' GROUP BY subject_en ORDER BY n DESC LIMIT 60"""
-    ).fetchall()
+    """Topic chips: v2 topics (from every source), else v1 subject headings."""
+    if has_facets(cat):
+        rows = cat.execute(
+            """SELECT topic AS subject_en, count(DISTINCT book_id) AS n FROM topics
+               GROUP BY topic ORDER BY n DESC LIMIT 60"""
+        ).fetchall()
+    else:
+        rows = cat.execute(
+            """SELECT subject_en, count(DISTINCT book_id) AS n FROM subjects
+               WHERE subject_en != '' GROUP BY subject_en ORDER BY n DESC LIMIT 60"""
+        ).fetchall()
     return [{"subject": r["subject_en"], "books": r["n"]} for r in rows]
 
 
@@ -470,6 +549,15 @@ def make_handler(app: App):
                 raise ApiError(404, "list not found")
             if len(parts) == 1:
                 if method == "GET":
+                    cat = dbm.connect_catalog(app.catalog_path)
+                    try:
+                        for item in current["items"]:
+                            item["in_catalogue"] = cat is None or cat.execute(
+                                "SELECT 1 FROM books WHERE id = ?", (item["book_id"],)
+                            ).fetchone() is not None
+                    finally:
+                        if cat:
+                            cat.close()
                     return self.send_json(200, current)
                 if method == "PATCH":
                     name = str(self.read_json().get("name") or "").strip()[:120]

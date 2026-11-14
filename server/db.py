@@ -57,9 +57,11 @@ def catalog_meta(db: sqlite3.Connection | None) -> dict | None:
         return None
     meta = {r["key"]: r["value"] for r in db.execute("SELECT key, value FROM meta")}
     out: dict = {"crawled_at": meta.get("crawled_at"), "status": meta.get("crawl_status")}
-    for key in ("books", "english_books", "available_books"):
+    for key in ("books", "english_books", "available_books", "nature_books", "schema_version"):
         if key in meta:
             out[key] = int(meta[key])
+    if "audiences" in meta:
+        out["audiences"] = loads(meta["audiences"], {})
     return out
 
 

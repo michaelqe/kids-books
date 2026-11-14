@@ -19,18 +19,26 @@ from server import db as dbm
 
 FIX = Path(__file__).parent / "fixtures" / "ester"
 RECORDS = [
-    ("marc_b5260625_eng.html", "b5260625"),
-    ("marc_b2699522_est_loans.html", "b2699522"),
-    ("marc_b1447029_long.html", "b1447029"),
+    ("marc_b5260625_eng.html", "b5260625"),                  # board book (baby & toddler, poetry)
+    ("marc_b4675367_eng_teen.html", "b4675367"),             # teen novel
+    ("marc_b4555593_eng_child_nonfiction.html", "b4555593"), # children's non-fiction about animal homes
+    ("marc_b6062504_eng_adult_nature.html", "b6062504"),     # adult bird book
+    ("marc_b5674196_eng_adult_fiction.html", "b5674196"),    # adult novel: dropped
+    ("marc_b2699522_est_loans.html", "b2699522"),            # Estonian: dropped
 ]
 
 
 def build_catalog(out: Path, records=RECORDS) -> None:
     state = run.open_state(out.parent / f"state-{out.stem}.db")
+    state.execute("DELETE FROM listed")
+    state.execute("DELETE FROM pages")
     for name, rid in records:
-        state.execute("INSERT OR REPLACE INTO listed VALUES (?, '{}', 1, 'x', 'x')", (rid,))
         state.execute(
-            "INSERT OR REPLACE INTO pages VALUES (?, ?, '2026-11-14T00:00:00+00:00')",
+            "INSERT OR REPLACE INTO listed (id, brief, tallinn, first_seen, last_seen, eng) VALUES (?, '{}', 1, 'x', 'x', 1)",
+            (rid,),
+        )
+        state.execute(
+            "INSERT OR REPLACE INTO pages (id, body, fetched_at, scope) VALUES (?, ?, '2026-11-14T00:00:00+00:00', 'S8')",
             (rid, zlib.compress((FIX / name).read_text(encoding="utf-8").encode("utf-8"))),
         )
     run.build(state, out, "ok", 0)
@@ -73,7 +81,8 @@ class ServerTest(unittest.TestCase):
         status, body = self.call("GET", "/api/health")
         self.assertEqual(status, 200)
         self.assertTrue(body["ok"])
-        self.assertEqual(body["catalog"]["books"], 2)
+        self.assertEqual(body["catalog"]["books"], 4)
+        self.assertEqual(body["catalog"]["schema_version"], 2)
         self.assertEqual(body["catalog"]["status"], "ok")
 
     def test_me(self):
@@ -102,23 +111,45 @@ class ServerTest(unittest.TestCase):
         self.assertEqual(body["total"], 0)
         _, body = self.call("GET", "/api/search?q=bumb")  # prefix match while typing
         self.assertEqual(body["total"], 1)
-        _, body = self.call("GET", "/api/search?lang=eng")
-        self.assertEqual(body["total"], 1)
-        _, body = self.call("GET", "/api/search?lang=est&subject=Christmas")
-        self.assertEqual([r["id"] for r in body["results"]], ["b2699522"])
-        _, body = self.call("GET", "/api/search?q=%22%20OR%20(")  # junk is not a 500
+        _, body = self.call("GET", "/api/search?lang=est")  # ignored: a v2 catalogue is all English
+        self.assertEqual(body["total"], 4)
+        _, body = self.call("GET", "/api/search?subject=birds")  # topic chips
+        self.assertEqual([r["id"] for r in body["results"]], ["b6062504"])
+        status, body = self.call("GET", "/api/search?q=%22%20OR%20(")  # junk is not a 500
+        self.assertEqual(status, 200)
+        _, body = self.call("GET", "/api/search?q=%22%20(%20*")
         self.assertEqual(body["total"], 0)
 
+    def test_facets(self):
+        _, body = self.call("GET", "/api/search")
+        counts = {f["value"]: f["count"] for f in body["facets"]["audience"]}
+        self.assertEqual(counts, {"baby_toddler": 1, "picture_book": 1, "early_reader": 0, "middle_grade": 0, "teen": 1, "adult": 1})
+        _, body = self.call("GET", "/api/search?audience=baby_toddler,picture_book")
+        self.assertEqual({r["id"] for r in body["results"]}, {"b5260625", "b4555593"})
+        # the audience facet still counts the other audiences, the type facet narrows
+        self.assertEqual({f["value"]: f["count"] for f in body["facets"]["audience"]}["teen"], 1)
+        self.assertEqual({f["value"]: f["count"] for f in body["facets"]["type"]}["fiction"], 0)
+        _, body = self.call("GET", "/api/search?nature=1&type=nonfiction")
+        self.assertEqual({r["id"] for r in body["results"]}, {"b6062504", "b4555593"})
+        _, body = self.call("GET", "/api/search?audience=teen,bogus")
+        self.assertEqual([r["id"] for r in body["results"]], ["b4675367"])
+        self.assertEqual(body["results"][0]["audience_label"], "Teen")
+        _, subjects = self.call("GET", "/api/subjects")
+        self.assertIn("birds", [s["subject"] for s in subjects])
+
     def test_book_detail(self):
-        status, book = self.call("GET", "/api/books/b2699522")
+        status, book = self.call("GET", "/api/books/b6062504")
         self.assertEqual(status, 200)
-        self.assertEqual(book["language_name"], "Estonian")
+        self.assertEqual(book["language_name"], "English")
+        self.assertEqual((book["audience"], book["type"], book["nature"]), ("adult", "nonfiction", True))
+        self.assertIn("birds", book["topics"])
+        self.assertTrue(book["reasons"][0].startswith("audience adult"))
         self.assertTrue(book["holdings"])
         first = book["holdings"][0]
         self.assertIn("branch", first)
-        self.assertTrue(any(c["status"] == "Available" for b in book["holdings"] for c in b["copies"]))
         self.assertIn("goodreads", book["links"])
         self.assertEqual(self.call("GET", "/api/books/b0000000")[0], 404)
+        self.assertEqual(self.call("GET", "/api/books/b5674196")[0], 404)  # adult fiction is out of scope
 
     def test_catalog_swap_is_picked_up(self):
         tmp = Path(tempfile.mkdtemp())
@@ -172,6 +203,11 @@ class ServerTest(unittest.TestCase):
         self.assertEqual(lst["count"], 0)
         self.call("POST", f"/api/lists/{lid}/items", {"book_id": "b5260625", "note": "borrowed 14 Nov"})
         self.assertEqual(self.call("GET", f"/api/lists/{lid}")[1]["count"], 1)
+        # an item whose book left the catalogue keeps its snapshot and says so
+        self.call("POST", f"/api/lists/{lid}/items", {"book_id": "b1111111", "title": "Old Estonian book"})
+        items = {i["book_id"]: i for i in self.call("GET", f"/api/lists/{lid}")[1]["items"]}
+        self.assertFalse(items["b1111111"]["in_catalogue"])
+        self.assertTrue(items["b5260625"]["in_catalogue"])
         # delete the list
         self.assertEqual(self.call("DELETE", f"/api/lists/{lid}")[0], 200)
         self.assertEqual(self.call("GET", f"/api/lists/{lid}")[0], 404)

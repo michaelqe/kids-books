@@ -1,4 +1,5 @@
-// Kids Books: search Tallinn's picture books, save them to shared lists.
+// Kids Books: search English children's books (and adult nature books) you can borrow in
+// Tallinn's libraries, save them to shared lists.
 // Plain ES module, no build step. Routes live in the hash: #/?q=..., #/book/b123, #/lists, #/lists/4.
 
 const view = document.getElementById("view");
@@ -133,16 +134,32 @@ async function refreshSaved() {
 
 // --- search view ----------------------------------------------------------------------------
 
-const LANGS = [["eng", "English"], ["est", "Estonian"], ["any", "Any language"]];
+const LANGS = [["eng", "English"], ["est", "Estonian"], ["any", "Any language"]];  // v1 catalogues only
 const FIELDS = [["any", "Anything"], ["title", "Title"], ["author", "Author"], ["subject", "Subject"]];
+const PICTURE = ["baby_toddler", "picture_book"];
+// Shortcuts: a set of filters. The first one is the default view.
+const SHORTCUTS = [
+  { key: "picture", label: "Picture books", set: { audience: PICTURE, type: [], nature: false } },
+  { key: "nature", label: "Nature & weather", set: { audience: [], type: ["nonfiction"], nature: true } },
+  { key: "all", label: "All books", set: { audience: [], type: [], nature: false } },
+];
+
+function listParam(params, name, fallback) {
+  if (!params.has(name)) return fallback;
+  return (params.get(name) || "").split(",").filter(Boolean);
+}
 
 function searchParams(params) {
+  const fresh = ![...params.keys()].length;  // the landing page: picture books
   return {
     q: params.get("q") || "",
     field: params.get("field") || "any",
     lang: params.get("lang") || "eng",
     available: params.get("available") === "1",
     subject: params.get("subject") || "",
+    audience: listParam(params, "audience", fresh ? PICTURE : []),
+    type: listParam(params, "type", []),
+    nature: params.get("nature") === "1",
     page: Math.max(1, parseInt(params.get("page") || "1", 10) || 1),
   };
 }
@@ -151,12 +168,22 @@ function searchHash(p) {
   const q = new URLSearchParams();
   if (p.q) q.set("q", p.q);
   if (p.field !== "any") q.set("field", p.field);
-  if (p.lang !== "eng") q.set("lang", p.lang);
+  if (p.lang && p.lang !== "eng") q.set("lang", p.lang);
   if (p.available) q.set("available", "1");
   if (p.subject) q.set("subject", p.subject);
+  // audience is always written, even empty, so "All books" isn't read back as the default
+  q.set("audience", (p.audience || []).join(","));
+  if ((p.type || []).length) q.set("type", p.type.join(","));
+  if (p.nature) q.set("nature", "1");
   if (p.page > 1) q.set("page", String(p.page));
-  const s = q.toString();
-  return "#/" + (s ? "?" + s : "");
+  return "#/?" + q.toString().replace(/%2C/g, ",");
+}
+
+const sameSet = (a, b) => a.length === b.length && a.every((x) => b.includes(x));
+
+function activeShortcut(p) {
+  const s = SHORTCUTS.find((sc) => sameSet(p.audience, sc.set.audience) && sameSet(p.type, sc.set.type) && p.nature === sc.set.nature);
+  return s ? s.key : "";
 }
 
 let searchSeq = 0;
@@ -165,13 +192,15 @@ async function renderSearch(params) {
   setNav("search");
   const p = searchParams(params);
   const input = h("input", {
-    type: "search", value: p.q, placeholder: "Search picture books: title, author, subject",
+    type: "search", value: p.q, placeholder: "Search books: title, author, subject",
     "aria-label": "Search", autocomplete: "off", enterkeyhint: "search",
   });
   const field = h("select", { "aria-label": "Search in" },
     FIELDS.map(([v, label]) => h("option", { value: v, selected: v === p.field }, label)));
   const results = h("div", {});
-  const chips = h("div", { class: "chips", role: "group", "aria-label": "Subjects" });
+  const chips = h("div", { class: "chips", role: "group", "aria-label": "Topics" });
+  const shortcuts = h("div", { class: "seg", role: "group", "aria-label": "Shortcuts" });
+  const facetBox = h("div", { class: "facets" });
 
   const update = (patch) => {
     const next = { ...p, ...patch };
@@ -179,7 +208,7 @@ async function renderSearch(params) {
     history.replaceState(null, "", searchHash(next));
     Object.assign(p, next);
     paintControls();
-    runSearch(p, results);
+    runSearch(p, results, paintFacets);
   };
 
   let typing = null;
@@ -190,13 +219,39 @@ async function renderSearch(params) {
   input.addEventListener("keydown", (e) => { if (e.key === "Enter") { clearTimeout(typing); update({ q: input.value.trim() }); input.blur(); } });
   field.addEventListener("change", () => update({ field: field.value }));
 
-  const langSeg = h("div", { class: "seg", role: "group", "aria-label": "Language" });
+  const langSeg = h("div", { class: "seg", role: "group", "aria-label": "Language", hidden: true });
   const availBtn = h("button", { class: "toggle", type: "button", onclick: () => update({ available: !p.available }) },
     h("span", { class: "dot" }), "On the shelf now");
+
+  const toggleIn = (list, value) => (list.includes(value) ? list.filter((x) => x !== value) : [...list, value]);
+
+  function paintFacets(facets) {
+    if (!facets || !facets.audience) {  // a v1 catalogue: no facets, the language filter instead
+      facetBox.replaceChildren();
+      langSeg.hidden = false;
+      shortcuts.hidden = true;
+      return;
+    }
+    langSeg.hidden = true;
+    shortcuts.hidden = false;
+    const group = (name, label, options, selected) =>
+      h("div", { class: "chips facet", role: "group", "aria-label": label },
+        options.filter((o) => o.count || selected.includes(o.value)).map((o) =>
+          h("button", {
+            class: "chip", type: "button", "aria-pressed": String(selected.includes(o.value)),
+            onclick: () => update({ [name]: toggleIn(p[name], o.value) }),
+          }, o.label, h("span", { class: "count" }, o.count.toLocaleString("en-GB")))));
+    facetBox.replaceChildren(
+      group("audience", "Who it's for", facets.audience, p.audience),
+      group("type", "Kind of book", facets.type, p.type));
+  }
 
   function paintControls() {
     langSeg.replaceChildren(...LANGS.map(([v, label]) =>
       h("button", { type: "button", "aria-pressed": String(p.lang === v), onclick: () => update({ lang: v }) }, label)));
+    const active = activeShortcut(p);
+    shortcuts.replaceChildren(...SHORTCUTS.map((sc) =>
+      h("button", { type: "button", "aria-pressed": String(active === sc.key), onclick: () => update({ ...sc.set }) }, sc.label)));
     availBtn.setAttribute("aria-pressed", String(p.available));
     for (const c of chips.children) c.setAttribute("aria-pressed", String(c.dataset.subject === p.subject));
   }
@@ -204,7 +259,8 @@ async function renderSearch(params) {
   view.replaceChildren(
     h("form", { class: "search", role: "search", onsubmit: (e) => e.preventDefault() },
       h("div", { class: "search-row" }, input, field),
-      h("div", { class: "filters" }, langSeg, availBtn),
+      h("div", { class: "filters" }, shortcuts, langSeg, availBtn),
+      facetBox,
       chips),
     results,
   );
@@ -220,7 +276,7 @@ async function renderSearch(params) {
       }, s.subject)));
   }).catch(() => {});
 
-  runSearch(p, results);
+  runSearch(p, results, paintFacets);
 }
 
 async function loadSubjects() {
@@ -228,11 +284,14 @@ async function loadSubjects() {
   return state.subjects;
 }
 
-async function runSearch(p, results) {
+async function runSearch(p, results, paintFacets) {
   const seq = ++searchSeq;
   const q = new URLSearchParams({ q: p.q, field: p.field, lang: p.lang, page: String(p.page) });
   if (p.available) q.set("available", "1");
   if (p.subject) q.set("subject", p.subject);
+  if (p.audience.length) q.set("audience", p.audience.join(","));
+  if (p.type.length) q.set("type", p.type.join(","));
+  if (p.nature) q.set("nature", "1");
   results.replaceChildren(h("div", { class: "grid" }, Array.from({ length: 8 }, () => h("div", { class: "skeleton" }))));
   let data;
   try {
@@ -247,19 +306,26 @@ async function runSearch(p, results) {
     results.replaceChildren(h("div", { class: "empty" }, "The catalogue hasn't been loaded yet. It's updated every night from ESTER."));
     return;
   }
-  const what = [p.q && `"${p.q}"`, p.subject].filter(Boolean).join(" · ");
+  if (paintFacets) paintFacets(data.facets);
+  const v2 = !!(data.facets && data.facets.audience);
+  const what = [p.q && `"${p.q}"`, p.subject, p.nature && "nature"].filter(Boolean).join(" · ");
   const lang = LANGS.find(([v]) => v === p.lang)[1].replace(" language", "");
+  const filtered = p.audience.length || p.type.length || p.nature || p.subject || p.available;
   results.replaceChildren(
     h("div", { class: "summary-line" },
       h("div", { class: "label" },
         `${data.total.toLocaleString("en-GB")} ${data.total === 1 ? "book" : "books"}`,
-        what ? ` for ${what}` : "", p.lang !== "any" ? ` · ${lang}` : "", p.available ? " · on the shelf" : ""),
+        what ? ` for ${what}` : "", !v2 && p.lang !== "any" ? ` · ${lang}` : "", p.available ? " · on the shelf" : ""),
     ),
     data.results.length
       ? h("div", { class: "grid" }, data.results.map(card))
       : h("div", { class: "empty" },
-          "No picture books found.",
-          p.lang !== "any" ? h("div", {}, h("button", { class: "linkbtn", type: "button", onclick: () => go(searchHash({ ...p, lang: "any", page: 1 })) }, "Try any language")) : null),
+          "No books found.",
+          v2 && filtered
+            ? h("div", {}, h("button", { class: "linkbtn", type: "button", onclick: () => go(searchHash({ ...p, audience: [], type: [], nature: false, subject: "", available: false, page: 1 })) }, "Clear the filters"))
+            : !v2 && p.lang !== "any"
+              ? h("div", {}, h("button", { class: "linkbtn", type: "button", onclick: () => go(searchHash({ ...p, lang: "any", page: 1 })) }, "Try any language"))
+              : null),
     pager(p, data),
   );
 }
@@ -272,6 +338,7 @@ function card(book) {
       state.savedIds.has(book.id) ? h("span", { class: "save-mark", title: "On a list" }) : null),
     h("div", { class: "card-title" }, book.title),
     h("div", { class: "card-meta" }, [authorsLine(book), book.year].filter(Boolean).join(" · ")),
+    book.audience_label ? h("div", { class: "card-meta" }, [book.audience_label, book.type_label].filter(Boolean).join(" · ")) : null,
     availability(book));
 }
 
@@ -299,6 +366,8 @@ async function renderBook(id) {
   document.title = `${book.title} · Kids Books`;
   const links = book.links || {};
   const facts = [
+    ["For", book.audience_label || ""],
+    ["Kind", book.type_label || ""],
     ["Illustrated by", (book.illustrators || []).join(", ")],
     ["Language", book.language_name + (book.original_language && book.original_language !== book.language ? `, translated from ${book.original_language_name}` : "")],
     ["Original title", book.original_title || ""],
@@ -337,10 +406,15 @@ async function renderBook(id) {
           ? h("div", { class: "section" }, h("div", { class: "label" }, "Library note (Estonian)"), h("p", { class: "prose muted" }, book.notes))
           : null,
         h("dl", { class: "facts" }, facts.map(([k, v]) => [h("dt", {}, k), h("dd", {}, String(v))])),
-        (book.subjects_en || []).length || (book.genres_en || []).length
+        (book.topics || []).length || (book.subjects_en || []).length || (book.genres_en || []).length
           ? h("div", { class: "tags" },
-              [...new Set([...(book.subjects_en || []), ...(book.genres_en || []).filter((g) => g !== "picture books" && g !== "children's books")])]
-                .map((s) => h("a", { class: "chip", href: searchHash({ q: "", field: "any", lang: "any", available: false, subject: s, page: 1 }) }, s)))
+              [...new Set([...(book.topics || []), ...(book.subjects_en || []), ...(book.genres_en || []).filter((g) => g !== "picture books" && g !== "children's books")])]
+                .map((s) => h("a", { class: "chip", href: searchHash({ q: "", field: "any", lang: "any", available: false, subject: s, audience: [], type: [], nature: false, page: 1 }) }, s)))
+          : null,
+        (book.reasons || []).length
+          ? h("details", { class: "why" },
+              h("summary", { class: "muted small" }, "Why this category"),
+              h("ul", { class: "muted small" }, book.reasons.map((r) => h("li", {}, r))))
           : null,
         h("div", { class: "section" },
           h("div", { class: "label" }, "Tallinn libraries"),
@@ -556,6 +630,7 @@ function listItem(list, it, repaint) {
     h("a", { class: "card-title", href: `#/book/${it.book_id}`, style: "text-decoration:none" }, it.title),
     h("div", { class: "card-meta" }, [it.author, it.year].filter(Boolean).join(" · ")),
     it.note ? h("div", { class: "item-note" }, it.note) : null,
+    it.in_catalogue === false ? h("div", { class: "card-meta gone" }, "No longer in the catalogue") : null,
     h("div", { class: "card-meta" }, `Added by ${it.added_by}`),
     h("div", { class: "item-actions" },
       h("a", { href: it.ester_url, target: "_blank", rel: "noopener", class: "linkbtn" }, "ESTER"),
@@ -586,10 +661,15 @@ async function renderFoot() {
   try {
     state.health = await api("/health");
     const c = state.health.catalog;
+    const n = (x) => (x || 0).toLocaleString("en-GB");
     foot.replaceChildren(
-      c ? `${(c.books || 0).toLocaleString("en-GB")} picture books in Tallinn libraries, ${(c.english_books || 0).toLocaleString("en-GB")} in English. Catalogue updated ${fmtDate(c.crawled_at)} from ESTER.`
-        : "The catalogue hasn't been loaded yet.",
-      " Covers and summaries from Open Library.");
+      !c ? "The catalogue hasn't been loaded yet."
+        : (c.schema_version || 1) >= 2
+          ? `${n(c.books)} English books you can borrow in Tallinn libraries, ${n(c.nature_books)} of them about nature. Catalogue updated ${fmtDate(c.crawled_at)} from ESTER.`
+          : `${n(c.books)} picture books in Tallinn libraries, ${n(c.english_books)} in English. Catalogue updated ${fmtDate(c.crawled_at)} from ESTER.`,
+      c && (c.schema_version || 1) >= 2
+        ? " Covers and summaries from Open Library; categories from ESTER, the Library of Congress and Open Library."
+        : " Covers and summaries from Open Library.");
   } catch { /* the footer is optional */ }
 }
 
