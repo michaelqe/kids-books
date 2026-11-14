@@ -1,12 +1,16 @@
 """ESTER (Sierra WebPAC) client and parsers. Runs on X1 only.
 
-ESTER has no JSON API. Two pages are enough:
+ESTER has no JSON API. These pages are enough:
 
-- The browse list for the genre heading "pildiraamatud (vormimärksõna)": 50 brief
-  citations per page with record id, title, publisher, extent, ISBN and the libraries
-  that hold a copy. We use it to discover records and keep only those Tallinn holds.
-- The MARC view of a record (`.../marc~b1234567`): the raw MARC fields in a <pre>
-  block plus the holdings table (location, call number, status). One request per book.
+- Keyword search limited to English books held by Tallinn's libraries
+  (`l=eng&m=a&b=vv`), sliced by imprint decade (`u:(201*)`): 50 brief citations per
+  page with record id, title, publisher, extent, ISBN and holding libraries. This
+  discovers the records. (The old seed, the genre heading "pildiraamatud", is kept
+  for the tests and as a fallback.)
+- The MARC view of a record through the Tallinn scope (`/search~S8*est?/.../marc~b1234567`):
+  the raw MARC fields in a <pre> block plus the holdings table, Tallinn copies first.
+  It shows at most 10 copies; when it shows 10, the Tallinn holdings page
+  (`.../holdings~1234567`) lists them all. See notes.md "ESTER v2 probe".
 """
 from __future__ import annotations
 
@@ -75,9 +79,33 @@ def genre_page_path(offset: int, total: int = 9166) -> str:
     return f"{GENRE_PREFIX}{GENRE_KEY}&{offset}%2C{total}%2C"
 
 
+# English books held by TlnRK, by imprint decade. No slice comes near a result cap
+# (the largest, 201*, is ~15k and pages to the end).
+ENGLISH_SLICES = ("u:(18*)", "u:(19*)", "u:(200*)", "u:(201*)", "u:(202*)")
+TALLINN_ALL, TALLINN_CHILDREN = "vv", "vlk"   # location limits: all TlnRK, TlnRK lastekirjandus
+TALLINN_SCOPE = "S8"
+MAX_MARC_COPIES = 10  # the MARC view never shows more copies than this
+
+
+def search_path(term: str, branch: str = TALLINN_ALL, offset: int = 1, total: int | None = None) -> str:
+    """Keyword search for English books in a Tallinn location, page starting at `offset`."""
+    q = f"{term}&searchscope=8&l=eng&m=a&b={branch}&SORT=D"
+    if offset <= 1 or not total:
+        return f"/search~{TALLINN_SCOPE}*est/X?SEARCH={q}"
+    sub = urllib.parse.quote(term, safe="()*")
+    return f"/search~{TALLINN_SCOPE}*est?/X{q}/X{q}&SUBKEY={sub}/{offset}%2C{total}%2C{total}%2CB/browse"
+
+
 def marc_path(record_id: str) -> str:
+    """MARC view through the Tallinn scope, so Tallinn copies come first in the holdings."""
     rid = record_id.lstrip("b")
-    return f"/search~S1*est?/.b{rid}/.b{rid}/1%2C1%2C1%2CB/marc~b{rid}"
+    return f"/search~{TALLINN_SCOPE}*est?/.b{rid}/.b{rid}/1%2C1%2C1%2CB/marc~b{rid}"
+
+
+def holdings_path(record_id: str) -> str:
+    """Every Tallinn copy of a record (the MARC view stops at 10)."""
+    rid = record_id.lstrip("b")
+    return f"/search~{TALLINN_SCOPE}*est?/.b{rid}/.b{rid}/1%2C1%2C1%2CB/holdings~{rid}&FF=&1%2C0%2C"
 
 
 def permalink(record_id: str) -> str:
@@ -238,8 +266,12 @@ def parse_holdings(page: str) -> list[dict]:
     return rows
 
 
-def parse_record(page: str, record_id: str) -> dict:
-    """Bibliographic data and holdings from a MARC-view page."""
+def parse_record(page: str, record_id: str, holdings_page: str | None = None) -> dict:
+    """Bibliographic data and holdings from a MARC-view page.
+
+    `holdings_page`, when given, is the full Tallinn holdings page; its copies replace
+    the (at most 10) the MARC view shows.
+    """
     fields = parse_marc_fields(page)
     rec: dict = {
         "id": record_id,
@@ -260,8 +292,12 @@ def parse_record(page: str, record_id: str) -> dict:
         "summary": "",
         "subjects": [],
         "genres": [],
-        "audience": "",
-        "holdings": parse_holdings(page),
+        "audience": "",       # 008/22 (ESTER rarely sets it)
+        "form": "",           # 008/33: 0 non-fiction, 1 fiction, f novels, p poetry, ...
+        "contents": "",       # 008/24-27: d dictionaries, e encyclopaedias, ...
+        "udc": [],            # 080, subfields joined: "821.111(73)-93-31"
+        "udc_bt": [],         # 072 broad term, "821-93"
+        "holdings": parse_holdings(holdings_page) if holdings_page else parse_holdings(page),
     }
     for tag, _ind, data in fields:
         sf = subfields(data)
@@ -271,6 +307,16 @@ def parse_record(page: str, record_id: str) -> dict:
             if year.isdigit():
                 rec["year"] = int(year)
             rec["audience"] = data[22].strip("| ")
+            rec["contents"] = data[24:28].strip("| ")
+            rec["form"] = data[33].strip("| ")
+        elif tag == "072":
+            value = sf.get("a", [""])[0].strip()
+            if value and value not in rec["udc_bt"]:
+                rec["udc_bt"].append(value)
+        elif tag == "080":
+            value = "".join([sf.get("a", [""])[0].strip()] + sf.get("x", [])).replace(" ", "")
+            if value and value not in rec["udc"]:
+                rec["udc"].append(value)
         elif tag == "020":
             rec["isbns"] += [i for i in isbns_from(" ".join(sf.get("a", []))) if i not in rec["isbns"]]
         elif tag == "041":
@@ -360,3 +406,16 @@ def tallinn_holdings(holdings: list[dict]) -> list[dict]:
 
 def is_available(status: str) -> bool:
     return status.strip().upper() == "KOHAL"
+
+
+# Copies that cannot be borrowed: read in the library, archive copies, reading rooms.
+NOT_LENDABLE = ("KOHALKASUTUS", "KOHAL KASUTAMISEKS", "EI LAENUTATA", "ARHIIV", "LUGEMISSAAL")
+
+
+def is_lendable(h: dict) -> bool:
+    text = " ".join((h.get("location", ""), h.get("status", ""), h.get("note", ""))).upper()
+    return not any(m in text for m in NOT_LENDABLE)
+
+
+def lendable_tallinn_holdings(holdings: list[dict]) -> list[dict]:
+    return [h for h in tallinn_holdings(holdings) if is_lendable(h)]

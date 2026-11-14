@@ -2,12 +2,17 @@
 
     python3 -m crawler.run --out data/catalog.db
 
-1. List: walk the browse list for the picture-book genre heading (about 185 pages of
-   50) and keep the records a Tallinn library holds.
-2. Records: fetch the MARC page (bibliographic data + holdings) for new records, and
-   for a rotating slice of the rest so holdings stay fresh (`--refresh-days`).
-3. Build: parse every cached record, apply the picture-book rule, write a new
-   catalog.db next to the old one and rename it into place.
+1. List: search ESTER for English books held by Tallinn's libraries, by imprint decade
+   (about 700 pages of 50), and again in the children's departments only (about 100
+   pages) so children's records are fetched first.
+2. Records: fetch the Tallinn-scoped MARC page (bibliographic data + Tallinn copies
+   first) for new records, plus the full holdings page when the MARC view stops at 10
+   copies. Then refresh kept books every `--refresh-days` and out-of-scope records
+   every `--recheck-days`.
+3. Build: parse every cached record, classify it (crawler/classify.py), keep it when it
+   is in scope (English; a lendable Tallinn copy; a children's book, or adult
+   non-fiction about the natural world), write a new catalog.db next to the old one
+   and rename it into place.
 
 Fetched pages live in a state DB (`~/.cache/kids-books/state.db`, zlib-compressed)
 that survives rebuilds, so a re-run only fetches what is new or due.
@@ -73,65 +78,100 @@ def open_state(path: Path) -> sqlite3.Connection:
         );
         """
     )
+    # v2 columns (BOOKS-11). v1 rows keep their defaults: listed by the picture-book
+    # genre seed (eng = 0) and fetched through the all-libraries scope (scope = 'S1').
+    _add_columns(db, "listed", {"eng": "INTEGER NOT NULL DEFAULT 0", "children": "INTEGER NOT NULL DEFAULT 0"})
+    _add_columns(db, "pages", {"scope": "TEXT NOT NULL DEFAULT 'S1'", "holdings": "BLOB", "kept": "INTEGER"})
+    db.commit()
     return db
 
 
+def _add_columns(db: sqlite3.Connection, table: str, cols: dict[str, str]) -> None:
+    have = {r[1] for r in db.execute(f"PRAGMA table_info({table})")}
+    for name, decl in cols.items():
+        if name not in have:
+            db.execute(f"ALTER TABLE {table} ADD COLUMN {name} {decl}")
+
+
 def crawl_list(client: ester.Client, state: sqlite3.Connection, max_pages: int | None) -> int:
-    offset, pages, seen = 1, 0, 0
-    total = None
+    """Every English book record in Tallinn's libraries; children's departments first."""
     stamp = now()
-    while offset:
-        page = ester.parse_list(client.get(ester.genre_page_path(offset, total or 9166)))
-        total = page["total"] or total
-        for r in page["results"]:
-            tallinn = int(ester.held_in_tallinn(r["libraries"]))
-            state.execute(
-                """INSERT INTO listed (id, brief, tallinn, first_seen, last_seen)
-                   VALUES (?, ?, ?, ?, ?)
-                   ON CONFLICT(id) DO UPDATE SET brief = excluded.brief,
-                       tallinn = excluded.tallinn, last_seen = excluded.last_seen""",
-                (r["id"], json.dumps(r, ensure_ascii=False), tallinn, stamp, stamp),
-            )
-            seen += 1
-        state.commit()
-        pages += 1
-        if pages % 20 == 0:
-            log(f"list: {pages} pages, {seen} records (of {total})")
-        if max_pages and pages >= max_pages:
-            break
-        nxt = page["next_offset"]
-        offset = nxt if nxt and nxt > offset else None
+    pages = seen = 0
+    for branch in (ester.TALLINN_CHILDREN, ester.TALLINN_ALL):
+        for term in ester.ENGLISH_SLICES:
+            offset, total = 1, None
+            while True:
+                page = ester.parse_list(client.get(ester.search_path(term, branch, offset, total)))
+                total = page["total"] or total or len(page["results"])
+                for r in page["results"]:
+                    state.execute(
+                        """INSERT INTO listed (id, brief, tallinn, first_seen, last_seen, eng, children)
+                           VALUES (?, ?, 1, ?, ?, 1, ?)
+                           ON CONFLICT(id) DO UPDATE SET brief = excluded.brief, tallinn = 1, eng = 1,
+                               children = max(listed.children, excluded.children),
+                               last_seen = excluded.last_seen""",
+                        (r["id"], json.dumps(r, ensure_ascii=False), stamp, stamp, int(branch == ester.TALLINN_CHILDREN)),
+                    )
+                    seen += 1
+                state.commit()
+                pages += 1
+                if pages % 50 == 0:
+                    log(f"list: {pages} pages, {seen} records ({branch} {term}, {offset} of {total})")
+                if max_pages and pages >= max_pages:
+                    log(f"list: stopped at --max-list-pages {max_pages}")
+                    return seen
+                offset += 50
+                if not page["results"] or offset > (total or 0):
+                    break
     log(f"list: done, {pages} pages, {seen} records")
     return seen
 
 
-def due_records(state: sqlite3.Connection, refresh_days: int, limit: int | None) -> list[str]:
-    """New Tallinn records first, then the oldest fetches past `refresh_days`."""
-    cutoff = (dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=refresh_days)).isoformat()
+def due_records(
+    state: sqlite3.Connection, refresh_days: int, limit: int | None, recheck_days: int = 60
+) -> list[str]:
+    """What to fetch, in order.
+
+    1. English records with no Tallinn-scoped page yet (children's departments first, newest first).
+    2. Kept books whose page is older than `refresh_days` (holdings go stale).
+    3. Out-of-scope records older than `recheck_days` (in case the library reclassifies or adds copies).
+    """
+    t = dt.datetime.now(dt.timezone.utc)
+    fresh = (t - dt.timedelta(days=refresh_days)).isoformat()
+    recheck = (t - dt.timedelta(days=recheck_days)).isoformat()
     rows = state.execute(
         """SELECT l.id FROM listed l LEFT JOIN pages p ON p.id = l.id
-           WHERE l.tallinn = 1 AND (p.id IS NULL OR p.fetched_at < ?)
-           ORDER BY p.fetched_at IS NOT NULL, p.fetched_at, l.id""",
-        (cutoff,),
+           WHERE l.eng = 1 AND (
+                 p.id IS NULL OR p.scope != ?
+              OR (coalesce(p.kept, 1) = 1 AND p.fetched_at < ?)
+              OR (p.kept = 0 AND p.fetched_at < ?))
+           ORDER BY (p.id IS NOT NULL AND p.scope = ?), l.children DESC, p.fetched_at, l.id DESC""",
+        (ester.TALLINN_SCOPE, fresh, recheck, ester.TALLINN_SCOPE),
     ).fetchall()
     ids = [r[0] for r in rows]
     return ids[:limit] if limit is not None else ids
 
 
 def crawl_records(client: ester.Client, state: sqlite3.Connection, ids: list[str]) -> int:
-    done = 0
+    done = extra = 0
     for rid in ids:
         body = client.get(ester.marc_path(rid))
+        holdings = None
+        if len(ester.parse_holdings(body)) >= ester.MAX_MARC_COPIES:
+            holdings = zlib.compress(client.get(ester.holdings_path(rid)).encode("utf-8"))
+            extra += 1
         state.execute(
-            "INSERT OR REPLACE INTO pages (id, body, fetched_at) VALUES (?, ?, ?)",
-            (rid, zlib.compress(body.encode("utf-8")), now()),
+            """INSERT INTO pages (id, body, fetched_at, scope, holdings) VALUES (?, ?, ?, ?, ?)
+               ON CONFLICT(id) DO UPDATE SET body = excluded.body, fetched_at = excluded.fetched_at,
+                   scope = excluded.scope, holdings = excluded.holdings""",
+            (rid, zlib.compress(body.encode("utf-8")), now(), ester.TALLINN_SCOPE, holdings),
         )
         state.commit()  # per record: keeps write locks short for a concurrent rebuild
         done += 1
         if done % 250 == 0:
-            log(f"records: {done}/{len(ids)}")
+            log(f"records: {done}/{len(ids)} ({extra} full holdings pages)")
     state.commit()
-    log(f"records: fetched {done}")
+    log(f"records: fetched {done} ({extra} full holdings pages)")
     return done
 
 
@@ -276,12 +316,14 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--out", type=Path, default=Path("data/catalog.db"))
     ap.add_argument("--cache", type=Path, default=DEFAULT_CACHE)
     ap.add_argument("--delay", type=float, default=1.0, help="seconds between ESTER requests")
-    ap.add_argument("--refresh-days", type=int, default=7, help="re-fetch holdings older than this")
+    ap.add_argument("--refresh-days", type=int, default=7, help="re-fetch kept books' holdings older than this")
+    ap.add_argument("--recheck-days", type=int, default=60, help="re-fetch out-of-scope records older than this")
     ap.add_argument("--max-records", type=int, default=None, help="cap record fetches this run")
     ap.add_argument("--max-list-pages", type=int, default=None)
     ap.add_argument("--skip-list", action="store_true", help="reuse the last list")
     ap.add_argument("--build-only", action="store_true", help="no network; rebuild from the cache")
     ap.add_argument("--no-enrich", action="store_true", help="skip covers and summaries")
+    ap.add_argument("--no-build", action="store_true", help="crawl only; leave catalog.db alone")
     ap.add_argument("--enrich-max", type=int, default=enrich_mod.DEFAULT_MAX, help="cover/summary lookups this run")
     args = ap.parse_args(argv)
 
@@ -296,10 +338,18 @@ def main(argv: list[str] | None = None) -> int:
         try:
             if not args.skip_list:
                 crawl_list(client, state, args.max_list_pages)
-            crawl_records(client, state, due_records(state, args.refresh_days, args.max_records))
+            crawl_records(client, state, due_records(state, args.refresh_days, args.max_records, args.recheck_days))
         except ester.EsterError as e:
             status, code = f"partial: {e}", 75
             log(f"stopped: {e}")
+    if args.no_build:
+        state.execute(
+            "UPDATE runs SET finished_at = ?, status = ?, requests = ? WHERE started_at = ?",
+            (now(), status, client.requests, started),
+        )
+        state.commit()
+        log(f"crawl only: {client.requests} requests in {time.monotonic() - t0:.0f}s; status {status}")
+        return code
     enrich = None
     if not args.no_enrich:
         enrich = lambda db: enrich_mod.run(  # noqa: E731
