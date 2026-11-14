@@ -166,7 +166,7 @@ ADULT_NATURE_UDC = (
     "57",           # biology, natural history
     "58",           # botany
     "59",           # zoology
-    "630", "635.9", # forestry; flowers (gardening as such is out)
+    "630",          # forestry (gardening, houseplants and pets are out: 635, 636)
 )
 
 # Estonian subject headings (650, base form) that mark a book about the natural world.

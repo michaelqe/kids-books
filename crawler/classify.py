@@ -105,19 +105,31 @@ def udc_topics(udcs: list[str]) -> list[str]:
     return out
 
 
+def _udc_main(u: str) -> str:
+    return re.split(r"[(\-:\"=+/ ']", u, maxsplit=1)[0]
+
+
 def is_nature(rec: dict, signals: list[dict] | None = None) -> tuple[bool, str]:
-    """Is this book about the natural world (weather, animals, plants, the sky, rocks, ...)?"""
-    for u in rec.get("udc", []):
-        main = re.split(r"[(\-:\"=+/ ]", u, maxsplit=1)[0]
-        for prefix in ADULT_NATURE_UDC:
-            if main.startswith(prefix):
-                return True, f"UDC {u}"
-    for u in rec.get("udc_bt", []):
-        if u.startswith(("5", "91")) and not u.startswith(("51", "53", "54")):
-            return True, f"UDC broad term {u}"
+    """Is this book about the natural world (weather, animals, plants, the sky, rocks, ...)?
+
+    The primary UDC number (the first 080) decides when there is one: a secondary number
+    or a subject heading doesn't make a cat-care, crafts or travel book a nature book.
+    Without a 080, the broad term (072), then subject headings, then outside signals.
+    """
     guides = _genres(rec) & FIELD_GUIDE_GENRES
     if guides:
         return True, "genre " + sorted(guides)[0]
+    udcs = rec.get("udc", [])
+    if udcs:
+        primary = udcs[0]
+        if _udc_main(primary).startswith(ADULT_NATURE_UDC):
+            return True, f"UDC {primary}"
+        return False, ""
+    for u in rec.get("udc_bt", []):
+        if u.startswith("5") and not u.startswith(("51", "53", "54")):
+            return True, f"UDC broad term {u}"
+    if rec.get("udc_bt"):
+        return False, ""
     for s in rec.get("subjects", []):
         base = re.split(r"\s*(?:\(|--)", s.lower())[0].strip()
         if base in NATURE_SUBJECTS:
