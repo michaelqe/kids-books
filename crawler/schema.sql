@@ -16,6 +16,7 @@ CREATE TABLE books (
     year            INTEGER,
     language        TEXT NOT NULL DEFAULT '',   -- MARC code: eng, est, rus, ...
     original_language TEXT NOT NULL DEFAULT '',
+    original_title  TEXT NOT NULL DEFAULT '',   -- 240 / 246 x9, for translated editions
     isbns           TEXT NOT NULL DEFAULT '[]', -- JSON, digits only
     pages           INTEGER,
     extent          TEXT NOT NULL DEFAULT '',

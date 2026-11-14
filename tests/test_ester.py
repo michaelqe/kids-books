@@ -58,6 +58,9 @@ class Record(unittest.TestCase):
     def test_estonian_edition_with_loans(self):
         rec = ester.parse_record(page("marc_b2699522_est_loans.html"), "b2699522")
         self.assertEqual(rec["language"], "est")
+        self.assertEqual(rec["original_language"], "fin")
+        self.assertEqual(rec["original_title"], "Kaksitoista lahjaa joulupukille")
+        self.assertEqual(rec["authors"], ["Kunnas, Mauri", "Kunnas, Tarja"])  # not the translator
         self.assertTrue(ester.is_picture_book(rec)[0])
         tallinn = ester.tallinn_holdings(rec["holdings"])
         self.assertGreater(len(tallinn), 1)

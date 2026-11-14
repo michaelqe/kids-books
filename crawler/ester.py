@@ -252,6 +252,7 @@ def parse_record(page: str, record_id: str) -> dict:
         "year": None,
         "language": "",
         "original_language": "",
+        "original_title": "",
         "isbns": [],
         "extent": "",
         "pages": None,
@@ -285,6 +286,11 @@ def parse_record(page: str, record_id: str) -> dict:
                 rec["illustrators"].append(name)
             elif re.search(r"autor|author|aut\b", roles) or not roles:
                 rec["authors"].append(name)
+        elif tag == "240" and not rec["original_title"]:
+            rec["original_title"] = _clean(sf.get("a", [""])[0])
+        elif tag == "246" and _ind[1:2] == "9" and not rec["original_title"]:
+            # ESTER: 246 x9 is the original title ("Kaksitoista lahjaa joulupukille.|gEesti keeles")
+            rec["original_title"] = _clean(sf.get("a", [""])[0])
         elif tag == "245":
             rec["title"] = _clean(sf.get("a", [""])[0])
             rec["subtitle"] = _clean(" ".join(sf.get("b", [])))

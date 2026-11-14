@@ -27,6 +27,7 @@ import time
 import zlib
 from pathlib import Path
 
+from . import enrich as enrich_mod
 from . import ester
 from .terms import LANGUAGES, branch_name, genre_en, status_en, subject_en
 
@@ -113,7 +114,7 @@ def due_records(state: sqlite3.Connection, refresh_days: int, limit: int | None)
         (cutoff,),
     ).fetchall()
     ids = [r[0] for r in rows]
-    return ids[:limit] if limit else ids
+    return ids[:limit] if limit is not None else ids
 
 
 def crawl_records(client: ester.Client, state: sqlite3.Connection, ids: list[str]) -> int:
@@ -167,6 +168,7 @@ def book_row(rec: dict, fetched_at: str) -> tuple[dict, list[dict]]:
         "year": rec["year"],
         "language": rec["language"],
         "original_language": rec["original_language"],
+        "original_title": rec["original_title"],
         "isbns": json.dumps(rec["isbns"]),
         "pages": rec["pages"],
         "extent": rec["extent"],
@@ -225,6 +227,8 @@ def build(state: sqlite3.Connection, out: Path, status: str, requests: int, enri
         "books": kept,
         "english_books": db.execute("SELECT count(*) FROM books WHERE language = 'eng'").fetchone()[0],
         "available_books": db.execute("SELECT count(*) FROM books WHERE available_copies > 0").fetchone()[0],
+        "covers": db.execute("SELECT count(*) FROM books WHERE cover_url != ''").fetchone()[0],
+        "summaries": db.execute("SELECT count(*) FROM books WHERE summary != ''").fetchone()[0],
         "dropped": dropped,
         "dropped_reasons": reasons,
     }
@@ -245,8 +249,8 @@ def build(state: sqlite3.Connection, out: Path, status: str, requests: int, enri
 
 def index_fts(db: sqlite3.Connection) -> None:
     db.execute("DELETE FROM books_fts")
-    for rowid, title, subtitle, series, authors, illustrators, subjects, subjects_en, genres_en, notes, summary in db.execute(
-        """SELECT rowid, title, subtitle, series, authors, illustrators, subjects, subjects_en,
+    for rowid, title, subtitle, series, original_title, authors, illustrators, subjects, subjects_en, genres_en, notes, summary in db.execute(
+        """SELECT rowid, title, subtitle, series, original_title, authors, illustrators, subjects, subjects_en,
                   genres_en, notes, summary FROM books"""
     ).fetchall():
         names = json.loads(authors) + json.loads(illustrators)
@@ -256,7 +260,7 @@ def index_fts(db: sqlite3.Connection) -> None:
             "INSERT INTO books_fts (rowid, title, authors, subjects, summary) VALUES (?, ?, ?, ?, ?)",
             (
                 rowid,
-                " ".join(x for x in (title, subtitle, series) if x),
+                " ".join(x for x in (title, subtitle, series, original_title) if x),
                 " ".join(names),
                 " ".join(json.loads(subjects) + json.loads(subjects_en) + json.loads(genres_en)),
                 " ".join(x for x in (summary, notes) if x),
@@ -278,6 +282,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--skip-list", action="store_true", help="reuse the last list")
     ap.add_argument("--build-only", action="store_true", help="no network; rebuild from the cache")
     ap.add_argument("--no-enrich", action="store_true", help="skip covers and summaries")
+    ap.add_argument("--enrich-max", type=int, default=enrich_mod.DEFAULT_MAX, help="cover/summary lookups this run")
     args = ap.parse_args(argv)
 
     state = open_state(args.cache / "state.db")
@@ -297,12 +302,9 @@ def main(argv: list[str] | None = None) -> int:
             log(f"stopped: {e}")
     enrich = None
     if not args.no_enrich:
-        try:
-            from . import enrich as enrich_mod  # BOOKS-5
-
-            enrich = lambda db: enrich_mod.run(db, cache_dir=args.cache, log=log)  # noqa: E731
-        except ImportError:
-            enrich = None
+        enrich = lambda db: enrich_mod.run(  # noqa: E731
+            db, cache_dir=args.cache, log=log, network=not args.build_only, max_lookups=args.enrich_max
+        )
     counts = build(state, args.out, status, client.requests, enrich)
     state.execute(
         "UPDATE runs SET finished_at = ?, status = ?, requests = ? WHERE started_at = ?",
@@ -312,6 +314,7 @@ def main(argv: list[str] | None = None) -> int:
     langs = ", ".join(f"{LANGUAGES.get(k, k)} {v}" for k, v in _languages(args.out))
     log(
         f"catalog: {counts['books']} picture books ({langs}); {counts['available_books']} on a shelf now; "
+        f"{counts['covers']} covers, {counts['summaries']} English summaries; "
         f"dropped {counts['dropped']} {counts['dropped_reasons']}; {client.requests} requests in "
         f"{time.monotonic() - t0:.0f}s; status {status}"
     )
