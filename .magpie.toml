@@ -1,0 +1,9 @@
+# Read by the X1 magpie-poller (dev-host). Commands run from the repo root.
+# No setup step: everything is Python 3 standard library.
+requires = ["bash", "python3", "ssh", "git"]
+test = "python3 -m unittest discover -s tests"
+deploy = "deploy/droplet/deploy.sh"
+# TODO(DNS): back to michael@running.app.kennedy.ee once it resolves again (14 Nov 2026).
+ssh_host = "michael@142.93.133.110"
+# No health_url: the site is behind the forward-auth login, so deploy.sh checks
+# /api/health (git_sha) on the droplet itself.

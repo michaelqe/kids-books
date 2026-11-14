@@ -1,0 +1,8 @@
+# --- kids-books (deploy/droplet/Caddyfile.books) ---
+# Kids Books. deploy/droplet/install.sh appends or refreshes this block in
+# /etc/caddy/Caddyfile between the begin/end marker lines, then validates and reloads.
+books.app.kennedy.ee {
+	import protected
+	reverse_proxy 127.0.0.1:8512
+}
+# --- end kids-books ---

@@ -1,0 +1,18 @@
+# Kids Books web app on the droplet. Installed by deploy/droplet/install.sh.
+# Serves web/ and the JSON API on 127.0.0.1:8512 (Caddy: books.app.kennedy.ee).
+# No outbound requests: data/catalog.db is uploaded from X1, data/books.db holds the lists.
+[Unit]
+Description=Kids Books (books.app.kennedy.ee)
+After=network.target
+
+[Service]
+User=michael
+WorkingDirectory=/home/michael/kids-books
+ExecStart=/usr/bin/python3 server/app.py --host 127.0.0.1 --port 8512 --db /home/michael/kids-books/data/books.db --catalog /home/michael/kids-books/data/catalog.db
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

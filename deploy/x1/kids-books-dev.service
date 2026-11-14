@@ -1,0 +1,12 @@
+# X1 user unit: a dev instance against the local data/ (own lists DB, the local catalogue).
+# http://127.0.0.1:8512 on X1 (or ssh -L 8512:127.0.0.1:8512 x1 from the Mac).
+[Unit]
+Description=Kids Books dev server (X1)
+
+[Service]
+WorkingDirectory=%h/src/personal/kids-books
+ExecStart=/usr/bin/python3 server/app.py --host 127.0.0.1 --port 8512 --db data/books-dev.db --catalog data/catalog.db --dev-user michael
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
