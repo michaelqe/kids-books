@@ -24,7 +24,7 @@ SUBJECTS = {
     "värvid": "colours", "numbrid": "numbers", "loendamine": "counting",
     "arvud": "numbers", "tähestik": "alphabet", "tähed": "letters", "kujundid": "shapes",
     "vastandid": "opposites", "sõnavara": "first words", "kellaaeg": "telling time",
-    "inglise keel": "English language", "inglise": "English",
+    # "inglise" (English) marks the language, not a topic; the language filter covers it.
     # everyday life
     "uni": "sleep", "magamaminek": "bedtime", "unejutud": "bedtime stories",
     "õhtujutud": "bedtime stories", "perekond": "family", "emad": "mothers",
