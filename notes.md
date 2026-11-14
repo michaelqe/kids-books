@@ -116,3 +116,17 @@ Measured on X1 at about 1 req/s, roughly 450 requests in total.
   then undecided adult books), then classifies again with the cached outside signals. Coverage per source is in
   `meta.signal_coverage`.
 - **Google:** X1 has no `GOOGLE_BOOKS_API_KEY`, so there are no Google categories for now.
+
+## v2 rollout (BOOKS-9, 14–15 Nov 2026)
+
+- **First full ESTER fetch** runs as the X1 unit `kids-books-v2fetch`. It holds the crawl lock, so the nightly run
+  skips while it runs.
+  - Measured about 37 records a minute (the MARC page plus a holdings page for about 1% of records), slower than
+    the 1 req/s estimate, so about 15 h for 33.9k records.
+- **`kids-books-v2populate`** loops: offline build + prefetch of 1,200 Open Library/LoC lookups + `--upload-only`.
+  - About 16 lookups a minute. Each pass takes about 1.5 h and uploads, so the site fills as it goes.
+  - It stops once the fetch is done and a pass looks up nothing.
+- **LoC coverage is low.** About 3% of looked-up books have an LCCN on Open Library (UK editions mostly don't).
+- **Fix after the first upload:** "nature" is decided by the primary UDC number only. A broad term of 91, a
+  secondary 591.5 or a subject heading was letting in travel guides, cat care, crafts and houseplants.
+  Adult picks went from 284 to 139 on the same cache.
