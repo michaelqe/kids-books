@@ -49,7 +49,8 @@ def log(msg: str) -> None:
 
 def open_state(path: Path) -> sqlite3.Connection:
     path.parent.mkdir(parents=True, exist_ok=True)
-    db = sqlite3.connect(path)
+    # A long timeout: a rebuild can run while a crawl is writing (each record commits).
+    db = sqlite3.connect(path, timeout=120)
     db.executescript(
         """
         CREATE TABLE IF NOT EXISTS listed (
@@ -125,9 +126,8 @@ def crawl_records(client: ester.Client, state: sqlite3.Connection, ids: list[str
             "INSERT OR REPLACE INTO pages (id, body, fetched_at) VALUES (?, ?, ?)",
             (rid, zlib.compress(body.encode("utf-8")), now()),
         )
+        state.commit()  # per record: keeps write locks short for a concurrent rebuild
         done += 1
-        if done % 25 == 0:
-            state.commit()
         if done % 250 == 0:
             log(f"records: {done}/{len(ids)}")
     state.commit()
