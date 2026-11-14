@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 import os
 import shutil
+import sqlite3
 import tempfile
 import threading
 import time
@@ -168,6 +169,40 @@ class ServerTest(unittest.TestCase):
             build_catalog(cat, RECORDS[1:])  # rebuilt without it
             with urllib.request.urlopen(base + "/api/search?q=bumblebee") as r:
                 self.assertEqual(json.loads(r.read())["total"], 0)
+            httpd.shutdown()
+            httpd.server_close()
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    def test_v1_catalogue_still_served(self):
+        """The live catalogue stays v1 until the first v2 upload: search works, no facets."""
+        tmp = Path(tempfile.mkdtemp())
+        try:
+            cat = tmp / "catalog.db"
+            shutil.copy(self.catalog, cat)
+            db = sqlite3.connect(cat)
+            # rebuild books without the v2 columns, keeping rowids (the FTS index points at them)
+            v2 = {"audience", "type", "topics", "nature", "reasons"}
+            cols = ", ".join(r[1] for r in db.execute("PRAGMA table_info(books)") if r[1] not in v2)
+            db.execute(f"CREATE TABLE v1 AS SELECT rowid AS rid, {cols} FROM books")
+            db.execute("DROP TABLE books")
+            db.execute(f"CREATE TABLE books AS SELECT {cols} FROM v1 WHERE 0")
+            db.execute(f"INSERT INTO books (rowid, {cols}) SELECT rid, {cols} FROM v1")
+            db.execute("DROP TABLE v1")
+            db.execute("DROP TABLE topics")
+            db.commit()
+            db.close()
+            httpd = server.serve("127.0.0.1", 0, tmp / "books.db", cat, quiet=True)
+            base = f"http://127.0.0.1:{httpd.server_address[1]}"
+            threading.Thread(target=httpd.serve_forever, daemon=True).start()
+            with urllib.request.urlopen(base + "/api/search?audience=teen&lang=eng") as r:
+                body = json.loads(r.read())
+            self.assertEqual((body["total"], body["facets"]), (4, {}))  # audience ignored, lang applies
+            self.assertEqual(body["results"][0]["audience"], "")
+            with urllib.request.urlopen(base + "/api/books/b6062504") as r:
+                self.assertEqual(json.loads(r.read())["topics"], [])
+            with urllib.request.urlopen(base + "/api/subjects") as r:
+                self.assertIsInstance(json.loads(r.read()), list)
             httpd.shutdown()
             httpd.server_close()
         finally:

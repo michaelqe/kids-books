@@ -9,5 +9,5 @@ Type=oneshot
 WorkingDirectory=%h/src/personal/kids-books
 ExecStart=%h/src/personal/kids-books/deploy/x1/crawl-and-upload.sh
 SuccessExitStatus=75
-TimeoutStartSec=6h
+TimeoutStartSec=10h
 Nice=10

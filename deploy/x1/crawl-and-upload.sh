@@ -39,8 +39,13 @@ if base and token:
 PY
 }
 
-exec 9>"$LOCK"
-flock -n 9 || { echo "another crawl is running"; exit 75; }
+# The lock guards the crawl and the catalogue build. --upload-only skips it: it only copies
+# the finished catalog.db (a build renames a new file into place, so a copy never sees half a file),
+# which lets a long first crawl or populate loop upload as it goes.
+if [[ "${1:-}" != "--upload-only" ]]; then
+    exec 9>"$LOCK"
+    flock -n 9 || { echo "another crawl is running"; exit 75; }
+fi
 
 # No git pull here: this is the poller's checkout too; the poller keeps it current.
 
