@@ -1,0 +1,5075 @@
+<!doctype html><html lang="et">
+<head>
+<title>E-kataloog ESTER                                                / TÄIELIK</title>
+<base target="_self"/>
+<link rel="stylesheet" type="text/css" href="/scripts/ProStyles.css" />
+<link rel="stylesheet" type="text/css" href="/screens/ester.css" />
+<link rel="icon" type="image/x-icon" href="/screens/favicon.ico" />
+<script type="text/javascript" src="/scripts/common.js"></script>
+<script type="text/javascript" src="/scripts/features.js"></script>
+<script type="text/javascript" src="/scripts/elcontent.js"></script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><!-- Google tag (gtag.js) --><script async src="https://www.googletagmanager.com/gtag/js?id=G-MZ5QBY7TLK"></script><script>  window.dataLayer = window.dataLayer || [];  function gtag(){dataLayer.push(arguments);}  gtag('js', new Date());  gtag('config', 'G-MZ5QBY7TLK');</script><script src="/screens/jquery.js" type="text/javascript"></script><link rel="stylesheet" type="text/css" href="https://epik.ester.ee/ester/avalanche_styles.css"><link rel="stylesheet" href="/screens/datatables.min.css"><script src="/screens/datatables.min.js"></script><script type="text/javascript">function findrecnum(url) {var recnum = document.getElementById("recordnum").href; window.open("http://digar.nlib.ee/dod/eodredirect.php?recnum=" + recnum, "newWindow"); }</script><script language="JavaScript" type="text/javascript" src="/screens/gbsclasses.js"></script><script type="text/javascript" src="/screens/bibdisplay.js"></script><script src="/screens/modernizr.js" type="text/javascript"></script><script src="/screens/keyboard.js" type="text/javascript"></script><script src="/screens/ester.js" type="text/javascript"></script><script language="JavaScript" type="text/javascript" src="/screens/siim.js"></script><script language="JavaScript" type="text/javascript" src="/screens/urmas.js"></script><script   src="https://epik.ester.ee/ester/avalanche.js" type="text/javascript"></script><script language="JavaScript" type="text/javascript" src="/screens/cassession.js"></script><script language="JavaScript" type="text/javascript" src="/screens/urmas_addon.js"></script>
+</head>
+<body class="default-body" >
+<!-- begin toplogo_est file  -->
+
+<!-- kohandqamine -->
+
+<link rel="stylesheet" type="text/css" id="changeWcagCss" href="/screens/wcag.css">
+<link rel="stylesheet" type="text/css" id="changeCss" href="/screens/empty.css" media="all">
+<div id="ava_vaegus">
+	<div id="vaeg-seaded">
+		<center>
+		<p>Veebilehe suurendamiseks ja vähendamiseks tuleb Ctrl-klahvi (Cmd-klahvi) all hoides vajutada "+" või "-" klahvi.<br>Teine võimalus on liigutada hiire kerimisrulli, hoides all Ctrl-klahvi.<br>Tavasuuruse taastamiseks tuleb samaaegselt vajutada klahvidele Ctrl ja 0.
+</p>
+		<button class="btn-wcag close-wcag" onclick="toggleLigipaas()" aria-label="Sulge">×</button>
+		<h1>Suurendus</h1>
+		<button class="btn-wcag" onclick="createCookie('zoomLevel', 200, 30)">150%</button>
+		<button class="btn-wcag" onclick="createCookie('zoomLevel', 150, 30)">125%</button>
+		<button class="btn-wcag" onclick="createCookie('zoomLevel', 100, 30)">100%</button>
+		<h1>Kontrastsus</h1>
+		<button class="btn-wcag" onclick="createCookie('highContrast', 1, 30)">Kollane tekst mustal taustal</button>
+		<button class="btn-wcag" onclick="createCookie('highContrast', 2, 30)">Valge tekst mustal taustal</button>
+		<button class="btn-wcag" onclick="createCookie('highContrast', 0, 30)">Tavaline</button>
+		<br><br>
+		<button class="btn-wcag" onclick="eraseAllCookies();">Taasta algseaded</button>
+		</center>
+	</div>
+	<button class="btn-toggle" onclick="toggleLigipaas()" title="Vaegnägijale"><img src="/screens/low-vision.png" height="20"><span id="vaeg-sulge" style="display:none;">×</span></button>
+</div>
+<script type="text/javascript">
+function createCookie(name, value, days) {
+    var expires;
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toGMTString();
+    } else {
+        expires = "";
+    }
+    document.cookie = encodeURIComponent(name) + "=" + encodeURIComponent(value) + expires + "; path=/";
+	checkCookies();
+}
+
+function readCookie(name) {
+    var nameEQ = encodeURIComponent(name) + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) === ' ')
+            c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0)
+            return decodeURIComponent(c.substring(nameEQ.length, c.length));
+    }
+    return null;
+}
+
+function eraseCookie(name) {
+    createCookie(name, "", -1);
+}
+function eraseAllCookies() {
+    createCookie('zoomLevel', "", -1);
+    createCookie('zoomLevelText', "", -1);
+    createCookie('highContrast', "", -1);
+}
+function toggleLigipaas() {
+	var v = $('#vaeg-seaded');
+	var x = $(".btn-toggle");
+	var y = $(".btn-toggle > span");
+	var z = $(".btn-toggle > img");
+	if (v.css('display') === "none") {
+		x.attr('title', 'Vaegnägijale');
+		v.css('display', 'block');
+		y.css('display', 'inline-block');
+		z.css('display', 'none');
+	} else {
+		x.attr('title', 'Sulge');
+		v.css('display', 'none');
+		y.css('display', 'none');
+		z.css('display', 'inline-block');
+	}
+}
+$('#vaeg-seaded').css('display', 'none');
+checkCookies();
+function checkCookies() {
+	var zoomLevel = readCookie('zoomLevel');
+	if (zoomLevel == 150) {
+		if (Modernizr.testProp('zoom') === true) {
+			$('body').css('zoom', ' 125%');
+		} else {
+			$('html').css('MozTransform', 'scale(1.25, 1.25)');
+			$('html').css('transform-origin', 'top center');
+		}	
+	} else if (zoomLevel == 200) {
+		if (Modernizr.testProp('zoom') === true) {
+			$('body').css('zoom', ' 150%');
+		} else {
+			$('html').css('MozTransform', 'scale(1.5, 1.5)');
+			$('html').css('transform-origin', 'top center');
+		}	
+	} else {
+		if (Modernizr.testProp('zoom') === true) {
+			$('body').css('zoom', ' 100%');
+		} else {
+			$('html').css('MozTransform', 'scale(1, 1)');
+			$('html').css('transform-origin', 'top center');
+		}	
+	}
+	var zoomLevelText = readCookie('zoomLevelText');
+	if (zoomLevelText == 150) {
+		document.body.style.fontSize = '21px';
+	} else if (zoomLevelText == 200) {
+		document.body.style.fontSize = '28px';
+	} else {
+		document.body.style.fontSize = '14px';
+	}
+	var highContrast = readCookie('highContrast');
+	if (highContrast == 1) {
+		document.getElementById("changeCss").setAttribute('href', "/screens/highcontrast.css");
+		document.getElementById("changeWcagCss").setAttribute('href', "/screens/wcagby.css");
+	} else if (highContrast == 2) {
+		document.getElementById("changeCss").setAttribute('href', "/screens/highcontrast2.css");
+		document.getElementById("changeWcagCss").setAttribute('href', "/screens/wcagbw.css");
+	} else {
+		document.getElementById("changeCss").setAttribute('href', "/screens/empty.css");
+		document.getElementById("changeWcagCss").setAttribute('href', "/screens/wcag.css");
+	}
+}
+</script>
+
+<!-- kohandqamine x-->
+
+<div class="site-header">
+
+	<div class="site box">
+		<a href="/search~S1*est" class="btn-site-home" rel="home"><img src="/screens/ester-logo.png" alt="E-kataloog ESTER"></a>
+		<div class="site-header-box box">
+			<div class="box">
+				<div id ="nav-site-header" class="nav-site-header" role="navigation">
+					<ul class="box nav nav-vertical">
+					<li><a id="uudiskirjandus" href="/ftlists*est">Uudiskirjandus</a></li>
+					<li><a id="ainepaketid" href="/search~S1*est/r">Ainepaketid</a></li>
+					<li><a id="ilmumas" href="/search~S1*est/t?SEARCH=ihtek">Ilmumas</a></li>					
+					<li class="has-dropdown"><a href="#help-box" class="btn btn-dropdown-help btn-open-dropdown">Abi</a>
+				<div id="help-box" class="dropdown-box hidden">
+					<ul>
+					<li><a href="http://www.elnet.ee/juhend/ester/ekataloog_ester.php" target="_blank" rel="noopener">E-kataloogi tutvustus</a></li>
+					<li><a href="http://www.elnet.ee/juhend/ester/osalevad_raamatukogud.php" target="_blank" rel="noopener">Osalevad raamatukogud</a></li>
+					<li><a href="http://www.elnet.ee/juhend/ester/ekataloogi_osad_eressursid.php" target="_blank" rel="noopener">E-kataloogi osad</a></li>
+					<li><a href="http://www.elnet.ee/juhend/ester/otsing_tutvustus.php" target="_blank" rel="noopener">Otsing e-kataloogis</a></li>
+					<li><a href="http://www.elnet.ee/juhend/ester/otsitulemused_valikud.php" target="_blank" rel="noopener">Otsitulemused</a></li>
+					<li><a href="http://www.elnet.ee/juhend/ester/minuester_tutvustus.php" target="_blank" rel="noopener">Minu ESTER</a></li>
+					<li><a href="http://www.elnet.ee/juhend/ester/teenused_tellimine.php" target="_blank" rel="noopener">Teenused</a></li>
+					<li><a href="http://www.elnet.ee/juhend/ester/nimestikud_uudiskirjandus.php" target="_blank" rel="noopener">Nimestikud</a></li>
+					<li><a href="http://www.elnet.ee/juhend/ester/tagasiside_kataloog.php" target="_blank" rel="noopener">Tagasiside</a></li>
+					<li><a href="http://www.elnet.ee/juhend/ester/uuendused.php" target="_blank" rel="noopener">Viimased uuendused</a></li>
+					</ul>
+				</div>
+			</li>
+					</ul>
+				</div>
+				<div id ="nav-site-header-user" class="nav-site-header-user" role="navigation">
+					<ul class="box nav nav-vertical">
+						<li>
+							<a href="https://www.ester.ee/patroninfo~S1*est/" id="kiht">
+								<span id="login_name" class="icon-user">Minu ESTER – Logi sisse</span>
+							</a>
+						</li>
+					</ul>
+				</div>
+
+			</div>
+			<div class="site-search-box box">
+				<div class="select-catalog-box box">
+					<a href="#select-catalog-item" id="skoop" class="btn-select-catalog btn-open-overlay">Täielik kataloog</a>
+				</div>
+				<div class="search-box box">
+					<input id="otsi" type="text" class="search-input keyboardInput" onkeyup="if (event.keyCode==13){toplogo_otsi();}">
+					<button class="btn-submit-search" onclick="toplogo_otsi();">Otsi</button>
+				</div>
+				<!--<a href="" class="btn btn-help-large">?</a>-->
+			</div>	
+		</div>
+	</div>
+</div>
+
+
+<div id="registri_riba" class="site-results-filter">
+	<div class="site box">
+		<div id="results-filters-advanced" class="results-filters-advanced">
+			<ul class="box nav">
+				<li class="has-dropdown"><a id="older_search" href="#oldersearch-box" class="btn btn-dropdown btn-open-dropdown hidden">Varasemad otsingud</a>
+					<div id="oldersearch-box" class="dropdown-box hidden">
+						<ul>
+						<li><a href=""></a></li>
+						</ul>
+						<div class="dropdown-box-btns">
+							<a class="btn btn-text-action">Kustutan otsingud</a>
+						</div>
+					</div>
+				</li>
+				<li><a id="limit_search" href="#" class="btn hidden">Täpsusta otsingut</a></li>
+			</ul>
+		</div>
+		<div class="results-filters-type">
+			<ul class="box nav">
+				<li><a id="sona" href="/search~S1*est/X?searchtype=X&searcharg=otsi&searchscope=1&SORT=DZ&extended=0&SUBMIT=OTSI" onClick="registriotsing();">	Sõna</a></li>
+				<li><a id="autor" href="/search~S1*est/a?searchtype=a&searcharg=otsi&searchscope=1&SORT=DZ&extended=0&SUBMIT=OTSI" onClick="registriotsing();">	Autor</a></li>
+				<li><a id="pealkiri" href="/search~S1*est/t?searchtype=t&searcharg=otsi&searchscope=1&SORT=DZ&extended=0&SUBMIT=OTSI" onClick="registriotsing();">	Pealkiri</a></li>
+				<li><a id="marksona" href="/search~S1*est/d?searchtype=d&searcharg=otsi&searchscope=1&SORT=DZ&extended=0&SUBMIT=OTSI" onClick="registriotsing();">	Märksõna</a></li>
+				<li><a id="isn" href="/search~S1*est/i?searchtype=i&searcharg=otsi&searchscope=1&SORT=DZ&extended=0&SUBMIT=OTSI" onClick="registriotsing();" >	ISBN/ISSN</a></li>
+				<li><a id="kohaviit" href="/search~S1*est/c?searchtype=c&searcharg=otsi&searchscope=1&SORT=DZ&extended=0&SUBMIT=OTSI" onClick="registriotsing();">	Kohaviit </a></li>
+				<li><a id="udk" href="/search~S1*est/g?searchtype=g&searcharg=otsi&searchscope=1&SORT=DZ&extended=0&SUBMIT=OTSI" onClick="registriotsing();">	UDK</a></li>
+				<li><a id="kirjenr" class="hidden" href="/record=">	Kirje number</a></li>
+				<li><a id="kursus" class="hidden" href="/search~S1*est/r?SEARCH=" onClick="kursuseotsing();">	Kursus</a></li>
+				<li><a id="oppejoud" class="hidden" href="/search~S1*est/p?SEARCH=" onClick="kursuseotsing();">	&Otilde;ppej&otilde;ud</a></li>
+				<li><div id="eraldaja"  class="hidden"  >|</div></li>
+				<li><a id="artiklid"  class="hidden"  href="#"  target="_blank" onClick="artikliotsing();">Artiklid</a></li>
+			</ul>
+		</div>
+		
+	</div>
+</div>
+
+<div class="site pageContent" role="main">
+
+<!-- objects with overlay here -->
+<div id='site-overlay'></div>
+<div id="overlay-box-arrow"></div>
+<!--raamatukogu valik -->
+
+<div id="select-catalog-item" class="overlay-box-items visuallyhidden">
+	<div class="site box">
+		<ul class="box nav">
+			<li><a class="btn-select" href="javascript:void(0)" id="S1" onClick="skoop('S1');"><strong>KÕIK RAAMATUKOGUD</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)"  id="S46" onClick="skoop('S46');">		<strong>TALLINN</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S47" onClick="skoop('S47');">		<strong>TARTU</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S31" onClick="skoop('S31');">		<strong>E-RESSURSID</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S27" onClick="skoop('S27');">		<strong>PERIOODIKA</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S26" onClick="skoop('S26');">		<strong>ÜLIÕPILASTÖÖD</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S95" onClick="skoop('S95');">		<strong>EESTI RAHVUSBIBLIOGRAAFIA</strong></a></li>
+		</ul>
+		<br><br>
+		<div class="column-third">
+		<ul>
+			<li><a class="btn-select" href="javascript:void(0)" id="S32" onClick="skoop('S32');">		<strong>Arvo Pärdi Keskuse raamatukogu</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S80" onClick="skoop('S80');">		<strong>Balti Kaitsekolledži raamatukogu</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S112" onClick="skoop('S112');">		<strong>Eesti Ajaloomuuseumi raamatukogu</strong></a></li>			
+		</ul>
+		<ul>
+			<li><a class="btn-select" href="javascript:void(0)" id="S48" onClick="skoop('S48');">		<strong>Eesti Kirjandusmuuseumi Arhiivraamatukogu</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S49" onClick="skoop('S49');">		Õpetatud Eesti Seltsi raamatukogu</a></li>
+		</ul>
+		<ul>
+			<li><a class="btn-select" href="javascript:void(0)" id="S4" onClick="skoop('S4');">		<strong>Eesti Kunstiakadeemia raamatukogu</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S19" onClick="skoop('S19');">		<strong>Eesti Kunstimuuseumi raamatukogu</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S76" onClick="skoop('S76');">		<strong>Eesti Looduseuurijate Seltsi raamatukogu</strong></a></li>
+		</ul>
+		<ul>
+			<li><a class="btn-select" href="javascript:void(0)" id="S51" onClick="skoop('S51');">		<strong>Eesti Maaülikooli raamatukogu</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S52" onClick="skoop('S52');">		EMÜ põllumajandus- ja keskkonnainstituudi raamatukogu</a></li>
+		</ul>
+		<ul>
+			<li><a class="btn-select" href="javascript:void(0)" id="S6" onClick="skoop('S6');">		<strong>Eesti Muusika- ja Teatriakadeemia raamatukogu</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S36" onClick="skoop('S36');">		EMTA lavakunsti osakonna raamatukogu</a></li>
+		</ul>
+		<ul>
+			<li><a class="btn-select" href="javascript:void(0)" id="S5" onClick="skoop('S5');">		<strong>Eesti Panga raamatukogu</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S53" onClick="skoop('S53');">		<strong>Eesti Rahva Muuseumi raamatukogu</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S7" onClick="skoop('S7');">		<strong>Eesti Rahvusraamatukogu</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S96" onClick="skoop('S96');">		RaRa hoidla</a></li>	
+			<li><a class="btn-select" href="javascript:void(0)" id="S97" onClick="skoop('S97');">		RaRa Solarise saatkond</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S3" onClick="skoop('S3');">		RaRa Hoiuraamatukogu</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S86" onClick="skoop('S86');">		RaRa Pimedate raamatukogu</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S54" onClick="skoop('S54');">		<strong>Eesti Teatriliidu raamatukogu</strong></a></li>			
+			<li><a class="btn-select" href="javascript:void(0)" id="S44" onClick="skoop('S44');">		<strong>Emakeele Seltsi raamatukogu</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S45" onClick="skoop('S45');">		<strong>Fenno-Ugria Asutuse raamatukogu</strong></a></li>
+		</ul>
+		<ul>
+			<li><a class="btn-select" href="javascript:void(0)" id="S38" onClick="skoop('S38');">		<strong>Kaitseväe raamatukogud</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S39" onClick="skoop('S39');">		Kaitseväe peastaabi raamatukogu</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S40" onClick="skoop('S40');">		Kaitseväe Akadeemia raamatukogu</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S41" onClick="skoop('S41');">		Eesti Sõjamuuseumi raamatukogu</a></li>
+		</ul>
+		<ul>
+		<li><a class="btn-select" href="javascript:void(0)" id="S83" onClick="skoop('S83');">		<strong>Kõrgema Kunstikooli Pallas ja Tartu Kunstikooli raamatukogu</strong></a></li>
+		</ul>
+	</div>
+	<div class="column-third">
+		<ul>
+			<li><a class="btn-select" href="javascript:void(0)" id="S23" onClick="skoop('S23');">		<strong>Rahvusarhiivi raamatukogu</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S81" onClick="skoop('S81');">		<strong>Riigikohtu raamatukogu</strong></a></li>			
+			<li><a class="btn-select" href="javascript:void(0)" id="S88" onClick="skoop('S88');">		<strong>Sisekaitseakadeemia raamatukogu </strong></a></li>
+		</ul>
+		
+		<ul>
+			<li><a class="btn-select" href="javascript:void(0)" id="S35" onClick="skoop('S35');">		<strong>Tallinna Botaanikaaia raamatukogu</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S85" onClick="skoop('S85');">		<strong>Tallinna Linnaarhiiv</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S43" onClick="skoop('S43');">		<strong>Tallinna Linnamuuseum</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S94" onClick="skoop('S94');">		<strong>Tallinna Loomaaia raamatukogu</strong></a></li>
+		</ul>
+		
+		<ul><li><a class="btn-select" href="javascript:void(0)" id="S8" onClick="skoop('S8');">		<strong>Tallinna Raamatukogud</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S20" onClick="skoop('S20');">		TlnRK lastekirjandus</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S30" onClick="skoop('S30');">		TlnRK buss Katarina Jee</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S42" onClick="skoop('S42');">		TlnRK e-raamatukogu OverDrive</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S93" onClick="skoop('S93');">		TlnRK asjad (mängud, seemned, spordivahendid jm)</a></li>
+		</ul>	
+		<ul>
+			<li><a class="btn-select" href="javascript:void(0)" id="S37" onClick="skoop('S37');">		<strong>Tallinna Tehnikakõrgkooli raamatukogu</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S99" onClick="skoop('S99');">		TTK raamatukogu Tallinn</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S100" onClick="skoop('S100');">		TTK raamatukogu Mõdriku</a></li>
+		</ul>	
+		<ul>
+			<li><a class="btn-select" href="javascript:void(0)" id="S9" onClick="skoop('S9');">		<strong>Tallinna Tehnikaülikooli raamatukogud</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S11" onClick="skoop('S11');">		TalTech raamatukogu (Akadeemia tee 1)</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S12" onClick="skoop('S12');">		TalTech EMERA harukogu</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S10" onClick="skoop('S10');">		TalTech Kuressaare Kolledž</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S13" onClick="skoop('S13');">		TalTech Tarkvarateaduse instituut</a></li>
+		</ul>
+		<ul>
+			<li><a class="btn-select" href="javascript:void(0)" id="S29" onClick="skoop('S29');">		<strong>Tallinna Tervishoiu Kõrgkooli raamatukogu</strong></a></li>
+		</ul>
+		<ul>
+			<li><a class="btn-select" href="javascript:void(0)" id="S15" onClick="skoop('S15');">		<strong>Tallinna Ülikooli Akadeemiline Raamatukogu</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S16" onClick="skoop('S16');">		TLÜAR teadusraamatukogu (Rävala pst 10)</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S33" onClick="skoop('S33');">		TLÜAR õpikeskus</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S17" onClick="skoop('S17');">		TLÜAR väliseesti kogu</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S21" onClick="skoop('S21');">		TLÜAR baltika kogu</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S34" onClick="skoop('S34');">		TLÜ Eesti demograafia keskus</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S18" onClick="skoop('S18');">		TLÜ rahvusvaheliste sotsiaaluuringute keskus</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S22" onClick="skoop('S22');">		TLÜ arheoloogia teaduskogu</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S102" onClick="skoop('S102');">		TLÜ Eesti Naisuurimus- ja Teabekeskus</a></li>
+		</ul>
+	</div>
+	<div class="column-third">
+		<ul>
+			<li><a class="btn-select" href="javascript:void(0)" id="S55" onClick="skoop('S55');">		<strong>Tartu Linnaraamatukogu</strong></a></li>			
+			<li><a class="btn-select" href="javascript:void(0)" id="S87" onClick="skoop('S87');">		<strong>Tartu II Muusikakool</strong></a></li>
+		</ul>
+		<ul>
+			<li><a class="btn-select" href="javascript:void(0)" id="S58" onClick="skoop('S58');">		<strong>Tartu Ülikooli raamatukogud</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S59" onClick="skoop('S59');">		TÜ raamatukogu (W. Struve 1)</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S60" onClick="skoop('S60');">		TÜ Biomeedikumi raamatukogu</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S69" onClick="skoop('S69');">		TÜ Delta raamatukogu</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S61" onClick="skoop('S61');">		TÜ Eesti mereinstituudi raamatukogu</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S62" onClick="skoop('S62');">		TÜ füüsikaraamatukogu</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S63" onClick="skoop('S63');">		TÜ haridusteaduste instituut</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S70" onClick="skoop('S70');">		TÜ kultuuriteaduste instituut</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S68" onClick="skoop('S68');">		TÜ Kliinikumi medinfokeskus</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S64" onClick="skoop('S64');">		TÜ maailma keelte ja kultuuride instituut</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S71" onClick="skoop('S71');">		TÜ muuseum</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S72" onClick="skoop('S72');">		TÜ Narva Kolledž</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S74" onClick="skoop('S74');">		TÜ Pärnu Kolledž</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S75" onClick="skoop('S75');">		TÜ semiootika osakond</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S77" onClick="skoop('S77');">		TÜ sotsiaalteaduste raamatukogu</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S67" onClick="skoop('S67');">		TÜ sporditeaduste ja füsioteraapia instituut</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S73" onClick="skoop('S73');">		TÜ Tartu observatooriumi raamatukogu</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S78" onClick="skoop('S78');">		TÜ Viljandi kultuuriakadeemia</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S79" onClick="skoop('S79');">		TÜ õigusteaduskonna Tallinna raamatukogu</a></li>	
+			<li><a class="btn-select" href="javascript:void(0)" id="S65" onClick="skoop('S65');">		TÜ õigusteaduskonna Tartu raamatukogu</a></li>			
+		</ul>
+		</div>
+</div>
+</div>
+<!--raamatukogu valiku lõpp -->
+<div id="order-digital-copy" class="overlay-box-items visuallyhidden">
+	<div class="site box">
+		<button class="btn-close-overlay">X</button>
+		<h1>TELLI DIGIKOOPIA</h1>
+		<p>Sellest väljaandest saad tasulise teenusena tellida digikoopia.<br/>
+		Teenuse tingimused ja maksumus on raamatukogudes erinevad.</p>
+		<div id="service-providers"></div>
+	</div>
+</div>
+
+<!-- objects with overlay here -->
+
+<!-- otsitulemuse riba peaks ka olema toplogos muidu ei õnnestu seda panna otsitulemuse vahele -->
+<div id="otsitulem_riba_sonaotsing" class="site" role="main">
+	<div class="box">
+		<p id="tulem" class="results-total">Leiti ... </p>
+
+		<div id="sort_buttons" class="nav-vertical-box box filter-sortby">
+			<span class="legend-nav">Järjesta</span>
+			<ul class="box nav nav-vertical">
+				<li><a id="relevants_sort" href="#" class="active" onClick="sort_relevants();return false;" >Relevantsus</a></li>
+				<li><a id="aasta_sort" href="#" onClick="sort_aasta();return false;" >Aasta</a></li>
+				<li><a id="pealkiri_sort" href="#" onClick="sort_title();return false;" >Pealkiri</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</div>
+
+<noscript><div class="error">E-kataloogi ESTER kasutamiseks on vajalik Javascript.<br>Kasutataval veebilehitsejal puudub JavaScripti tugi või on see välja lülitatud.</div></noscript>
+<div id="compat-err" class="error hidden">E-kataloogi ESTER kasutamiseks on vajalik JavaScript. Kasutataval veebilehitsejal on JavaScripti tugi piiratud.</div>
+<script type="text/javascript">browserCompatibilityTest();</script>
+
+<!-- valitud skoop riba peaks ka olema toplogos muidu ei õnnestu seda panna otsitulemuse vahele -->
+<div id="sk_toon" class="library-header library-header-tartu">
+		<h2 id="valitud_skoop">TÄIELIK KATALOOG</h2>
+		<h3 id="valitud_skoop_abitekst" style="display:none">NB! Eksemplaride ja viimati saabunud numbrite nägemiseks kliki avatud kirjes püsilinki</h3>
+		<h3 id="valitud_skoop_abitekst_uliopilastood" style="display:none">NB! Eksemplaride nägemiseks kliki avatud kirjes püsilinki</h3>
+		<!-- ei hakka möllama esialgu alamraamatukogude tuvastamisega ... sellle lahendab ära kirjeldamisega <h3>TÜ Eetikakeskuse ja filosoofia osakonna raamatukogu</h3> -->
+		<a id ="valitud_skoop_url" href="#" target="_blank" class="btn-contact">Kontakt</a>
+</div>	
+
+<!-- filtri riba peab olema toplogos muidu ei saa seda otsitulemuse vahele -->
+<!-- näitamine ja peitmine toimub bott_logos oleva skrioptiga -->
+<div id="result_box" class="results-list box hidden">
+	<div class="results-list-header box">
+		<ul class="box nav nav-vertical">
+			<li><a href="#" onclick="save_do(2);return false;">Vali märgitud kirjed</a></li>
+			<li><a href="#" onclick="save_do(1);return false;">Vali kõik selle lehekülje kirjed</a></li>
+			<li class="show_rec hidden"><a href="#">Valitud kirjed</a></li>
+			<li class="clear_sel hidden"><a href="#">Tühista valik</a></li>
+			<li><a href="#" onclick="save_do(3);return false;">Salvesta kirjed kausta</a></li>
+			<li class="save_srch hidden"><a href="#" onclick="submitSSForm();return false;">Salvesta otsing</a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- kontrollime kas lugeja soovib teha mõnda tegevust mis nõuab sisselogimist -->
+<script language="JavaScript">chk_redirect();</script>
+
+<!-- kuva pysilingi kirje puhul menyy ribal kirjenumber -->
+<script language="JavaScript">show_kirjenr();</script>
+
+<!-- Kui toimub otsimine ainepaketist -->
+<script language="JavaScript">show_ainepakett();</script>
+
+<!-- muudab skoopi yleval paises-->
+<script type="text/javascript">display_skoop();</script> 
+
+<!-- otsingu registrid peitu skriptis on kirjas mis lehtedel pole registririba-->
+<script language="JavaScript">hide_registririba();</script>
+
+<!-- näitab tegevuste riba kui vaja skriptis kirjas mis lehetedel on nähtaval millistel mitte -->
+<!-- <script type="text/javascript">tegevuste_riba();</script> -->
+
+<!-- kuvame registrit ja osisona ....  vaja veel testida  kas saab siia jätta ... hetkel ainult botlogos aktiivne-->
+<!-- <script type="text/javascript">aktiivne_register();</script> -->
+<!--end toplogo_est.html-->
+
+<script type="text/JavaScript">
+<!-- Hide the JS
+startTimeout(1800000, "/");
+
+// -->
+</script>
+<div id="TimeoutPopup" tabindex="0" class="modal" onkeypress="refreshSession(event)">
+<div class="modal-content">
+Sinu sessioon aegub automaatselt  <span id=TimeoutSeconds>0</span> sekundi pärast
+<br>
+<br>
+<button id="CancelTimeout" onclick="refreshSession()">Jätka</button>
+
+<button id="DoTimeout" onclick="endSession()">Lõpeta</button>
+</div>
+</div>
+<noscript>
+<meta http-equiv="Refresh" content="1800;URL=/" />
+
+</noscript>
+<div align="center" class="navigationRow">
+<form>
+<a href="http://www.ester.ee:80/search~S1*est">Esilehele</a>
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/browse/indexsort=-#anchor_4"><span class="btn btn-text-action">Tagasi lehitsema</span></a>
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/exact&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&1%2C9166%2C/limit?">Piira otsingut</a>
+<a href="/search~S1*est/d">Uus otsing</a>
+</form>
+</div>
+
+<!-- BEGIN BROWSE SCREEN TABLE -->
+<table width="100%" cellpadding="4" cellspacing="0" border="0" class="browseScreen">
+<!-- BEGIN SEARCH WIDGET -->
+<div align="center">
+<tr align="center" valign="middle">
+<td valign="middle" colspan="2">
+<div  class="browseSearchtool"><form target="_self" action="/search~S1*est/" method='get'>
+      <label for="searchtype" style="display:none;">Search Type1</label><select name="searchtype" id="searchtype">
+        <option value="a"> Autor</option>
+        <option value="t"> Pealkiri</option>
+        <option value="d" selected="selected"> Märksõna</option>
+        <option value="j"> Inventarinumber</option>
+        <option value="X"> Sõna</option>
+        <option value="i"> ISN</option>
+        <option value="c"> Kohaviit</option>
+        <option value="g"> UDK</option>
+      </select>
+      &nbsp;
+      <label for="searcharg" style="display:none;">Search</label><input type="text" name="searcharg" id="searcharg" size="30" onchange='return searchtoolSubmitAction()'maxlength="75" value="pildiraamatud" />
+      &nbsp;
+      <label for="searchscope" style="display:none;">Search Scope</label><select name="searchscope" id="searchscope">
+        <option value="1" selected="selected"> KÕIK RAAMATUKOGUD</option>
+        <option value="2"> </option>
+        <option value="46"> TALLINN</option>
+        <option value="47"> TARTU</option>
+        <option value="95"> EESTI RAHVUSBIBLIOGRAAFIA</option>
+        <option value="31"> E-RESSURSID</option>
+        <option value="27"> PERIOODIKA</option>
+        <option value="26"> ÜLIÕPILASTÖÖD</option>
+        <option value="25"> </option>
+        <option value="32"> Arvo Pärdi Keskuse raamatukogu</option>
+        <option value="80"> Balti Kaitsekolledži raamatukogu</option>
+        <option value="48"> Eesti Kirjandusmuuseumi Arhiivraamatukogu</option>
+        <option value="49"> - Õpetatud Eesti Seltsi raamatukogu</option>
+        <option value="4"> Eesti Kunstiakadeemia raamatukogu</option>
+        <option value="19"> Eesti Kunstimuuseumi raamatukogu</option>
+        <option value="76"> Eesti Looduseuurijate Seltsi raamatukogu</option>
+        <option value="51"> Eesti Maaülikooli raamatukogu</option>
+        <option value="52"> - EMÜ põllumajandus ja keskkonnainstituut</option>
+        <option value="6"> Eesti Muusika- ja Teatriakadeemia raamatukogu</option>
+        <option value="36"> - EMTA lavakunsti osakonna raamatukogu</option>
+        <option value="5"> Eesti Panga raamatukogu</option>
+        <option value="53"> Eesti Rahva Muuseumi raamatukogu</option>
+        <option value="7"> Eesti Rahvusraamatukogu</option>
+        <option value="96"> - RaRa hoidla</option>
+        <option value="97"> - RaRa Solarise saatkond</option>
+        <option value="3"> - RaRa Hoiuraamatukogu</option>
+        <option value="86"> - RaRa Pimedate raamatukogu</option>
+        <option value="54"> Eesti Teatriliidu raamatukogu</option>
+        <option value="44"> Emakeele Seltsi raamatukogu</option>
+        <option value="45"> Fenno-Ugria Asutuse raamatukogu</option>
+        <option value="38"> Kaitseväe raamatukogud</option>
+        <option value="39"> - Kaitseväe raamatukogu</option>
+        <option value="40"> - Kaitseväe Akadeemia haruraamatukogu</option>
+        <option value="41"> - Eesti Sõjamuuseumi raamatukogu</option>
+        <option value="23"> Rahvusarhiivi raamatukogu</option>
+        <option value="81"> Riigikohtu raamatukogu</option>
+        <option value="88"> Sisekaitseakadeemia raamatukogu</option>
+        <option value="35"> Tallinna botaanikaaia raamatukogu</option>
+        <option value="85"> Tallinna Linnaarhiiv</option>
+        <option value="43"> Tallinna Linnamuuseum</option>
+        <option value="94"> Tallinna Loomaaia raamatukogu</option>
+        <option value="8"> Tallinna Raamatukogud (TlnRK)</option>
+        <option value="20"> - TlnRK lastekirjandus</option>
+        <option value="30"> - TlnRK buss Katarina Jee</option>
+        <option value="42"> - TlnRK e-raamatukogu OverDrive</option>
+        <option value="93"> - TlnRK asjad (asjad, seemned, spordivahendid jm)</option>
+        <option value="37"> Tallinna Tehnikakõrgkooli raamatukogu</option>
+        <option value="99"> - TTK raamatukogu Tallinn</option>
+        <option value="100"> - TTK raamatukogu Mõdriku</option>
+        <option value="9"> Tallinna Tehnikaülikooli raamatukogud</option>
+        <option value="11"> - TalTech raamatukogu (Akadeemia tee 1)</option>
+        <option value="12"> - TalTech EMERA harukogu</option>
+        <option value="10"> - TalTech Kuressaare Kolledž</option>
+        <option value="13"> - TalTech Tarkvarateaduse instituut</option>
+        <option value="29"> Tallinna Tervishoiu Kõrgkooli raamatukogu</option>
+        <option value="15"> Tallinna Ülikooli Akadeemiline Raamatukogu</option>
+        <option value="16"> - TLÜAR teadusraamatukogu (Rävala pst 10)</option>
+        <option value="33"> - TLÜAR õpikeskus</option>
+        <option value="17"> - TLÜAR väliseesti kogu</option>
+        <option value="21"> - TLÜAR baltika kogu</option>
+        <option value="34"> - TLÜ Eesti demograafia keskus</option>
+        <option value="22"> - TLÜ arheoloogia teaduskogu</option>
+        <option value="102"> - TLÜ Eesti Naisuurimus- ja Teabekeskus</option>
+        <option value="83"> Tartu Kõrgem Kunstikool</option>
+        <option value="55"> Tartu Linnaraamatukogu</option>
+        <option value="87"> Tartu II Muusikakool</option>
+        <option value="58"> Tartu Ülikooli raamatukogud</option>
+        <option value="59"> - TÜ raamatukogu (W. Struve 1)</option>
+        <option value="60"> - TÜ Biomeedikum</option>
+        <option value="69"> - TÜ Delta raamatukogu</option>
+        <option value="61"> - TÜ Eesti mereinstituudi raamatukogu</option>
+        <option value="62"> - TÜ füüsikaraamatukogu</option>
+        <option value="63"> - TÜ haridusteaduste instituut</option>
+        <option value="68"> - TÜ Kliinikumi medinfokeskus</option>
+        <option value="70"> - TÜ kultuuriteaduste instituut</option>
+        <option value="64"> - TÜ maailma keelte ja kultuuride instituut</option>
+        <option value="71"> - TÜ muuseum</option>
+        <option value="72"> - TÜ Narva Kolledž</option>
+        <option value="74"> - TÜ Pärnu Kolledž</option>
+        <option value="75"> - TÜ semiootika osakond</option>
+        <option value="77"> - TÜ sotsiaalteaduste raamatukogu</option>
+        <option value="67"> - TÜ sporditeaduste ja füsioteraapia instituut</option>
+        <option value="73"> - TÜ Tartu observatooriumi raamatukogu</option>
+        <option value="78"> - TÜ Viljandi kultuuriakadeemia</option>
+        <option value="79"> - TÜ õigusteaduskonna Tallinna raamatukogu</option>
+        <option value="65"> - TÜ õigusteaduskonna Tartu raamatukogu</option>
+      </select>
+      &nbsp;
+      <input type="hidden" name="SORT" value="D" /><input type="hidden" name="extended" value="0" />      <input type="submit" name="SUBMIT" value="Otsi" onclick='return searchtoolSubmitAction();' />
+<div>
+      <input type="hidden" name="searchlimits" value="" />
+      <input type="hidden" name="searchorigarg" value="dpildiraamatud" />
+</div>
+</form>
+<div></div></div>
+
+</td>
+</tr>
+</div>
+<!-- END SEARCH WIDGET -->
+
+<!-- BEGIN BROWSE PAGER -->
+<!-- begin page widgit -->
+<tr  class="browsePager"><td align="center"  class="browsePager">
+
+<span id="id_icon_paging_caption">Lehek&uuml;lg:&nbsp;</span>&nbsp;&nbsp;<ul>
+
+<strong>1</strong>
+<li class="wpPagerList"><a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1,4,9244,B/exact&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&51,9166">
+<span aria-current="true">
+2</a></li>
+<li class="wpPagerList"><a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1,4,9244,B/exact&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&101,9166">
+<span aria-current="true">
+3</a></li>
+<li class="wpPagerList"><a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1,4,9244,B/exact&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&151,9166">
+<span aria-current="true">
+4</a></li>
+<li class="wpPagerList"><a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1,4,9244,B/exact&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&201,9166">
+<span aria-current="true">
+5</a></li>
+<li class="wpPagerList"><a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1,4,9244,B/exact&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&251,9166">
+<span aria-current="true">
+6</a></li>
+<li class="wpPagerList"><a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1,4,9244,B/exact&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&301,9166">
+<span aria-current="true">
+7</a></li>
+<li class="wpPagerList"><a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1,4,9244,B/exact&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&351,9166">
+<span aria-current="true">
+8</a></li>
+<li class="wpPagerList"><a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1,4,9244,B/exact&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&401,9166">
+<span aria-current="true">
+9</a></li>
+<li class="wpPagerList"><a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1,4,9244,B/exact&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&451,9166">
+<span aria-current="true">
+10</a></li>
+<li class="wpPagerList"><a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1,4,9244,B/exact&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&501,9166">
+<span aria-current="true">
+11</a></li>
+...
+<li class="wpPagerList"><a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1,4,9244,B/exact&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&9151,9166">184</a></li>
+<li class="wpPagerList"><a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1,4,9244,B/exact&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&51,9166"><span id="id_icon_paging_prev">j&auml;rgmine&nbsp;&raquo;</span></a></li>
+</ul>
+
+<!-- end page widgit -->
+</td>
+</tr>
+<!-- END BROWSE PAGER -->
+
+<style type="text/css">
+<!--
+#rategroup1 { display: inline }
+#rateneed1  { display: none }
+#rategroupMy1 { display: none }
+#ratemy1      { display: inline }
+#rategroup2 { display: inline }
+#rateneed2  { display: none }
+#rategroupMy2 { display: none }
+#ratemy2      { display: inline }
+#rategroup3 { display: inline }
+#rateneed3  { display: none }
+#rategroupMy3 { display: none }
+#ratemy3      { display: inline }
+#rategroup4 { display: inline }
+#rateneed4  { display: none }
+#rategroupMy4 { display: none }
+#ratemy4      { display: inline }
+#rategroup5 { display: inline }
+#rateneed5  { display: none }
+#rategroupMy5 { display: none }
+#ratemy5      { display: inline }
+#rategroup6 { display: inline }
+#rateneed6  { display: none }
+#rategroupMy6 { display: none }
+#ratemy6      { display: inline }
+#rategroup7 { display: inline }
+#rateneed7  { display: none }
+#rategroupMy7 { display: none }
+#ratemy7      { display: inline }
+#rategroup8 { display: inline }
+#rateneed8  { display: none }
+#rategroupMy8 { display: none }
+#ratemy8      { display: inline }
+#rategroup9 { display: inline }
+#rateneed9  { display: none }
+#rategroupMy9 { display: none }
+#ratemy9      { display: inline }
+#rategroup10 { display: inline }
+#rateneed10  { display: none }
+#rategroupMy10 { display: none }
+#ratemy10      { display: inline }
+#rategroup11 { display: inline }
+#rateneed11  { display: none }
+#rategroupMy11 { display: none }
+#ratemy11      { display: inline }
+#rategroup12 { display: inline }
+#rateneed12  { display: none }
+#rategroupMy12 { display: none }
+#ratemy12      { display: inline }
+#rategroup13 { display: inline }
+#rateneed13  { display: none }
+#rategroupMy13 { display: none }
+#ratemy13      { display: inline }
+#rategroup14 { display: inline }
+#rateneed14  { display: none }
+#rategroupMy14 { display: none }
+#ratemy14      { display: inline }
+#rategroup15 { display: inline }
+#rateneed15  { display: none }
+#rategroupMy15 { display: none }
+#ratemy15      { display: inline }
+#rategroup16 { display: inline }
+#rateneed16  { display: none }
+#rategroupMy16 { display: none }
+#ratemy16      { display: inline }
+#rategroup17 { display: inline }
+#rateneed17  { display: none }
+#rategroupMy17 { display: none }
+#ratemy17      { display: inline }
+#rategroup18 { display: inline }
+#rateneed18  { display: none }
+#rategroupMy18 { display: none }
+#ratemy18      { display: inline }
+#rategroup19 { display: inline }
+#rateneed19  { display: none }
+#rategroupMy19 { display: none }
+#ratemy19      { display: inline }
+#rategroup20 { display: inline }
+#rateneed20  { display: none }
+#rategroupMy20 { display: none }
+#ratemy20      { display: inline }
+#rategroup21 { display: inline }
+#rateneed21  { display: none }
+#rategroupMy21 { display: none }
+#ratemy21      { display: inline }
+#rategroup22 { display: inline }
+#rateneed22  { display: none }
+#rategroupMy22 { display: none }
+#ratemy22      { display: inline }
+#rategroup23 { display: inline }
+#rateneed23  { display: none }
+#rategroupMy23 { display: none }
+#ratemy23      { display: inline }
+#rategroup24 { display: inline }
+#rateneed24  { display: none }
+#rategroupMy24 { display: none }
+#ratemy24      { display: inline }
+#rategroup25 { display: inline }
+#rateneed25  { display: none }
+#rategroupMy25 { display: none }
+#ratemy25      { display: inline }
+#rategroup26 { display: inline }
+#rateneed26  { display: none }
+#rategroupMy26 { display: none }
+#ratemy26      { display: inline }
+#rategroup27 { display: inline }
+#rateneed27  { display: none }
+#rategroupMy27 { display: none }
+#ratemy27      { display: inline }
+#rategroup28 { display: inline }
+#rateneed28  { display: none }
+#rategroupMy28 { display: none }
+#ratemy28      { display: inline }
+#rategroup29 { display: inline }
+#rateneed29  { display: none }
+#rategroupMy29 { display: none }
+#ratemy29      { display: inline }
+#rategroup30 { display: inline }
+#rateneed30  { display: none }
+#rategroupMy30 { display: none }
+#ratemy30      { display: inline }
+#rategroup31 { display: inline }
+#rateneed31  { display: none }
+#rategroupMy31 { display: none }
+#ratemy31      { display: inline }
+#rategroup32 { display: inline }
+#rateneed32  { display: none }
+#rategroupMy32 { display: none }
+#ratemy32      { display: inline }
+#rategroup33 { display: inline }
+#rateneed33  { display: none }
+#rategroupMy33 { display: none }
+#ratemy33      { display: inline }
+#rategroup34 { display: inline }
+#rateneed34  { display: none }
+#rategroupMy34 { display: none }
+#ratemy34      { display: inline }
+#rategroup35 { display: inline }
+#rateneed35  { display: none }
+#rategroupMy35 { display: none }
+#ratemy35      { display: inline }
+#rategroup36 { display: inline }
+#rateneed36  { display: none }
+#rategroupMy36 { display: none }
+#ratemy36      { display: inline }
+#rategroup37 { display: inline }
+#rateneed37  { display: none }
+#rategroupMy37 { display: none }
+#ratemy37      { display: inline }
+#rategroup38 { display: inline }
+#rateneed38  { display: none }
+#rategroupMy38 { display: none }
+#ratemy38      { display: inline }
+#rategroup39 { display: inline }
+#rateneed39  { display: none }
+#rategroupMy39 { display: none }
+#ratemy39      { display: inline }
+#rategroup40 { display: inline }
+#rateneed40  { display: none }
+#rategroupMy40 { display: none }
+#ratemy40      { display: inline }
+#rategroup41 { display: inline }
+#rateneed41  { display: none }
+#rategroupMy41 { display: none }
+#ratemy41      { display: inline }
+#rategroup42 { display: inline }
+#rateneed42  { display: none }
+#rategroupMy42 { display: none }
+#ratemy42      { display: inline }
+#rategroup43 { display: inline }
+#rateneed43  { display: none }
+#rategroupMy43 { display: none }
+#ratemy43      { display: inline }
+#rategroup44 { display: inline }
+#rateneed44  { display: none }
+#rategroupMy44 { display: none }
+#ratemy44      { display: inline }
+#rategroup45 { display: inline }
+#rateneed45  { display: none }
+#rategroupMy45 { display: none }
+#ratemy45      { display: inline }
+#rategroup46 { display: inline }
+#rateneed46  { display: none }
+#rategroupMy46 { display: none }
+#ratemy46      { display: inline }
+#rategroup47 { display: inline }
+#rateneed47  { display: none }
+#rategroupMy47 { display: none }
+#ratemy47      { display: inline }
+#rategroup48 { display: inline }
+#rateneed48  { display: none }
+#rategroupMy48 { display: none }
+#ratemy48      { display: inline }
+#rategroup49 { display: inline }
+#rateneed49  { display: none }
+#rategroupMy49 { display: none }
+#ratemy49      { display: inline }
+#rategroup50 { display: inline }
+#rateneed50  { display: none }
+#rategroupMy50 { display: none }
+#ratemy50      { display: inline }
+-->
+</style>
+<!-- BEGIN BROWSE SCREEN LEFT CELL: BROWSELIST/BRIEFCIT AREA -->
+<tr><td valign="top">
+<table class="results-list" cellspacing="0" cellpadding="0">
+<tr align="CENTER" valign="MIDDLE">
+<td colspan="5"  class="browseSaveJump" width="85%">
+<form method="POST" action="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/exact&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&1%2C9166%2C" name="export_form" id="export_form" >
+<input type="hidden" name="jumpref" value="dpildiraamatud">
+<input type="hidden" id="save_func" name="save_func" value=""/>
+<a href="#" onclick="process_save(0);" style="text-decoration:none">
+<input type="submit" value="Vali m&auml;rgitud kirjed" class="browseSaveJump" onclick="return false"></a>
+<span name='save_page_btn1' id='save_page_btn1' style='visibility: visible' ><a href="#" onclick="process_save(1);" style="text-decoration:none">
+<input type="submit" value="Vali k&otilde;ik selle lehek&uuml;lje kirjed" ></a>
+</span>
+<span name='mylist_btn1' id='mylist_btn1' style='visibility: visible' ><a href="#" onclick="save_to_mylist();">
+<span class="btn btn-text-action">Salvesta kirjed kausta</span></a>
+</span>
+</td></tr>
+
+
+</td>
+</tr>
+<tr  class="browseHeader">
+<td align="center" class="browseHeaderData">
+Märksõnad (1-50 - 9166)
+</td>
+</tr>
+<tr  class="browseSuperEntry">
+<td colspan="5">
+<strong>pildiraamatud (vormimärksõna) https://ems.elnet.ee/id/EMS014937</strong>
+</td>
+
+</tr>
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b5653597" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_1'></a> 1</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&1%2C%2C9166">1, 2, 3 - ammuu! / tõlge eesti keelde: Helen Kalpus ; joonistanud Alice Potter ; kirjutanud Rose Harkness ; kujundanud Richard Sykes</a></h2>
+
+<span class="remove-if-empty">
+Tallinn : Rahva Raamat, [2024]<br />
+</span>
+<span class="remove-if-empty">
+20 nummerdamata lehekülge koos kaanega : illustratsioonid ; 20 cm<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9789916144244 (köites)</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+Eesti Rahvusraamatukogu, Tartu Linnaraamatukogu, TlnRK lastekirjandus, TlnRK Tallinna Raamatukogud</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CZ/requestexact~b5653597&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&1%2C%2C9166">TELLI</a></span>
+
+<span class="856link hidden has-btn">
+&nbsp;</span>
+<span class="hidden recordnumber">
+5653597</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2024</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b5260625" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_2'></a> 2</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&2%2C%2C9166">1,2,3 bumblebee / Natalie Marshall</a></h2>
+
+<span class="remove-if-empty">
+London : Scholastic Children's Books, 2019<br />
+</span>
+<span class="remove-if-empty">
+[10] lk. koos kaanega : ill.<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9781407191669</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+TlnRK lastekirjandus, TlnRK Tallinna Raamatukogud</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+</span>
+
+<span class="856link hidden has-btn">
+&nbsp;</span>
+<span class="hidden recordnumber">
+5260625</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2019</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b5765485" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_3'></a> 3</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&3%2C%2C9166">1-2-3 peas / Keith Baker</a></h2>
+
+<span class="remove-if-empty">
+New York [etc.] : Little Simon, 2022<br />
+</span>
+<span class="remove-if-empty">
+35 nummerdamata lehekülge : illustratsioonid<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9781665921374</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+Tartu Linnaraamatukogu</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CZ/requestexact~b5765485&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&3%2C%2C9166">TELLI</a></span>
+
+<span class="856link hidden has-btn">
+&nbsp;</span>
+<span class="hidden recordnumber">
+5765485</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2022</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b2588020" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_4'></a> 4</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&4%2C%2C9166">2 mutti : värvimise ja nuputamise raamat / Urmas Viik</a></h2>
+
+<span class="remove-if-empty">
+[Tallinn] : Ajakirjade Kirjastus, c2010 ([Viljandi] : Print Best)<br />
+</span>
+<span class="remove-if-empty">
+112 lk. ; 30 cm<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9789949454631</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+Tallinna Ülikooli Akadeemiline Raamatukogu, TLÜAR teadusraamatukogu (Rävala pst 10), Eesti Kirjandusmuuseumi Arhiivraamatukogu, Eesti Rahvusraamatukogu, Tartu Ülikooli raamatukogud, TÜ raamatukogu (W. Struve 1)</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CZ/requestexact~b2588020&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&4%2C%2C9166">TELLI</a></span>
+
+<span class="856link hidden has-btn">
+&nbsp;</span>
+<span class="hidden recordnumber">
+2588020</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+c2010</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b5751470" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_5'></a> 5</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&5%2C%2C9166">3 klassiske historier - Skønheden og udyret, Tornerose, Askepot / Disney</a></h2>
+
+<span class="remove-if-empty">
+København : Egmont Litas, [2012]<br />
+</span>
+<span class="remove-if-empty">
+133 lehekülge : illustratsioonid<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9788776798840 (köites)</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+TlnRK lastekirjandus, TlnRK Tallinna Raamatukogud</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+</span>
+
+<span class="856link hidden has-btn">
+&nbsp;</span>
+<span class="hidden recordnumber">
+5751470</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2012</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b2637466" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_6'></a> 6</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&6%2C%2C9166">3D jutu- ja nuputamisraamat / Disney, Pixar</a></h2>
+
+<span class="remove-if-empty">
+[Tallinn] : Egmont Estonia, c2010 (Hiina)<br />
+</span>
+<span class="remove-if-empty">
+[32] lk., [1] l. kleeppilte : ill. ; 27 cm<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9789949162390</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+Tallinna Ülikooli Akadeemiline Raamatukogu, TLÜAR teadusraamatukogu (Rävala pst 10), Eesti Kirjandusmuuseumi Arhiivraamatukogu, Eesti Rahvusraamatukogu, Tartu Linnaraamatukogu, Tartu Ülikooli raamatukogud, TÜ raamatukogu (W. Struve 1)</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CZ/requestexact~b2637466&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&6%2C%2C9166">TELLI</a></span>
+
+<span class="856link hidden has-btn">
+&nbsp;</span>
+<span class="hidden recordnumber">
+2637466</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+c2010</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b4820561" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_7'></a> 7</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&7%2C%2C9166">3D-lõikeraamat. Džungel / [illustratsioonid: Dmitri Golobokov]</a></h2>
+
+<span class="remove-if-empty">
+Tallinn : Felistella, c2018 ([Tallinn] : [Printon])<br />
+</span>
+<span class="remove-if-empty">
+[31] lk. : ill. ; 26 cm<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9789949580804</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+Tallinna Ülikooli Akadeemiline Raamatukogu, TLÜAR teadusraamatukogu (Rävala pst 10), Eesti Kirjandusmuuseumi Arhiivraamatukogu, E-ressursid - sundeksemplar, Eesti Rahvusraamatukogu, Tartu Ülikooli raamatukogud, TÜ raamatukogu (W. Struve 1)</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CZ/requestexact~b4820561&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&7%2C%2C9166">TELLI</a></span>
+
+<span class="856link hidden has-btn">
+<a href="https://www.digar.ee/id/nlib-digar:369334" onclick="window.open('https://www.digar.ee/id/nlib-digar:369334'); return false;"><img class="img856" src="/screens/btn-link.png" alt="ONLINE" border="0" title="ONLINE" height="28" width="65"></a><br />
+</span>
+<span class="hidden recordnumber">
+4820561</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+c2018</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b4820571" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_8'></a> 8</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&8%2C%2C9166">3D-lõikeraamat. Kosmoseseiklused / [illustratsioonid: Dmitri Golobokov]</a></h2>
+
+<span class="remove-if-empty">
+Tallinn : Felistella, c2018 ([Tallinn] : [Printon])<br />
+</span>
+<span class="remove-if-empty">
+[31] lk. : ill. ; 26 cm<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9789949580798</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+Tallinna Ülikooli Akadeemiline Raamatukogu, TLÜAR teadusraamatukogu (Rävala pst 10), Eesti Kirjandusmuuseumi Arhiivraamatukogu, E-ressursid - sundeksemplar, Eesti Rahvusraamatukogu, Tartu Ülikooli raamatukogud, TÜ raamatukogu (W. Struve 1)</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CZ/requestexact~b4820571&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&8%2C%2C9166">TELLI</a></span>
+
+<span class="856link hidden has-btn">
+<a href="https://www.digar.ee/id/nlib-digar:369333" onclick="window.open('https://www.digar.ee/id/nlib-digar:369333'); return false;"><img class="img856" src="/screens/btn-link.png" alt="ONLINE" border="0" title="ONLINE" height="28" width="65"></a><br />
+</span>
+<span class="hidden recordnumber">
+4820571</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+c2018</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b2728013" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_9'></a> 9</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&9%2C%2C9166">3D mänguraamat : 3d-nuputamist, kleepsud ja jutt : papist mänguautod / Disney, Pixar</a></h2>
+
+<span class="remove-if-empty">
+[Tallinn] : Egmont Estonia, c2011 ([Hongkong])<br />
+</span>
+<span class="remove-if-empty">
+[98] lk., [1] l. kleeppilte, [5] l. kujundeid : ill. ; 29 cm<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9789949163076 (köites)</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+Tallinna Ülikooli Akadeemiline Raamatukogu, TLÜAR teadusraamatukogu (Rävala pst 10), Eesti Kirjandusmuuseumi Arhiivraamatukogu, Eesti Rahvusraamatukogu, Tartu Ülikooli raamatukogud, TÜ raamatukogu (W. Struve 1)</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CZ/requestexact~b2728013&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&9%2C%2C9166">TELLI</a></span>
+
+<span class="856link hidden has-btn">
+&nbsp;</span>
+<span class="hidden recordnumber">
+2728013</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+c2011</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b5351622" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_10'></a> 10</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&10%2C%2C9166">4 toredat seiklust / Nickelodeon</a></h2>
+
+<span class="remove-if-empty">
+[Tallinn] : Egmont Estonia, c2020<br />
+</span>
+<span class="remove-if-empty">
+70 lk. : ill. ; 28 cm<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9789949786664 (köites]</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+Tallinna Ülikooli Akadeemiline Raamatukogu, TLÜAR teadusraamatukogu (Rävala pst 10), Eesti Kirjandusmuuseumi Arhiivraamatukogu, Eesti Rahvusraamatukogu, Tartu Linnaraamatukogu, TlnRK lastekirjandus, TlnRK Tallinna Raamatukogud, Tartu Ülikooli raamatukogud, TÜ raamatukogu (W. Struve 1)</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CZ/requestexact~b5351622&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&10%2C%2C9166">TELLI</a></span>
+
+<span class="856link hidden has-btn">
+<a href="https://www.digar.ee/id/nlib-digar:432150" onclick="window.open('https://www.digar.ee/id/nlib-digar:432150'); return false;"><img class="img856" src="/screens/btn-link.png" alt="ONLINE" border="0" title="ONLINE" height="28" width="65"></a><br />
+</span>
+<span class="hidden recordnumber">
+5351622</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+c2020</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b5653952" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_11'></a> 11</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&11%2C%2C9166">4 toredat seiklust / Nickelodeon</a></h2>
+
+<span class="remove-if-empty">
+[Tallinn] : Egmont, [2024]<br />
+</span>
+<span class="remove-if-empty">
+68 lehekülge : illustratsioonid ; 27 cm<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9789916301210</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+Tallinna Ülikooli Akadeemiline Raamatukogu, TLÜAR teadusraamatukogu (Rävala pst 10), Eesti Kirjandusmuuseumi Arhiivraamatukogu, E-ressursid - sundeksemplar, Eesti Rahvusraamatukogu, Tartu Linnaraamatukogu, TlnRK lastekirjandus, TlnRK buss Katarina Jee, TlnRK Tallinna Raamatukogud, Tartu Ülikooli raamatukogud, TÜ raamatukogu (W. Struve 1)</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CZ/requestexact~b5653952&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&11%2C%2C9166">TELLI</a></span>
+
+<span class="856link hidden has-btn">
+<a href="https://www.digar.ee/id/nlib-digar:1030895" onclick="window.open('https://www.digar.ee/id/nlib-digar:1030895'); return false;"><img class="img856" src="/screens/btn-link.png" alt="ONLINE" border="0" title="ONLINE" height="28" width="65"></a><br />
+</span>
+<span class="hidden recordnumber">
+5653952</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2024</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b5379834" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_12'></a> 12</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&12%2C%2C9166">5 little ducks / illustrated by Wendy Straw</a></h2>
+
+<span class="remove-if-empty">
+[Leicester] : Sweet Cherry, 2014<br />
+</span>
+<span class="remove-if-empty">
+[12] lk. koos kaanega : ill.<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9781782261971</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+TlnRK lastekirjandus, TlnRK Tallinna Raamatukogud</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+</span>
+
+<span class="856link hidden has-btn">
+&nbsp;</span>
+<span class="hidden recordnumber">
+5379834</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2014</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b5741623" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_13'></a> 13</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&13%2C%2C9166">5 minuti südamlikud lood / kirjutanud Emily Bruce ; illustreerinud Benedetta Capriotti ; tõlkinud: Evelin Arak ; toimetanud: Sandra Sternhof</a></h2>
+
+<span class="remove-if-empty">
+Tallinn : Sinisukk, [2025]<br />
+</span>
+<span class="remove-if-empty">
+48 lehekülge : illustratsioonid ; 21 cm<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9789949086450 (köites)</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+Tallinna Ülikooli Akadeemiline Raamatukogu, TLÜAR teadusraamatukogu (Rävala pst 10), Eesti Kirjandusmuuseumi Arhiivraamatukogu, E-ressursid - sundeksemplar, Eesti Rahvusraamatukogu, Tartu Linnaraamatukogu, TlnRK lastekirjandus, TlnRK buss Katarina Jee, TlnRK Tallinna Raamatukogud, Tartu Ülikooli raamatukogud, TÜ raamatukogu (W. Struve 1)</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CZ/requestexact~b5741623&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&13%2C%2C9166">TELLI</a></span>
+
+<span class="856link hidden has-btn">
+<a href="https://www.digar.ee/id/nlib-digar:1223012" onclick="window.open('https://www.digar.ee/id/nlib-digar:1223012'); return false;"><img class="img856" src="/screens/btn-link.png" alt="ONLINE" border="0" title="ONLINE" height="28" width="65"></a><br />
+</span>
+<span class="hidden recordnumber">
+5741623</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2025</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b6074701" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_14'></a> 14</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&14%2C%2C9166">5-minute princess stories</a></h2>
+
+<span class="remove-if-empty">
+Los Angeles : Disney Press, 2019<br />
+</span>
+<span class="remove-if-empty">
+188 lehekülge : illustratsioonid<br />
+</span>
+
+<span class="remove-if-empty">
+First hardcover edition<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9781484716410</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+TlnRK lastekirjandus, TlnRK Tallinna Raamatukogud</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+</span>
+
+<span class="856link hidden has-btn">
+&nbsp;</span>
+<span class="hidden recordnumber">
+6074701</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2019</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b6029986" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_15'></a> 15</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&15%2C%2C9166">5 minute treasury / Disney</a></h2>
+
+<span class="remove-if-empty">
+Bath : Parragon, 2015<br />
+</span>
+<span class="remove-if-empty">
+188 lehekülge : illustratsioonid<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9781472382320</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+TlnRK lastekirjandus, TlnRK Tallinna Raamatukogud</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+</span>
+
+<span class="856link hidden has-btn">
+&nbsp;</span>
+<span class="hidden recordnumber">
+6029986</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2015</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b6036173" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_16'></a> 16</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&16%2C%2C9166">5 minuti ükssarvikulood / kirjutas Louise Martin ; joonistas Katie Wood ; tõlkinud: Jane Laumets ; toimetanud: Tiia Vainula</a></h2>
+
+<span class="remove-if-empty">
+Tallinn : Sinisukk, [2026]<br />
+</span>
+<span class="remove-if-empty">
+48 lehekülge : illustratsioonid ; 21 cm<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9789949087501 (köites)</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+Tallinna Ülikooli Akadeemiline Raamatukogu, TLÜAR teadusraamatukogu (Rävala pst 10), Eesti Kirjandusmuuseumi Arhiivraamatukogu, Eesti Rahvusraamatukogu, RaRa Solarise saatkond, Tartu Linnaraamatukogu, TlnRK lastekirjandus, TlnRK buss Katarina Jee, TlnRK Tallinna Raamatukogud, Tartu Ülikooli raamatukogud, TÜ raamatukogu (W. Struve 1)</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CZ/requestexact~b6036173&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&16%2C%2C9166">TELLI</a></span>
+
+<span class="856link hidden has-btn">
+<a href="https://www.digar.ee/id/b6036173" onclick="window.open('https://www.digar.ee/id/b6036173'); return false;"><img class="img856" src="/screens/btn-link.png" alt="ONLINE" border="0" title="ONLINE" height="28" width="65"></a><br />
+</span>
+<span class="hidden recordnumber">
+6036173</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2026</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b5250616" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_17'></a> 17</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&17%2C%2C9166">5 minuti lood / [illustreerinud Fabrizio Petrossi]</a></h2>
+
+<span class="remove-if-empty">
+Tallinn : Egmont Estonia, [2019] ([Läti])<br />
+</span>
+<span class="remove-if-empty">
+84, [2] lk. : ill. ; 28 cm<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9789949785001 (köites)</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+Tallinna Ülikooli Akadeemiline Raamatukogu, TLÜAR teadusraamatukogu (Rävala pst 10), Eesti Kirjandusmuuseumi Arhiivraamatukogu, E-ressursid - sundeksemplar, Eesti Rahvusraamatukogu, Tartu Linnaraamatukogu, TlnRK lastekirjandus, TlnRK Tallinna Raamatukogud, Tartu Ülikooli raamatukogud, TÜ raamatukogu (W. Struve 1)</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CZ/requestexact~b5250616&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&17%2C%2C9166">TELLI</a></span>
+
+<span class="856link hidden has-btn">
+<a href="https://www.digar.ee/id/nlib-digar:396234" onclick="window.open('https://www.digar.ee/id/nlib-digar:396234'); return false;"><img class="img856" src="/screens/btn-link.png" alt="ONLINE" border="0" title="ONLINE" height="28" width="65"></a><br />
+</span>
+<span class="hidden recordnumber">
+5250616</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2019</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b6039444" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_18'></a> 18</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&18%2C%2C9166">5 minuti lood / Disney ; illustrations by the Disney Storybook Art Team</a></h2>
+
+<span class="remove-if-empty">
+Tallinn : Kids Press, 2026<br />
+</span>
+<span class="remove-if-empty">
+142 lehekülge : illustratsioonid ; 26 cm<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9789916303559 (köites)</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+Eesti Rahvusraamatukogu, RaRa Solarise saatkond, Tartu Linnaraamatukogu, TlnRK lastekirjandus, TlnRK Tallinna Raamatukogud</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CZ/requestexact~b6039444&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&18%2C%2C9166">TELLI</a></span>
+
+<span class="856link hidden has-btn">
+&nbsp;</span>
+<span class="hidden recordnumber">
+6039444</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2026</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b5398465" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_19'></a> 19</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&19%2C%2C9166">5 minuti unejutud / [tekstid kirjutas Mandy Archer ; pildid joonistas Gabi Murphy ; tõlkinud Jane Tooman ; toimetanud Kadi Möldri]</a></h2>
+
+<span class="remove-if-empty">
+[Tallinn] : Sinisukk, c2021 (Hiina)<br />
+</span>
+<span class="remove-if-empty">
+48 lk. : ill. ; 23 cm<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9789949081035 (köites)</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+Tallinna Ülikooli Akadeemiline Raamatukogu, TLÜAR teadusraamatukogu (Rävala pst 10), Eesti Kirjandusmuuseumi Arhiivraamatukogu, E-ressursid - sundeksemplar, Eesti Rahvusraamatukogu, Tartu Linnaraamatukogu, TlnRK lastekirjandus, TlnRK Tallinna Raamatukogud, Tartu Ülikooli raamatukogud, TÜ raamatukogu (W. Struve 1)</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CZ/requestexact~b5398465&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&19%2C%2C9166">TELLI</a></span>
+
+<span class="856link hidden has-btn">
+<a href="https://www.digar.ee/id/nlib-digar:635948" onclick="window.open('https://www.digar.ee/id/nlib-digar:635948'); return false;"><img class="img856" src="/screens/btn-link.png" alt="ONLINE" border="0" title="ONLINE" height="28" width="65"></a><br />
+</span>
+<span class="hidden recordnumber">
+5398465</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+c2021</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b5178225" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_20'></a> 20</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&20%2C%2C9166">Les 5 sens / Emma Martinez, Paule Battault</a></h2>
+
+<span class="remove-if-empty">
+[Chamalières] : Grenouille, [2018]<br />
+</span>
+<span class="remove-if-empty">
+[12] lk. koos kaanega : ill.<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9782366533651</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+TlnRK lastekirjandus, TlnRK Tallinna Raamatukogud</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+</span>
+
+<span class="856link hidden has-btn">
+&nbsp;</span>
+<span class="hidden recordnumber">
+5178225</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2018</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b4631637" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_21'></a> 21</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&21%2C%2C9166">5 приключений паровозика Томаса / Уилберт Одри ; иллюстрации Томми Стаббса, Тома Лападула, Ричарда Кортни ; перевод с английского Алёны Щербаковой</a></h2>
+
+<span class="remove-if-empty">
+Москва : АСТ, 2016<br />
+</span>
+<span class="remove-if-empty">
+125, [2] lk. : ill.<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9785170994793</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+Tartu Linnaraamatukogu, TlnRK lastekirjandus, TlnRK Tallinna Raamatukogud</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CZ/requestexact~b4631637&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&21%2C%2C9166">TELLI</a></span>
+
+<span class="856link hidden has-btn">
+&nbsp;</span>
+<span class="hidden recordnumber">
+4631637</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2016</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b5555184" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_22'></a> 22</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&22%2C%2C9166">7 parimat lugu / Disney ; Egmont</a></h2>
+
+<span class="remove-if-empty">
+[Tallinn] : Egmont, [2023]<br />
+</span>
+<span class="remove-if-empty">
+127 lehekülge : illustratsioonid ; 23 cm<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9789916300459 (köites)</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+Tallinna Ülikooli Akadeemiline Raamatukogu, TLÜAR teadusraamatukogu (Rävala pst 10), Eesti Kirjandusmuuseumi Arhiivraamatukogu, Eesti Rahvusraamatukogu, Tartu Linnaraamatukogu, TlnRK lastekirjandus, TlnRK buss Katarina Jee, TlnRK Tallinna Raamatukogud, Tartu Ülikooli raamatukogud, TÜ raamatukogu (W. Struve 1)</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CZ/requestexact~b5555184&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&22%2C%2C9166">TELLI</a></span>
+
+<span class="856link hidden has-btn">
+&nbsp;</span>
+<span class="hidden recordnumber">
+5555184</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2023</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b5243829" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_23'></a> 23</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&23%2C%2C9166">7 Soki Vabariik / Andres Kleinberg ; kunstnik Tanja Heldna</a></h2>
+
+<span class="remove-if-empty">
+Tallinn : Andres Kleinberg, 2019 ([Tallinn] : Tallinna Raamatutrükikoda)<br />
+</span>
+<span class="remove-if-empty">
+62, [2] lk. : ill. ; 31 cm + Lisad<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9789949012664 (köites)</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+Tallinna Ülikooli Akadeemiline Raamatukogu, TLÜAR teadusraamatukogu (Rävala pst 10), Eesti Kirjandusmuuseumi Arhiivraamatukogu, E-ressursid - sundeksemplar, Eesti Rahvusraamatukogu, Tartu Linnaraamatukogu, TlnRK lastekirjandus, TlnRK Tallinna Raamatukogud, Tartu Ülikooli raamatukogud, TÜ raamatukogu (W. Struve 1)</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CZ/requestexact~b5243829&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&23%2C%2C9166">TELLI</a></span>
+
+<span class="856link hidden has-btn">
+<a href="https://www.digar.ee/id/nlib-digar:439869" onclick="window.open('https://www.digar.ee/id/nlib-digar:439869'); return false;"><img class="img856" src="/screens/btn-link.png" alt="ONLINE" border="0" title="ONLINE" height="28" width="65"></a><br />
+</span>
+<span class="hidden recordnumber">
+5243829</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2019</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b5263581" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_24'></a> 24</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&24%2C%2C9166">7 любимых песенок для детского сада</a></h2>
+
+<span class="remove-if-empty">
+Москва : Симбат, 2018<br />
+</span>
+<span class="remove-if-empty">
+[16] lk. koos kaanega : ill.<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9785506020639</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+TlnRK lastekirjandus, TlnRK Tallinna Raamatukogud</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+</span>
+
+<span class="856link hidden has-btn">
+&nbsp;</span>
+<span class="hidden recordnumber">
+5263581</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2018</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b4821277" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_25'></a> 25</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&25%2C%2C9166">8 загадок / Корней Чуковский</a></h2>
+
+<span class="remove-if-empty">
+Донецк : Кредо, 2014<br />
+</span>
+<span class="remove-if-empty">
+[12] lk. koos kaanega : ill.<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9786176636342</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+TlnRK lastekirjandus, TlnRK Tallinna Raamatukogud</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+</span>
+
+<span class="856link hidden has-btn">
+&nbsp;</span>
+<span class="hidden recordnumber">
+4821277</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2014</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b5555883" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_26'></a> 26</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&26%2C%2C9166">10 loomaunejuttu : kümme lugu loomadest / tekst: Julie Harman ; illustratsioonid: Ag Jatkowska ; tõlkinud: Jane Laumets ; toimetanud: Eva Kinkar</a></h2>
+
+<span class="remove-if-empty">
+[Tallinn] : Sinisukk, [2023]<br />
+</span>
+<span class="remove-if-empty">
+240 lehekülge : illustratsioonid ; 26 cm<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9789949083688 (köites)</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+Tallinna Ülikooli Akadeemiline Raamatukogu, TLÜAR teadusraamatukogu (Rävala pst 10), Eesti Kirjandusmuuseumi Arhiivraamatukogu, E-ressursid - sundeksemplar, Eesti Rahvusraamatukogu, Tartu Linnaraamatukogu, TlnRK lastekirjandus, TlnRK buss Katarina Jee, TlnRK Tallinna Raamatukogud, Tartu Ülikooli raamatukogud, TÜ raamatukogu (W. Struve 1)</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CZ/requestexact~b5555883&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&26%2C%2C9166">TELLI</a></span>
+
+<span class="856link hidden has-btn">
+<a href="https://www.digar.ee/id/nlib-digar:992107" onclick="window.open('https://www.digar.ee/id/nlib-digar:992107'); return false;"><img class="img856" src="/screens/btn-link.png" alt="ONLINE" border="0" title="ONLINE" height="28" width="65"></a><br />
+</span>
+<span class="hidden recordnumber">
+5555883</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2023</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b5164413" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_27'></a> 27</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&27%2C%2C9166">10 little snowmen : number fun for little learners / [Sienna Williams ; illustrated by Jennie Bradley]</a></h2>
+
+<span class="remove-if-empty">
+Cottage Farm : Igloo Books, 2017<br />
+</span>
+<span class="remove-if-empty">
+[22] lk. koos kaanega : ill.<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9781785579349</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+TlnRK lastekirjandus, TlnRK Tallinna Raamatukogud</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+</span>
+
+<span class="856link hidden has-btn">
+&nbsp;</span>
+<span class="hidden recordnumber">
+5164413</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2017</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b5292529" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_28'></a> 28</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&28%2C%2C9166">10 little snowmen : number fun for little learners / [Sienna Williams ; illustrated by Jennie Bradley]</a></h2>
+
+<span class="remove-if-empty">
+Cottage Farm : Igloo Books, [2019]<br />
+</span>
+<span class="remove-if-empty">
+[22] lk. koos kaanega : ill.<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9781789055375</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+TlnRK lastekirjandus, TlnRK Tallinna Raamatukogud</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+</span>
+
+<span class="856link hidden has-btn">
+&nbsp;</span>
+<span class="hidden recordnumber">
+5292529</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2019</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b5425308" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_29'></a> 29</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&29%2C%2C9166">10 minute bedtime stories : 4 books in 1 / Liza Moonlight ; editor: Kristo Villem</a></h2>
+
+<span class="remove-if-empty">
+[Tallinn] : Creative Arts Management, c2021<br />
+</span>
+<span class="remove-if-empty">
+[102] lk. : ill. ; 22 cm<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9789916651155 (köites)</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+Eesti Rahvusraamatukogu, E-ressursid</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+</span>
+
+<span class="856link hidden has-btn">
+<a href="https://www.digar.ee/arhiiv/nlib-digar:641803" onclick="window.open('https://www.digar.ee/arhiiv/nlib-digar:641803'); return false;"><img class="img856" src="/screens/btn-link.png" alt="ONLINE" border="0" title="ONLINE" height="28" width="65"></a><br />
+</span>
+<span class="hidden recordnumber">
+5425308</span>
+<span class="hidden multi856"></span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+c2021</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b5425309" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_30'></a> 30</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&30%2C%2C9166">10 minute bedtime stories 4 books in 1 / [Võrguteavik] : Liza Moonlight ; editor: Kristo Villem</a></h2>
+
+<span class="remove-if-empty">
+Tallinn : Creative Arts Management, 2021<br />
+</span>
+<span class="remove-if-empty">
+1 võrguväljaanne (102 lk., pdf) : ill.<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9789916651179 (pdf)</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+E-ressursid</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+</span>
+
+<span class="856link hidden has-btn">
+<a href="https://www.digar.ee/arhiiv/nlib-digar:641799" onclick="window.open('https://www.digar.ee/arhiiv/nlib-digar:641799'); return false;"><img class="img856" src="/screens/btn-link.png" alt="ONLINE" border="0" title="ONLINE" height="28" width="65"></a><br />
+</span>
+<span class="hidden recordnumber">
+5425309</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2021</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b5765505" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_31'></a> 31</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&31%2C%2C9166">10 Trim-the-Tree'ers : a holiday counting book / by Janet Schulman ; illustrated by Linda Davick</a></h2>
+
+<span class="remove-if-empty">
+New York : Random House, 2011<br />
+</span>
+<span class="remove-if-empty">
+23 nummerdamata lehekülge : illustratsioonid<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9780375873027</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+Tartu Linnaraamatukogu</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CZ/requestexact~b5765505&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&31%2C%2C9166">TELLI</a></span>
+
+<span class="856link hidden has-btn">
+&nbsp;</span>
+<span class="hidden recordnumber">
+5765505</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2011</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b5765950" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_32'></a> 32</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&32%2C%2C9166">10 весёлых песен</a></h2>
+
+<span class="remove-if-empty">
+Москва : "Симбат", [2021]<br />
+</span>
+<span class="remove-if-empty">
+16 nummerdamata lehekülge : illustratsioonid<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9785506071037</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+TlnRK lastekirjandus, TlnRK Tallinna Raamatukogud</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+</span>
+
+<span class="856link hidden has-btn">
+&nbsp;</span>
+<span class="hidden recordnumber">
+5765950</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2021</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b5300962" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_33'></a> 33</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&33%2C%2C9166">12 imelist juttu kangelastest ja koletistest / [Daniela Rossi ; illustratsioonid: Elisa Bellotti, kaas ja graafiline disain: Sarah Bocconi ; tõlkinud Katariina Kirss ; toimetanud Stella Sägi]</a></h2>
+
+<span class="remove-if-empty">
+[Tallinn] : Sinisukk, c2020<br />
+</span>
+<span class="remove-if-empty">
+53, [1] lk. : ill. ; 29 cm<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9789949349838 (köites)</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+Tallinna Ülikooli Akadeemiline Raamatukogu, TLÜAR teadusraamatukogu (Rävala pst 10), Eesti Kirjandusmuuseumi Arhiivraamatukogu, E-ressursid - sundeksemplar, Eesti Rahvusraamatukogu, Tartu Linnaraamatukogu, TlnRK lastekirjandus, TlnRK Tallinna Raamatukogud, Tartu Ülikooli raamatukogud, TÜ raamatukogu (W. Struve 1)</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CZ/requestexact~b5300962&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&33%2C%2C9166">TELLI</a></span>
+
+<span class="856link hidden has-btn">
+<a href="https://www.digar.ee/id/nlib-digar:435995" onclick="window.open('https://www.digar.ee/id/nlib-digar:435995'); return false;"><img class="img856" src="/screens/btn-link.png" alt="ONLINE" border="0" title="ONLINE" height="28" width="65"></a><br />
+</span>
+<span class="hidden recordnumber">
+5300962</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+c2020</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b5300960" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_34'></a> 34</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&34%2C%2C9166">12 imelist juttu printsessidest / kirjutanud Daniela Rossi ; pildid joonistanud Simona Bursi ja Giorgia Breseghini, [kaas ja graafiline disain: Sarah Bocconi ; tõlkinud Katariina Kirss ; toimetanud Stella Sägi]</a></h2>
+
+<span class="remove-if-empty">
+[Tallinn] : Sinisukk, c2020<br />
+</span>
+<span class="remove-if-empty">
+53, [1] lk. : ill. ; 29 cm<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9789949349821 (köites)</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+Tallinna Ülikooli Akadeemiline Raamatukogu, TLÜAR teadusraamatukogu (Rävala pst 10), Eesti Kirjandusmuuseumi Arhiivraamatukogu, E-ressursid - sundeksemplar, Eesti Rahvusraamatukogu, Tartu Linnaraamatukogu, TlnRK lastekirjandus, TlnRK Tallinna Raamatukogud, Tartu Ülikooli raamatukogud, TÜ raamatukogu (W. Struve 1)</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CZ/requestexact~b5300960&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&34%2C%2C9166">TELLI</a></span>
+
+<span class="856link hidden has-btn">
+<a href="https://www.digar.ee/id/nlib-digar:435996" onclick="window.open('https://www.digar.ee/id/nlib-digar:435996'); return false;"><img class="img856" src="/screens/btn-link.png" alt="ONLINE" border="0" title="ONLINE" height="28" width="65"></a><br />
+</span>
+<span class="hidden recordnumber">
+5300960</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+c2020</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b2699522" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_35'></a> 35</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&35%2C%2C9166">12 kinki jõulutaadile / Mauri Kunnas, Tarja Kunnas ; [tõlkinud Üllar Ende ; toimetanud Mare Vetemaa]</a></h2>
+
+<span class="remove-if-empty">
+[Tallinn] : Sinisukk, 2011, 2026 ([Helsingi] : Otava)<br />
+</span>
+<span class="remove-if-empty">
+[40] lk. : ill. ; 30 cm<br />
+</span>
+
+<span class="remove-if-empty">
+3. tr.<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9789949148080 (köites)</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+Tallinna Ülikooli Akadeemiline Raamatukogu, TLÜAR teadusraamatukogu (Rävala pst 10), Eesti Kirjandusmuuseumi Arhiivraamatukogu, Eesti Rahvusraamatukogu, Tartu Linnaraamatukogu, TlnRK lastekirjandus, TlnRK Tallinna Raamatukogud, Tartu Ülikooli raamatukogud, TÜ raamatukogu (W. Struve 1)</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CZ/requestexact~b2699522&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&35%2C%2C9166">TELLI</a></span>
+
+<span class="856link hidden has-btn">
+&nbsp;</span>
+<span class="hidden recordnumber">
+2699522</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2026</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b2083561" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_36'></a> 36</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&36%2C%2C9166">12 kinki jõulutaadile : [jutustus] / Mauri Kunnas, Tarja Kunnas ; [tõlkinud Üllar Ende ; toimetanud Mare Vetemaa]</a></h2>
+
+<span class="remove-if-empty">
+[Tallinn] : Sinisukk, c2005 (Soome)<br />
+</span>
+<span class="remove-if-empty">
+[40] lk. : ill. ; 30 cm<br />
+</span>
+
+<span class="remove-if-empty">
+2. tr.<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9985739817 (köites)</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+Tallinna Ülikooli Akadeemiline Raamatukogu, TLÜAR teadusraamatukogu (Rävala pst 10), Eesti Kirjandusmuuseumi Arhiivraamatukogu, Eesti Rahvusraamatukogu, Tartu Linnaraamatukogu, TlnRK lastekirjandus, TlnRK Tallinna Raamatukogud, Tartu Ülikooli raamatukogud, TÜ haridusteaduste instituut, TÜ raamatukogu (W. Struve 1)</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CZ/requestexact~b2083561&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&36%2C%2C9166">TELLI</a></span>
+
+<span class="856link hidden has-btn">
+&nbsp;</span>
+<span class="hidden recordnumber">
+2083561</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+c2005</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b1140477" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_37'></a> 37</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&37%2C%2C9166">12 kinki Jõuluvanale : [jutustus] / Mauri Kunnas, Tarja Kunnas ; soome keelest tõlkinud Anne Karu</a></h2>
+
+<span class="remove-if-empty">
+Tallinn : Eesti Raamat, 1990 (Tallinn : Tallinna Raamatutrükikoda)<br />
+</span>
+<span class="remove-if-empty">
+[38] lk. : ill. ; 28 cm<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+5450010443</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+Tallinna Ülikooli Akadeemiline Raamatukogu, TLÜAR teadusraamatukogu (Rävala pst 10), Eesti Kirjandusmuuseumi Arhiivraamatukogu, E-ressursid - sundeksemplar, Eesti Rahvusraamatukogu, TalTech raamatukogu (Akadeemia tee 1), Tartu Linnaraamatukogu, TlnRK lastekirjandus, TlnRK Tallinna Raamatukogud, Tartu Ülikooli raamatukogud, TÜ raamatukogu (W. Struve 1)</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CZ/requestexact~b1140477&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&37%2C%2C9166">TELLI</a></span>
+
+<span class="856link hidden has-btn">
+<a href="https://www.digar.ee/id/nlib-digar:457483" onclick="window.open('https://www.digar.ee/id/nlib-digar:457483'); return false;"><img class="img856" src="/screens/btn-link.png" alt="ONLINE" border="0" title="ONLINE" height="28" width="65"></a><br />
+</span>
+<span class="hidden recordnumber">
+1140477</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+1990</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b1476945" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_38'></a> 38</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&38%2C%2C9166">12 lahjaa joulupukille / Mauri Kunnas, Tarja Kunnas</a></h2>
+
+<span class="remove-if-empty">
+Helsinki : Otava, [1987]<br />
+</span>
+<span class="remove-if-empty">
+[38] lk. : ill.<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9511097776</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+Eesti Rahvusraamatukogu</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+</span>
+
+<span class="856link hidden has-btn">
+&nbsp;</span>
+<span class="hidden recordnumber">
+1476945</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+1987</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b1985538" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_39'></a> 39</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&39%2C%2C9166">12 месяцев / [стихи И. Знаменской, иллюстрации П. Журавлева]</a></h2>
+
+<span class="remove-if-empty">
+Санкт-Петербург : А. В. К. Тимошка, 2004<br />
+</span>
+<span class="remove-if-empty">
+[8] lk. : ill.<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+5324002801</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+TlnRK lastekirjandus, TlnRK Tallinna Raamatukogud</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+</span>
+
+<span class="856link hidden has-btn">
+&nbsp;</span>
+<span class="hidden recordnumber">
+1985538</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2004</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b3364112" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_40'></a> 40</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&40%2C%2C9166">12 месяцев / [стихи Раисы Самарец ; художник Елена Запесочная]</a></h2>
+
+<span class="remove-if-empty">
+Москва : РОЗМЭН-ИЗДАТ, 2005<br />
+</span>
+<span class="remove-if-empty">
+[12] lk. : ill., koos kaanega<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+5845111730</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+Tartu Linnaraamatukogu</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CZ/requestexact~b3364112&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&40%2C%2C9166">TELLI</a></span>
+
+<span class="856link hidden has-btn">
+&nbsp;</span>
+<span class="hidden recordnumber">
+3364112</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2005</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b6208519" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_41'></a> 41</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&41%2C%2C9166">12 советов мамы львёнка / written and illustrated by Ksenia Shusherina</a></h2>
+
+<span class="remove-if-empty">
+New York : [Lulu.com], 2016<br />
+</span>
+<span class="remove-if-empty">
+30 lehekülge : illustratsioonid<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9781387274321</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+TlnRK lastekirjandus, TlnRK Tallinna Raamatukogud</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+</span>
+
+<span class="856link hidden has-btn">
+&nbsp;</span>
+<span class="hidden recordnumber">
+6208519</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2016</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b3407919" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_42'></a> 42</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&42%2C%2C9166">13, rue del percebe / Francisco Ibáñez</a></h2>
+
+<span class="remove-if-empty">
+[Barcelona] : Ediciones B, 1999<br />
+</span>
+<span class="remove-if-empty">
+[64] lk. : ill<br />
+</span>
+
+<span class="remove-if-empty">
+2. ed<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+8440641451</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+Tartu Ülikooli raamatukogud, TÜ maailma keelte ja kultuuride instituut</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CZ/requestexact~b3407919&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&42%2C%2C9166">TELLI</a></span>
+
+<span class="856link hidden has-btn">
+&nbsp;</span>
+<span class="hidden recordnumber">
+3407919</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+1999</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b5152130" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_43'></a> 43</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&43%2C%2C9166">14 лесных мышей. Колыбельная / Кадзуо Ивамура ; [перевод с японского Елены Байбиковой]</a></h2>
+
+<span class="remove-if-empty">
+Москва : Самокат, 2018<br />
+</span>
+<span class="remove-if-empty">
+[36] lk. : ill.<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9785917596976</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+TlnRK lastekirjandus, TlnRK Tallinna Raamatukogud</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+</span>
+
+<span class="856link hidden has-btn">
+&nbsp;</span>
+<span class="hidden recordnumber">
+5152130</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2018</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b5183624" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_44'></a> 44</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&44%2C%2C9166">14 лесных мышей. Новый год / Кадзуо Ивамура ; [перевод с японского Елены Байбиковой]</a></h2>
+
+<span class="remove-if-empty">
+Москва : Самокат, 2018<br />
+</span>
+<span class="remove-if-empty">
+[36] lk. : ill.<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9785917597621</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+TlnRK lastekirjandus, TlnRK Tallinna Raamatukogud</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+</span>
+
+<span class="856link hidden has-btn">
+&nbsp;</span>
+<span class="hidden recordnumber">
+5183624</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2018</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b5483363" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_45'></a> 45</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&45%2C%2C9166">14 лесных мышей. Парад грибов / Кадзуо Ивамура ; [перевод с японского Елены Байбиковой]</a></h2>
+
+<span class="remove-if-empty">
+Москва : Самокат, 2019<br />
+</span>
+<span class="remove-if-empty">
+[36] lk. : ill.<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9785917598451</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+TlnRK lastekirjandus, TlnRK Tallinna Raamatukogud</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+</span>
+
+<span class="856link hidden has-btn">
+&nbsp;</span>
+<span class="hidden recordnumber">
+5483363</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2019</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b5478949" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_46'></a> 46</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&46%2C%2C9166">14 лесных мышей. Переезд / Кадзуо Ивамура ; [перевод с японского Елены Байбиковой]</a></h2>
+
+<span class="remove-if-empty">
+Москва : Самокат, 2020<br />
+</span>
+<span class="remove-if-empty">
+[32] lk. : ill.<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9785917596129</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+TlnRK lastekirjandus, TlnRK Tallinna Raamatukogud</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+</span>
+
+<span class="856link hidden has-btn">
+&nbsp;</span>
+<span class="hidden recordnumber">
+5478949</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2020</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b5152134" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_47'></a> 47</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&47%2C%2C9166">14 лесных мышей. Пикник / Кадзуо Ивамура ; [перевод с японского Елены Байбиковой]</a></h2>
+
+<span class="remove-if-empty">
+Москва : Самокат, 2018<br />
+</span>
+<span class="remove-if-empty">
+[36] lk. : ill.<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9785917596945</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+TlnRK lastekirjandus, TlnRK Tallinna Raamatukogud</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+</span>
+
+<span class="856link hidden has-btn">
+&nbsp;</span>
+<span class="hidden recordnumber">
+5152134</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2018</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b5478950" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_48'></a> 48</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&48%2C%2C9166">14 лесных мышей. Сладкая картошка / Кадзуо Ивамура ; [перевод с японского Елены Байбиковой]</a></h2>
+
+<span class="remove-if-empty">
+Москва : Самокат, 2019<br />
+</span>
+<span class="remove-if-empty">
+[32] lk. : ill.<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9785917598468</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+TlnRK lastekirjandus, TlnRK Tallinna Raamatukogud</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+</span>
+
+<span class="856link hidden has-btn">
+&nbsp;</span>
+<span class="hidden recordnumber">
+5478950</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2019</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b5152132" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_49'></a> 49</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&49%2C%2C9166">14 лесных мышей. Стирка / Кадзуо Ивамура ; [перевод с японского Елены Байбиковой]</a></h2>
+
+<span class="remove-if-empty">
+Москва : Самокат, 2018<br />
+</span>
+<span class="remove-if-empty">
+[36] lk. : ill.<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9785917596952</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+TlnRK lastekirjandus, TlnRK Tallinna Raamatukogud</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+</span>
+
+<span class="856link hidden has-btn">
+&nbsp;</span>
+<span class="hidden recordnumber">
+5152132</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2018</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td>
+<div class="briefcit hidden"></div>
+
+<div class="result-item box" itemscope="" itemtype="http://schema.org/Book">
+
+<div class="result-item-id">
+<input type="checkbox" 
+name="save" value="b5483366" >
+<!--this is customized <screens/briefcit_est.html>-->
+<br />
+<a name='anchor_50'></a> 50</div>
+
+<div class="result-item-content">
+<!--{nohitmsg}-->
+
+<h2 class="title">
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/frameset&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&50%2C%2C9166">14 лесных мышей. Стрекозиный пруд / Кадзуо Ивамура ; [перевод с японского Елены Байбиковой]</a></h2>
+
+<span class="remove-if-empty">
+Москва : Самокат, 2019<br />
+</span>
+<span class="remove-if-empty">
+[34] lk. : ill.<br />
+</span>
+
+<span class="remove-if-empty">
+<br />
+</span>
+
+<span class="isbn-issn">
+ISBN/ISSN:&nbsp;
+9785917598444</span>
+<!--Circulation availability : -->
+<div class="briefcitStatus hidden">
+TlnRK lastekirjandus, TlnRK Tallinna Raamatukogud</div>
+
+</div>
+
+<div class="result-item-details">
+
+<span class="request-item hidden has-btn">
+</span>
+
+<span class="856link hidden has-btn">
+&nbsp;</span>
+<span class="hidden recordnumber">
+5483366</span>
+
+<br class="c">
+<div class="item-media-box clear">
+
+<!-- Google kaanepilt-->
+<!-- <span title="*" class="gbs-thumbnail-large gbs-remove-on-failure item-cover-small" style="display: none;"> -->
+<!-- see rida peab olema kohe alguses , et  GB töötaks {fieldspec:Vbi}-->
+<!--</span> -->
+
+<!-- EPIK kaanepilt-->
+<span class="avalanche-image-container">
+<img class="image-element" />
+</span>
+
+<!--Seemneraamatukogu kaanepilt sama kohapeal -->
+<span title="*" class="seemned" style="display: none;"></span>
+</div>
+<div class="media-type">
+ <img src="/screens/mattype_a.png" title="Raamat" alt="Raamat"><br />
+<div class="media_name"></div>
+<span id="aasta" itemprop="datePublished">
+2019</span></div>
+</div>
+
+</div>
+
+<div class="briefcitClear"></div>
+
+</div>
+
+</td>
+</tr>
+
+<tr align="CENTER" valign="MIDDLE">
+<td colspan="5"  class="browseSaveJump" width="85%">
+<a href="#" onclick="process_save(0);" style="text-decoration:none">
+<input type="submit" value="Vali m&auml;rgitud kirjed" class="browseSaveJump" onclick="return false"></a>
+<span name='save_page_btn2' id='save_page_btn2' style='visibility: visible' ><a href="#" onclick="process_save(1);" style="text-decoration:none">
+<input type="submit" value="Vali k&otilde;ik selle lehek&uuml;lje kirjed" ></a>
+</span>
+</form>
+
+<form action="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/exact&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&1%2C9166%2C" method="POST">
+<input type="HIDDEN" name="jumpref" value="dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/exact&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&1%2C9166%2C">
+<input type="SUBMIT" value="Vali kirje number" class="browseSaveJump">
+<input type="TEXT" name="jumpto" value="9166" size="30" maxlength="75">
+</form>
+
+</td></tr>
+
+
+</td>
+</tr>
+</table>
+<!-- END BROWSELIST/BRIEFCIT AREA -->
+</td>
+<!-- END BROWSE SCREEN LEFT CELL -->
+
+</tr>
+
+<!-- BEGIN BOTTOM BROWSE PAGER -->
+<!-- begin page widgit -->
+<tr  class="browsePager"><td align="center"  class="browsePager">
+
+<span id="id_icon_paging_caption">Lehek&uuml;lg:&nbsp;</span>&nbsp;&nbsp;<ul>
+
+<strong>1</strong>
+<li class="wpPagerList"><a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1,4,9244,B/exact&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&51,9166">
+<span aria-current="true">
+2</a></li>
+<li class="wpPagerList"><a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1,4,9244,B/exact&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&101,9166">
+<span aria-current="true">
+3</a></li>
+<li class="wpPagerList"><a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1,4,9244,B/exact&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&151,9166">
+<span aria-current="true">
+4</a></li>
+<li class="wpPagerList"><a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1,4,9244,B/exact&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&201,9166">
+<span aria-current="true">
+5</a></li>
+<li class="wpPagerList"><a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1,4,9244,B/exact&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&251,9166">
+<span aria-current="true">
+6</a></li>
+<li class="wpPagerList"><a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1,4,9244,B/exact&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&301,9166">
+<span aria-current="true">
+7</a></li>
+<li class="wpPagerList"><a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1,4,9244,B/exact&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&351,9166">
+<span aria-current="true">
+8</a></li>
+<li class="wpPagerList"><a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1,4,9244,B/exact&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&401,9166">
+<span aria-current="true">
+9</a></li>
+<li class="wpPagerList"><a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1,4,9244,B/exact&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&451,9166">
+<span aria-current="true">
+10</a></li>
+<li class="wpPagerList"><a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1,4,9244,B/exact&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&501,9166">
+<span aria-current="true">
+11</a></li>
+...
+<li class="wpPagerList"><a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1,4,9244,B/exact&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&9151,9166">184</a></li>
+<li class="wpPagerList"><a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1,4,9244,B/exact&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&51,9166"><span id="id_icon_paging_prev">j&auml;rgmine&nbsp;&raquo;</span></a></li>
+</ul>
+
+<!-- end page widgit -->
+</td>
+</tr>
+<!-- END BOTTOM BROWSE PAGER -->
+</table>
+<!-- END BROWSE SCREEN TABLE -->
+<div align="center" class="navigationRow">
+<form>
+<a href="http://www.ester.ee:80/search~S1*est">Esilehele</a>
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/browse/indexsort=-#anchor_4"><span class="btn btn-text-action">Tagasi lehitsema</span></a>
+<a href="/search~S1*est?/dpildiraamatud/dpildiraamatud/1%2C4%2C9244%2CB/exact&FF=dpildiraamatud+vormimw~brksw~ana+https+ems+elnet+ee+id+ems014937&1%2C9166%2C/limit?">Piira otsingut</a>
+<a href="/search~S1*est/d">Uus otsing</a>
+</form>
+</div>
+
+
+<!-- begin botlogo.html file -->
+<!-- Rel 2009B Example Set -->
+<!-- Updated: Sept 2009 -->
+</div><!-- pageContent  -->
+<div style="clear:both"></div>
+</div><!-- fullPage -->
+</div><!-- min-height -->
+<!-- kõiksugused javascriptid mis peavad rakenduma tervele lehele -->
+
+<!-- kui asi läheb LIVE'i siis pole vaja enam III otsikasti näidata -->
+<!-- <script type="text/javascript">hide_search_box();</script> -->
+
+<!-- kannab edasi top_logosse otsisõna -->
+<script type="text/javascript">toplogo_otsitav();</script> 
+
+<!-- valib aktiivse registri ja moodustab järgmise registri otsilause -->
+<script type="text/javascript">aktiivne_register();</script>
+
+<!-- väljastab otsitulemuste arvu ... seda ei saa kajuhks toplogosse panna -->
+<script type="text/javascript">tulem();</script>
+
+<!-- moodustab tulemuse ja sortimise/järjestamise menüü ... oli varem toplogos aga töötas ebakindalt ja tegime loogika ringi-->
+<script type="text/javascript">tulemus();</script>
+
+<!-- joonistab history kasti sisu -->
+<script type="text/javascript">get_search_history();</script>
+
+<!-- kuvab seemneraamatukogu kaanepildi -->
+<script type="text/javascript">display_small_image();</script>
+
+<!-- script language="JavaScript">make_map_link();</script -->
+<!-- end botlogo.html file -->
+
+</body>
+</html>

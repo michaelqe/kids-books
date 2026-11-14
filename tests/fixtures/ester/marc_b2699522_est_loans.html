@@ -1,0 +1,664 @@
+<!doctype html><html lang="et">
+<head>
+<title>E-kataloog ESTER                                                / TÄIELIK</title>
+<base target="_self"/>
+<link rel="stylesheet" type="text/css" href="/scripts/ProStyles.css" />
+<link rel="stylesheet" type="text/css" href="/screens/ester.css" />
+<link rel="icon" type="image/x-icon" href="/screens/favicon.ico" />
+<script type="text/javascript" src="/scripts/common.js"></script>
+<script type="text/javascript" src="/scripts/features.js"></script>
+<script type="text/javascript" src="/scripts/elcontent.js"></script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><!-- Google tag (gtag.js) --><script async src="https://www.googletagmanager.com/gtag/js?id=G-MZ5QBY7TLK"></script><script>  window.dataLayer = window.dataLayer || [];  function gtag(){dataLayer.push(arguments);}  gtag('js', new Date());  gtag('config', 'G-MZ5QBY7TLK');</script><script src="/screens/jquery.js" type="text/javascript"></script><link rel="stylesheet" type="text/css" href="https://epik.ester.ee/ester/avalanche_styles.css"><link rel="stylesheet" href="/screens/datatables.min.css"><script src="/screens/datatables.min.js"></script><script type="text/javascript">function findrecnum(url) {var recnum = document.getElementById("recordnum").href; window.open("http://digar.nlib.ee/dod/eodredirect.php?recnum=" + recnum, "newWindow"); }</script><script language="JavaScript" type="text/javascript" src="/screens/gbsclasses.js"></script><script type="text/javascript" src="/screens/bibdisplay.js"></script><script src="/screens/modernizr.js" type="text/javascript"></script><script src="/screens/keyboard.js" type="text/javascript"></script><script src="/screens/ester.js" type="text/javascript"></script><script language="JavaScript" type="text/javascript" src="/screens/siim.js"></script><script language="JavaScript" type="text/javascript" src="/screens/urmas.js"></script><script   src="https://epik.ester.ee/ester/avalanche.js" type="text/javascript"></script><script language="JavaScript" type="text/javascript" src="/screens/cassession.js"></script><script language="JavaScript" type="text/javascript" src="/screens/urmas_addon.js"></script>
+</head>
+<body class="default-body" >
+<!-- begin toplogo_est file  -->
+
+<!-- kohandqamine -->
+
+<link rel="stylesheet" type="text/css" id="changeWcagCss" href="/screens/wcag.css">
+<link rel="stylesheet" type="text/css" id="changeCss" href="/screens/empty.css" media="all">
+<div id="ava_vaegus">
+	<div id="vaeg-seaded">
+		<center>
+		<p>Veebilehe suurendamiseks ja vähendamiseks tuleb Ctrl-klahvi (Cmd-klahvi) all hoides vajutada "+" või "-" klahvi.<br>Teine võimalus on liigutada hiire kerimisrulli, hoides all Ctrl-klahvi.<br>Tavasuuruse taastamiseks tuleb samaaegselt vajutada klahvidele Ctrl ja 0.
+</p>
+		<button class="btn-wcag close-wcag" onclick="toggleLigipaas()" aria-label="Sulge">×</button>
+		<h1>Suurendus</h1>
+		<button class="btn-wcag" onclick="createCookie('zoomLevel', 200, 30)">150%</button>
+		<button class="btn-wcag" onclick="createCookie('zoomLevel', 150, 30)">125%</button>
+		<button class="btn-wcag" onclick="createCookie('zoomLevel', 100, 30)">100%</button>
+		<h1>Kontrastsus</h1>
+		<button class="btn-wcag" onclick="createCookie('highContrast', 1, 30)">Kollane tekst mustal taustal</button>
+		<button class="btn-wcag" onclick="createCookie('highContrast', 2, 30)">Valge tekst mustal taustal</button>
+		<button class="btn-wcag" onclick="createCookie('highContrast', 0, 30)">Tavaline</button>
+		<br><br>
+		<button class="btn-wcag" onclick="eraseAllCookies();">Taasta algseaded</button>
+		</center>
+	</div>
+	<button class="btn-toggle" onclick="toggleLigipaas()" title="Vaegnägijale"><img src="/screens/low-vision.png" height="20"><span id="vaeg-sulge" style="display:none;">×</span></button>
+</div>
+<script type="text/javascript">
+function createCookie(name, value, days) {
+    var expires;
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toGMTString();
+    } else {
+        expires = "";
+    }
+    document.cookie = encodeURIComponent(name) + "=" + encodeURIComponent(value) + expires + "; path=/";
+	checkCookies();
+}
+
+function readCookie(name) {
+    var nameEQ = encodeURIComponent(name) + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) === ' ')
+            c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0)
+            return decodeURIComponent(c.substring(nameEQ.length, c.length));
+    }
+    return null;
+}
+
+function eraseCookie(name) {
+    createCookie(name, "", -1);
+}
+function eraseAllCookies() {
+    createCookie('zoomLevel', "", -1);
+    createCookie('zoomLevelText', "", -1);
+    createCookie('highContrast', "", -1);
+}
+function toggleLigipaas() {
+	var v = $('#vaeg-seaded');
+	var x = $(".btn-toggle");
+	var y = $(".btn-toggle > span");
+	var z = $(".btn-toggle > img");
+	if (v.css('display') === "none") {
+		x.attr('title', 'Vaegnägijale');
+		v.css('display', 'block');
+		y.css('display', 'inline-block');
+		z.css('display', 'none');
+	} else {
+		x.attr('title', 'Sulge');
+		v.css('display', 'none');
+		y.css('display', 'none');
+		z.css('display', 'inline-block');
+	}
+}
+$('#vaeg-seaded').css('display', 'none');
+checkCookies();
+function checkCookies() {
+	var zoomLevel = readCookie('zoomLevel');
+	if (zoomLevel == 150) {
+		if (Modernizr.testProp('zoom') === true) {
+			$('body').css('zoom', ' 125%');
+		} else {
+			$('html').css('MozTransform', 'scale(1.25, 1.25)');
+			$('html').css('transform-origin', 'top center');
+		}	
+	} else if (zoomLevel == 200) {
+		if (Modernizr.testProp('zoom') === true) {
+			$('body').css('zoom', ' 150%');
+		} else {
+			$('html').css('MozTransform', 'scale(1.5, 1.5)');
+			$('html').css('transform-origin', 'top center');
+		}	
+	} else {
+		if (Modernizr.testProp('zoom') === true) {
+			$('body').css('zoom', ' 100%');
+		} else {
+			$('html').css('MozTransform', 'scale(1, 1)');
+			$('html').css('transform-origin', 'top center');
+		}	
+	}
+	var zoomLevelText = readCookie('zoomLevelText');
+	if (zoomLevelText == 150) {
+		document.body.style.fontSize = '21px';
+	} else if (zoomLevelText == 200) {
+		document.body.style.fontSize = '28px';
+	} else {
+		document.body.style.fontSize = '14px';
+	}
+	var highContrast = readCookie('highContrast');
+	if (highContrast == 1) {
+		document.getElementById("changeCss").setAttribute('href', "/screens/highcontrast.css");
+		document.getElementById("changeWcagCss").setAttribute('href', "/screens/wcagby.css");
+	} else if (highContrast == 2) {
+		document.getElementById("changeCss").setAttribute('href', "/screens/highcontrast2.css");
+		document.getElementById("changeWcagCss").setAttribute('href', "/screens/wcagbw.css");
+	} else {
+		document.getElementById("changeCss").setAttribute('href', "/screens/empty.css");
+		document.getElementById("changeWcagCss").setAttribute('href', "/screens/wcag.css");
+	}
+}
+</script>
+
+<!-- kohandqamine x-->
+
+<div class="site-header">
+
+	<div class="site box">
+		<a href="/search~S1*est" class="btn-site-home" rel="home"><img src="/screens/ester-logo.png" alt="E-kataloog ESTER"></a>
+		<div class="site-header-box box">
+			<div class="box">
+				<div id ="nav-site-header" class="nav-site-header" role="navigation">
+					<ul class="box nav nav-vertical">
+					<li><a id="uudiskirjandus" href="/ftlists*est">Uudiskirjandus</a></li>
+					<li><a id="ainepaketid" href="/search~S1*est/r">Ainepaketid</a></li>
+					<li><a id="ilmumas" href="/search~S1*est/t?SEARCH=ihtek">Ilmumas</a></li>					
+					<li class="has-dropdown"><a href="#help-box" class="btn btn-dropdown-help btn-open-dropdown">Abi</a>
+				<div id="help-box" class="dropdown-box hidden">
+					<ul>
+					<li><a href="http://www.elnet.ee/juhend/ester/ekataloog_ester.php" target="_blank" rel="noopener">E-kataloogi tutvustus</a></li>
+					<li><a href="http://www.elnet.ee/juhend/ester/osalevad_raamatukogud.php" target="_blank" rel="noopener">Osalevad raamatukogud</a></li>
+					<li><a href="http://www.elnet.ee/juhend/ester/ekataloogi_osad_eressursid.php" target="_blank" rel="noopener">E-kataloogi osad</a></li>
+					<li><a href="http://www.elnet.ee/juhend/ester/otsing_tutvustus.php" target="_blank" rel="noopener">Otsing e-kataloogis</a></li>
+					<li><a href="http://www.elnet.ee/juhend/ester/otsitulemused_valikud.php" target="_blank" rel="noopener">Otsitulemused</a></li>
+					<li><a href="http://www.elnet.ee/juhend/ester/minuester_tutvustus.php" target="_blank" rel="noopener">Minu ESTER</a></li>
+					<li><a href="http://www.elnet.ee/juhend/ester/teenused_tellimine.php" target="_blank" rel="noopener">Teenused</a></li>
+					<li><a href="http://www.elnet.ee/juhend/ester/nimestikud_uudiskirjandus.php" target="_blank" rel="noopener">Nimestikud</a></li>
+					<li><a href="http://www.elnet.ee/juhend/ester/tagasiside_kataloog.php" target="_blank" rel="noopener">Tagasiside</a></li>
+					<li><a href="http://www.elnet.ee/juhend/ester/uuendused.php" target="_blank" rel="noopener">Viimased uuendused</a></li>
+					</ul>
+				</div>
+			</li>
+					</ul>
+				</div>
+				<div id ="nav-site-header-user" class="nav-site-header-user" role="navigation">
+					<ul class="box nav nav-vertical">
+						<li>
+							<a href="https://www.ester.ee/patroninfo~S1*est/" id="kiht">
+								<span id="login_name" class="icon-user">Minu ESTER – Logi sisse</span>
+							</a>
+						</li>
+					</ul>
+				</div>
+
+			</div>
+			<div class="site-search-box box">
+				<div class="select-catalog-box box">
+					<a href="#select-catalog-item" id="skoop" class="btn-select-catalog btn-open-overlay">Täielik kataloog</a>
+				</div>
+				<div class="search-box box">
+					<input id="otsi" type="text" class="search-input keyboardInput" onkeyup="if (event.keyCode==13){toplogo_otsi();}">
+					<button class="btn-submit-search" onclick="toplogo_otsi();">Otsi</button>
+				</div>
+				<!--<a href="" class="btn btn-help-large">?</a>-->
+			</div>	
+		</div>
+	</div>
+</div>
+
+
+<div id="registri_riba" class="site-results-filter">
+	<div class="site box">
+		<div id="results-filters-advanced" class="results-filters-advanced">
+			<ul class="box nav">
+				<li class="has-dropdown"><a id="older_search" href="#oldersearch-box" class="btn btn-dropdown btn-open-dropdown hidden">Varasemad otsingud</a>
+					<div id="oldersearch-box" class="dropdown-box hidden">
+						<ul>
+						<li><a href=""></a></li>
+						</ul>
+						<div class="dropdown-box-btns">
+							<a class="btn btn-text-action">Kustutan otsingud</a>
+						</div>
+					</div>
+				</li>
+				<li><a id="limit_search" href="#" class="btn hidden">Täpsusta otsingut</a></li>
+			</ul>
+		</div>
+		<div class="results-filters-type">
+			<ul class="box nav">
+				<li><a id="sona" href="/search~S1*est/X?searchtype=X&searcharg=otsi&searchscope=1&SORT=DZ&extended=0&SUBMIT=OTSI" onClick="registriotsing();">	Sõna</a></li>
+				<li><a id="autor" href="/search~S1*est/a?searchtype=a&searcharg=otsi&searchscope=1&SORT=DZ&extended=0&SUBMIT=OTSI" onClick="registriotsing();">	Autor</a></li>
+				<li><a id="pealkiri" href="/search~S1*est/t?searchtype=t&searcharg=otsi&searchscope=1&SORT=DZ&extended=0&SUBMIT=OTSI" onClick="registriotsing();">	Pealkiri</a></li>
+				<li><a id="marksona" href="/search~S1*est/d?searchtype=d&searcharg=otsi&searchscope=1&SORT=DZ&extended=0&SUBMIT=OTSI" onClick="registriotsing();">	Märksõna</a></li>
+				<li><a id="isn" href="/search~S1*est/i?searchtype=i&searcharg=otsi&searchscope=1&SORT=DZ&extended=0&SUBMIT=OTSI" onClick="registriotsing();" >	ISBN/ISSN</a></li>
+				<li><a id="kohaviit" href="/search~S1*est/c?searchtype=c&searcharg=otsi&searchscope=1&SORT=DZ&extended=0&SUBMIT=OTSI" onClick="registriotsing();">	Kohaviit </a></li>
+				<li><a id="udk" href="/search~S1*est/g?searchtype=g&searcharg=otsi&searchscope=1&SORT=DZ&extended=0&SUBMIT=OTSI" onClick="registriotsing();">	UDK</a></li>
+				<li><a id="kirjenr" class="hidden" href="/record=">	Kirje number</a></li>
+				<li><a id="kursus" class="hidden" href="/search~S1*est/r?SEARCH=" onClick="kursuseotsing();">	Kursus</a></li>
+				<li><a id="oppejoud" class="hidden" href="/search~S1*est/p?SEARCH=" onClick="kursuseotsing();">	&Otilde;ppej&otilde;ud</a></li>
+				<li><div id="eraldaja"  class="hidden"  >|</div></li>
+				<li><a id="artiklid"  class="hidden"  href="#"  target="_blank" onClick="artikliotsing();">Artiklid</a></li>
+			</ul>
+		</div>
+		
+	</div>
+</div>
+
+<div class="site pageContent" role="main">
+
+<!-- objects with overlay here -->
+<div id='site-overlay'></div>
+<div id="overlay-box-arrow"></div>
+<!--raamatukogu valik -->
+
+<div id="select-catalog-item" class="overlay-box-items visuallyhidden">
+	<div class="site box">
+		<ul class="box nav">
+			<li><a class="btn-select" href="javascript:void(0)" id="S1" onClick="skoop('S1');"><strong>KÕIK RAAMATUKOGUD</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)"  id="S46" onClick="skoop('S46');">		<strong>TALLINN</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S47" onClick="skoop('S47');">		<strong>TARTU</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S31" onClick="skoop('S31');">		<strong>E-RESSURSID</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S27" onClick="skoop('S27');">		<strong>PERIOODIKA</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S26" onClick="skoop('S26');">		<strong>ÜLIÕPILASTÖÖD</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S95" onClick="skoop('S95');">		<strong>EESTI RAHVUSBIBLIOGRAAFIA</strong></a></li>
+		</ul>
+		<br><br>
+		<div class="column-third">
+		<ul>
+			<li><a class="btn-select" href="javascript:void(0)" id="S32" onClick="skoop('S32');">		<strong>Arvo Pärdi Keskuse raamatukogu</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S80" onClick="skoop('S80');">		<strong>Balti Kaitsekolledži raamatukogu</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S112" onClick="skoop('S112');">		<strong>Eesti Ajaloomuuseumi raamatukogu</strong></a></li>			
+		</ul>
+		<ul>
+			<li><a class="btn-select" href="javascript:void(0)" id="S48" onClick="skoop('S48');">		<strong>Eesti Kirjandusmuuseumi Arhiivraamatukogu</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S49" onClick="skoop('S49');">		Õpetatud Eesti Seltsi raamatukogu</a></li>
+		</ul>
+		<ul>
+			<li><a class="btn-select" href="javascript:void(0)" id="S4" onClick="skoop('S4');">		<strong>Eesti Kunstiakadeemia raamatukogu</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S19" onClick="skoop('S19');">		<strong>Eesti Kunstimuuseumi raamatukogu</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S76" onClick="skoop('S76');">		<strong>Eesti Looduseuurijate Seltsi raamatukogu</strong></a></li>
+		</ul>
+		<ul>
+			<li><a class="btn-select" href="javascript:void(0)" id="S51" onClick="skoop('S51');">		<strong>Eesti Maaülikooli raamatukogu</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S52" onClick="skoop('S52');">		EMÜ põllumajandus- ja keskkonnainstituudi raamatukogu</a></li>
+		</ul>
+		<ul>
+			<li><a class="btn-select" href="javascript:void(0)" id="S6" onClick="skoop('S6');">		<strong>Eesti Muusika- ja Teatriakadeemia raamatukogu</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S36" onClick="skoop('S36');">		EMTA lavakunsti osakonna raamatukogu</a></li>
+		</ul>
+		<ul>
+			<li><a class="btn-select" href="javascript:void(0)" id="S5" onClick="skoop('S5');">		<strong>Eesti Panga raamatukogu</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S53" onClick="skoop('S53');">		<strong>Eesti Rahva Muuseumi raamatukogu</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S7" onClick="skoop('S7');">		<strong>Eesti Rahvusraamatukogu</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S96" onClick="skoop('S96');">		RaRa hoidla</a></li>	
+			<li><a class="btn-select" href="javascript:void(0)" id="S97" onClick="skoop('S97');">		RaRa Solarise saatkond</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S3" onClick="skoop('S3');">		RaRa Hoiuraamatukogu</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S86" onClick="skoop('S86');">		RaRa Pimedate raamatukogu</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S54" onClick="skoop('S54');">		<strong>Eesti Teatriliidu raamatukogu</strong></a></li>			
+			<li><a class="btn-select" href="javascript:void(0)" id="S44" onClick="skoop('S44');">		<strong>Emakeele Seltsi raamatukogu</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S45" onClick="skoop('S45');">		<strong>Fenno-Ugria Asutuse raamatukogu</strong></a></li>
+		</ul>
+		<ul>
+			<li><a class="btn-select" href="javascript:void(0)" id="S38" onClick="skoop('S38');">		<strong>Kaitseväe raamatukogud</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S39" onClick="skoop('S39');">		Kaitseväe peastaabi raamatukogu</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S40" onClick="skoop('S40');">		Kaitseväe Akadeemia raamatukogu</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S41" onClick="skoop('S41');">		Eesti Sõjamuuseumi raamatukogu</a></li>
+		</ul>
+		<ul>
+		<li><a class="btn-select" href="javascript:void(0)" id="S83" onClick="skoop('S83');">		<strong>Kõrgema Kunstikooli Pallas ja Tartu Kunstikooli raamatukogu</strong></a></li>
+		</ul>
+	</div>
+	<div class="column-third">
+		<ul>
+			<li><a class="btn-select" href="javascript:void(0)" id="S23" onClick="skoop('S23');">		<strong>Rahvusarhiivi raamatukogu</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S81" onClick="skoop('S81');">		<strong>Riigikohtu raamatukogu</strong></a></li>			
+			<li><a class="btn-select" href="javascript:void(0)" id="S88" onClick="skoop('S88');">		<strong>Sisekaitseakadeemia raamatukogu </strong></a></li>
+		</ul>
+		
+		<ul>
+			<li><a class="btn-select" href="javascript:void(0)" id="S35" onClick="skoop('S35');">		<strong>Tallinna Botaanikaaia raamatukogu</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S85" onClick="skoop('S85');">		<strong>Tallinna Linnaarhiiv</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S43" onClick="skoop('S43');">		<strong>Tallinna Linnamuuseum</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S94" onClick="skoop('S94');">		<strong>Tallinna Loomaaia raamatukogu</strong></a></li>
+		</ul>
+		
+		<ul><li><a class="btn-select" href="javascript:void(0)" id="S8" onClick="skoop('S8');">		<strong>Tallinna Raamatukogud</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S20" onClick="skoop('S20');">		TlnRK lastekirjandus</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S30" onClick="skoop('S30');">		TlnRK buss Katarina Jee</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S42" onClick="skoop('S42');">		TlnRK e-raamatukogu OverDrive</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S93" onClick="skoop('S93');">		TlnRK asjad (mängud, seemned, spordivahendid jm)</a></li>
+		</ul>	
+		<ul>
+			<li><a class="btn-select" href="javascript:void(0)" id="S37" onClick="skoop('S37');">		<strong>Tallinna Tehnikakõrgkooli raamatukogu</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S99" onClick="skoop('S99');">		TTK raamatukogu Tallinn</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S100" onClick="skoop('S100');">		TTK raamatukogu Mõdriku</a></li>
+		</ul>	
+		<ul>
+			<li><a class="btn-select" href="javascript:void(0)" id="S9" onClick="skoop('S9');">		<strong>Tallinna Tehnikaülikooli raamatukogud</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S11" onClick="skoop('S11');">		TalTech raamatukogu (Akadeemia tee 1)</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S12" onClick="skoop('S12');">		TalTech EMERA harukogu</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S10" onClick="skoop('S10');">		TalTech Kuressaare Kolledž</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S13" onClick="skoop('S13');">		TalTech Tarkvarateaduse instituut</a></li>
+		</ul>
+		<ul>
+			<li><a class="btn-select" href="javascript:void(0)" id="S29" onClick="skoop('S29');">		<strong>Tallinna Tervishoiu Kõrgkooli raamatukogu</strong></a></li>
+		</ul>
+		<ul>
+			<li><a class="btn-select" href="javascript:void(0)" id="S15" onClick="skoop('S15');">		<strong>Tallinna Ülikooli Akadeemiline Raamatukogu</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S16" onClick="skoop('S16');">		TLÜAR teadusraamatukogu (Rävala pst 10)</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S33" onClick="skoop('S33');">		TLÜAR õpikeskus</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S17" onClick="skoop('S17');">		TLÜAR väliseesti kogu</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S21" onClick="skoop('S21');">		TLÜAR baltika kogu</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S34" onClick="skoop('S34');">		TLÜ Eesti demograafia keskus</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S18" onClick="skoop('S18');">		TLÜ rahvusvaheliste sotsiaaluuringute keskus</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S22" onClick="skoop('S22');">		TLÜ arheoloogia teaduskogu</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S102" onClick="skoop('S102');">		TLÜ Eesti Naisuurimus- ja Teabekeskus</a></li>
+		</ul>
+	</div>
+	<div class="column-third">
+		<ul>
+			<li><a class="btn-select" href="javascript:void(0)" id="S55" onClick="skoop('S55');">		<strong>Tartu Linnaraamatukogu</strong></a></li>			
+			<li><a class="btn-select" href="javascript:void(0)" id="S87" onClick="skoop('S87');">		<strong>Tartu II Muusikakool</strong></a></li>
+		</ul>
+		<ul>
+			<li><a class="btn-select" href="javascript:void(0)" id="S58" onClick="skoop('S58');">		<strong>Tartu Ülikooli raamatukogud</strong></a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S59" onClick="skoop('S59');">		TÜ raamatukogu (W. Struve 1)</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S60" onClick="skoop('S60');">		TÜ Biomeedikumi raamatukogu</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S69" onClick="skoop('S69');">		TÜ Delta raamatukogu</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S61" onClick="skoop('S61');">		TÜ Eesti mereinstituudi raamatukogu</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S62" onClick="skoop('S62');">		TÜ füüsikaraamatukogu</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S63" onClick="skoop('S63');">		TÜ haridusteaduste instituut</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S70" onClick="skoop('S70');">		TÜ kultuuriteaduste instituut</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S68" onClick="skoop('S68');">		TÜ Kliinikumi medinfokeskus</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S64" onClick="skoop('S64');">		TÜ maailma keelte ja kultuuride instituut</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S71" onClick="skoop('S71');">		TÜ muuseum</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S72" onClick="skoop('S72');">		TÜ Narva Kolledž</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S74" onClick="skoop('S74');">		TÜ Pärnu Kolledž</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S75" onClick="skoop('S75');">		TÜ semiootika osakond</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S77" onClick="skoop('S77');">		TÜ sotsiaalteaduste raamatukogu</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S67" onClick="skoop('S67');">		TÜ sporditeaduste ja füsioteraapia instituut</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S73" onClick="skoop('S73');">		TÜ Tartu observatooriumi raamatukogu</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S78" onClick="skoop('S78');">		TÜ Viljandi kultuuriakadeemia</a></li>
+			<li><a class="btn-select" href="javascript:void(0)" id="S79" onClick="skoop('S79');">		TÜ õigusteaduskonna Tallinna raamatukogu</a></li>	
+			<li><a class="btn-select" href="javascript:void(0)" id="S65" onClick="skoop('S65');">		TÜ õigusteaduskonna Tartu raamatukogu</a></li>			
+		</ul>
+		</div>
+</div>
+</div>
+<!--raamatukogu valiku lõpp -->
+<div id="order-digital-copy" class="overlay-box-items visuallyhidden">
+	<div class="site box">
+		<button class="btn-close-overlay">X</button>
+		<h1>TELLI DIGIKOOPIA</h1>
+		<p>Sellest väljaandest saad tasulise teenusena tellida digikoopia.<br/>
+		Teenuse tingimused ja maksumus on raamatukogudes erinevad.</p>
+		<div id="service-providers"></div>
+	</div>
+</div>
+
+<!-- objects with overlay here -->
+
+<!-- otsitulemuse riba peaks ka olema toplogos muidu ei õnnestu seda panna otsitulemuse vahele -->
+<div id="otsitulem_riba_sonaotsing" class="site" role="main">
+	<div class="box">
+		<p id="tulem" class="results-total">Leiti ... </p>
+
+		<div id="sort_buttons" class="nav-vertical-box box filter-sortby">
+			<span class="legend-nav">Järjesta</span>
+			<ul class="box nav nav-vertical">
+				<li><a id="relevants_sort" href="#" class="active" onClick="sort_relevants();return false;" >Relevantsus</a></li>
+				<li><a id="aasta_sort" href="#" onClick="sort_aasta();return false;" >Aasta</a></li>
+				<li><a id="pealkiri_sort" href="#" onClick="sort_title();return false;" >Pealkiri</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</div>
+
+<noscript><div class="error">E-kataloogi ESTER kasutamiseks on vajalik Javascript.<br>Kasutataval veebilehitsejal puudub JavaScripti tugi või on see välja lülitatud.</div></noscript>
+<div id="compat-err" class="error hidden">E-kataloogi ESTER kasutamiseks on vajalik JavaScript. Kasutataval veebilehitsejal on JavaScripti tugi piiratud.</div>
+<script type="text/javascript">browserCompatibilityTest();</script>
+
+<!-- valitud skoop riba peaks ka olema toplogos muidu ei õnnestu seda panna otsitulemuse vahele -->
+<div id="sk_toon" class="library-header library-header-tartu">
+		<h2 id="valitud_skoop">TÄIELIK KATALOOG</h2>
+		<h3 id="valitud_skoop_abitekst" style="display:none">NB! Eksemplaride ja viimati saabunud numbrite nägemiseks kliki avatud kirjes püsilinki</h3>
+		<h3 id="valitud_skoop_abitekst_uliopilastood" style="display:none">NB! Eksemplaride nägemiseks kliki avatud kirjes püsilinki</h3>
+		<!-- ei hakka möllama esialgu alamraamatukogude tuvastamisega ... sellle lahendab ära kirjeldamisega <h3>TÜ Eetikakeskuse ja filosoofia osakonna raamatukogu</h3> -->
+		<a id ="valitud_skoop_url" href="#" target="_blank" class="btn-contact">Kontakt</a>
+</div>	
+
+<!-- filtri riba peab olema toplogos muidu ei saa seda otsitulemuse vahele -->
+<!-- näitamine ja peitmine toimub bott_logos oleva skrioptiga -->
+<div id="result_box" class="results-list box hidden">
+	<div class="results-list-header box">
+		<ul class="box nav nav-vertical">
+			<li><a href="#" onclick="save_do(2);return false;">Vali märgitud kirjed</a></li>
+			<li><a href="#" onclick="save_do(1);return false;">Vali kõik selle lehekülje kirjed</a></li>
+			<li class="show_rec hidden"><a href="#">Valitud kirjed</a></li>
+			<li class="clear_sel hidden"><a href="#">Tühista valik</a></li>
+			<li><a href="#" onclick="save_do(3);return false;">Salvesta kirjed kausta</a></li>
+			<li class="save_srch hidden"><a href="#" onclick="submitSSForm();return false;">Salvesta otsing</a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- kontrollime kas lugeja soovib teha mõnda tegevust mis nõuab sisselogimist -->
+<script language="JavaScript">chk_redirect();</script>
+
+<!-- kuva pysilingi kirje puhul menyy ribal kirjenumber -->
+<script language="JavaScript">show_kirjenr();</script>
+
+<!-- Kui toimub otsimine ainepaketist -->
+<script language="JavaScript">show_ainepakett();</script>
+
+<!-- muudab skoopi yleval paises-->
+<script type="text/javascript">display_skoop();</script> 
+
+<!-- otsingu registrid peitu skriptis on kirjas mis lehtedel pole registririba-->
+<script language="JavaScript">hide_registririba();</script>
+
+<!-- näitab tegevuste riba kui vaja skriptis kirjas mis lehetedel on nähtaval millistel mitte -->
+<!-- <script type="text/javascript">tegevuste_riba();</script> -->
+
+<!-- kuvame registrit ja osisona ....  vaja veel testida  kas saab siia jätta ... hetkel ainult botlogos aktiivne-->
+<!-- <script type="text/javascript">aktiivne_register();</script> -->
+<!--end toplogo_est.html-->
+
+<script type="text/JavaScript">
+<!-- Hide the JS
+startTimeout(1800000, "/");
+
+// -->
+</script>
+<div id="TimeoutPopup" tabindex="0" class="modal" onkeypress="refreshSession(event)">
+<div class="modal-content">
+Sinu sessioon aegub automaatselt  <span id=TimeoutSeconds>0</span> sekundi pärast
+<br>
+<br>
+<button id="CancelTimeout" onclick="refreshSession()">Jätka</button>
+
+<button id="DoTimeout" onclick="endSession()">Lõpeta</button>
+</div>
+</div>
+<noscript>
+<meta http-equiv="Refresh" content="1800;URL=/" />
+
+</noscript>
+<br />
+<div align="center" class="navigationRow">
+<form>
+<a href="http://www.ester.ee:80/search~S1*est">Esilehele</a>
+<a href="/search~S1*est?/.b2699522/.b2699522/1,1,1,B/?save_func=save_to_mylist&save=b2699522&returnurl=/search~S1*est?/.b2699522/.b2699522/1%2C1%2C1%2CB/marc~b2699522"><span class="">Salvesta kirjed kausta</span></a>
+<a href="/search~S1*est?/.b2699522/.b2699522/1,1,1,B/marc~b2699522?save=b2699522">Vali kirje</a>
+<a href="http://www.ester.ee:80/search~S1*est?/.b2699522/.b2699522/1%2C1%2C1%2CB/frameset~b2699522">Tagasi</a>
+<a href="/search~S1*est/,">Uus otsing</a>
+</form>
+</div>
+<div align="left"><pre style="margin-left: 15px; margin-right: 0px;">
+LEADER 00000nam a2200000 i 4500 
+008    110629s2011    er ||||| |||||||| 0|est   
+020    9789949148080|q(köites) 
+035    .b25673853 (Tartu) 
+035    (ErESTER)b26995220 
+040    ErRR|best|cErRR 
+041 1  est|hfin 
+072  7 821-93|2udkrb 
+080    821.511.111-93-32|2est 
+100 1  Kunnas, Mauri,|d1950-|eautor 
+245 10 12 kinki jõulutaadile /|cMauri Kunnas, Tarja Kunnas &#59; 
+       [tõlkinud Üllar Ende &#59; toimetanud Mare Vetemaa] 
+246 13 Kaksteist kinki jõulutaadile 
+246 19 Kaksitoista lahjaa joulupukille.|gEesti keeles 
+250    3. tr. 
+260    [Tallinn] :|bSinisukk,|c2011,|c2026|e([Helsingi] :|fOtava)
+300    [40] lk. :|bill. &#59;|c30 cm 
+500    Kaanel näidatud ainult esimene autor 
+500    Teavikus 4. tr., p.o. juurdetrükk 2015 &#59; Juurdetrükid 2023
+       , 2026 
+534    |pTõlke esitrükk eesti keeles:|cTallinn : Eesti Raamat, 
+       1990.|nIlmus pealkirja all:|t12 kinki jõuluvanale 
+650  4 soome|0https://ems.elnet.ee/id/EMS174974 
+650  4 jõulud|0https://ems.elnet.ee/id/EMS020523 
+655  4 lastekirjandus (vormimärksõna)|0https://ems.elnet.ee/id/
+       EMS009177 
+655  4 jutustused (vormimärksõna)|0https://ems.elnet.ee/id/
+       EMS009148 
+655  4 pildiraamatud (vormimärksõna)|0https://ems.elnet.ee/id/
+       EMS014937 
+655  4 suurtähtraamatud (vormimärksõna)|0https://ems.elnet.ee/id/
+       EMS138487 
+700 1  Kunnas, Tarja,|d1957-,|eautor 
+700 1  Ende, Üllar,|d1952-|etõlkija 
+700 1  Vetemaa, Mare,|d1946-2008,|etoimetaja 
+752    |cHarjumaa 
+910 0  RMT 2011:10|b978-9949-14-808-0 (köites) 
+930 0  b|b9.1.1. Lasteproosa|cCP|dK 
+950    |kRBK katrin|tRBK lembi|sNAO merle 2011-09|pRBK anne-ly 
+       2026-10 (260c,500) 
+951    yokod kerstip 09.2011|byolii kajakr 09.2011 
+952    |sTO Maire-10.11 
+970    20180614_rapp 
+977    |pKTO reet 2011-09 (+072) 
+990    TÜR|byokao terje|c2014-09 
+</pre></div>
+<table width="100%" border="0" cellspacing="1">
+<tr><td>
+<table ID="links_table" width="100%" border="0" cellspacing="0" cellpadding="4" class="bibItems">
+<tr  class="bibItemsHeader">
+<th width="24%"  class="bibItemsHeader">
+ASUKOHT
+</th>
+<th width="32%"  class="bibItemsHeader">
+KOHAVIIT
+</th>
+<th width="23%"  class="bibItemsHeader">
+STAATUS
+</th>
+<th width="21%"  class="bibItemsHeader">
+M&Auml;RKUSED
+</th>
+</tr>
+<tr  class="bibItemsEntry">
+
+<td width="24%" ><!-- field 1 -->&nbsp;KMAR eesti raamat 
+</td>
+<td width="32%" ><!-- field C -->&nbsp;<a href="/search~S1*est?/cC+22.860/cc+22+860/-3,-1,,B/browse">C 22.860</a> <!-- field v --></td>
+<td width="23%" ><!-- field % -->&nbsp;ARHIIVEKSEMPLAR </td>
+<td width="21%" ><!-- field ! -->&nbsp;EI LAENUTATA<!-- field n --></td></tr>
+<tr  class="bibItemsEntry">
+
+<td width="24%" ><!-- field 1 -->&nbsp;KMAR eesti raamat 
+</td>
+<td width="32%" ><!-- field C -->&nbsp;<a href="/search~S1*est?/cC+22.860/cc+22+860/-3,-1,,B/browse">C 22.860</a> <!-- field v --></td>
+<td width="23%" ><!-- field % -->&nbsp;KOHAL </td>
+<td width="21%" ><!-- field ! -->&nbsp;KOHALKASUTUS<!-- field n --></td></tr>
+<tr  class="bibItemsEntry">
+
+<td width="24%" ><!-- field 1 -->&nbsp;KMAR eesti raamat 
+</td>
+<td width="32%" ><!-- field C -->&nbsp;<a href="/search~S1*est?/cC+22.860/cc+22+860/-3,-1,,B/browse">C 22.860</a> <!-- field v --></td>
+<td width="23%" ><!-- field % -->&nbsp;KOHAL </td>
+<td width="21%" ><!-- field ! -->&nbsp;KOHALKASUTUS<!-- field n --></td></tr>
+<tr  class="bibItemsEntry">
+
+<td width="24%" ><!-- field 1 -->&nbsp;<a href="https://tallinnaraamatukogud.ee/asukohad/">TlnRK Südalinna lastekirjandus</a> 
+</td>
+<td width="32%" ><!-- field C -->&nbsp;<a href="/search~S1*est?/cL-Trükit%2FKUN/cl+trw~dkit+kun/-3,-1,,B/browse">L-Trükit/KUN</a> <!-- field v --></td>
+<td width="23%" ><!-- field % -->&nbsp;TÄHTAEG 02.12.26 </td>
+<td width="21%" ><!-- field ! -->&nbsp;<!-- field n --></td></tr>
+<tr  class="bibItemsEntry">
+
+<td width="24%" ><!-- field 1 -->&nbsp;<a href="https://tallinnaraamatukogud.ee/asukohad/">TlnRK Südalinna lastekirjandus</a> 
+</td>
+<td width="32%" ><!-- field C -->&nbsp;<a href="/search~S1*est?/cL-Trükit%2FKUN/cl+trw~dkit+kun/-3,-1,,B/browse">L-Trükit/KUN</a> <!-- field v --></td>
+<td width="23%" ><!-- field % -->&nbsp;KOHAL </td>
+<td width="21%" ><!-- field ! -->&nbsp;<!-- field n --></td></tr>
+<tr  class="bibItemsEntry">
+
+<td width="24%" ><!-- field 1 -->&nbsp;<a href="https://tallinnaraamatukogud.ee/asukohad/">TlnRK Südalinna lastekirjandus</a> 
+</td>
+<td width="32%" ><!-- field C -->&nbsp;<a href="/search~S1*est?/cL-Trükit%2FKUN/cl+trw~dkit+kun/-3,-1,,B/browse">L-Trükit/KUN</a> <!-- field v --></td>
+<td width="23%" ><!-- field % -->&nbsp;TÄHTAEG 01.12.26 </td>
+<td width="21%" ><!-- field ! -->&nbsp;<!-- field n --></td></tr>
+<tr  class="bibItemsEntry">
+
+<td width="24%" ><!-- field 1 -->&nbsp;<a href="https://tallinnaraamatukogud.ee/asukohad/">TlnRK Südalinna lastekirjandus</a> 
+</td>
+<td width="32%" ><!-- field C -->&nbsp;<a href="/search~S1*est?/cL-Trükit%2FKUN/cl+trw~dkit+kun/-3,-1,,B/browse">L-Trükit/KUN</a> <!-- field v --></td>
+<td width="23%" ><!-- field % -->&nbsp;KOHAL </td>
+<td width="21%" ><!-- field ! -->&nbsp;<!-- field n --></td></tr>
+<tr  class="bibItemsEntry">
+
+<td width="24%" ><!-- field 1 -->&nbsp;<a href="https://tallinnaraamatukogud.ee/asukohad/">TlnRK Südalinna lastekirjandus</a> 
+</td>
+<td width="32%" ><!-- field C -->&nbsp;<a href="/search~S1*est?/cL-Trükit%2FKUN/cl+trw~dkit+kun/-3,-1,,B/browse">L-Trükit/KUN</a> <!-- field v --></td>
+<td width="23%" ><!-- field % -->&nbsp;KOHAL </td>
+<td width="21%" ><!-- field ! -->&nbsp;<!-- field n --></td></tr>
+<tr  class="bibItemsEntry">
+
+<td width="24%" ><!-- field 1 -->&nbsp;<a href="https://tallinnaraamatukogud.ee/asukohad/">TlnRK Südalinna lastekirjandus</a> 
+</td>
+<td width="32%" ><!-- field C -->&nbsp;<a href="/search~S1*est?/cL-Trükit%2FKUN/cl+trw~dkit+kun/-3,-1,,B/browse">L-Trükit/KUN</a> <!-- field v --></td>
+<td width="23%" ><!-- field % -->&nbsp;TÄHTAEG 27.11.26 </td>
+<td width="21%" ><!-- field ! -->&nbsp;<!-- field n --></td></tr>
+<tr  class="bibItemsEntry">
+
+<td width="24%" ><!-- field 1 -->&nbsp;<a href="https://tallinnaraamatukogud.ee/asukohad/">TlnRK Südalinna lastekirjandus</a> 
+</td>
+<td width="32%" ><!-- field C -->&nbsp;<a href="/search~S1*est?/cL-Trükit%2FKUN/cl+trw~dkit+kun/-3,-1,,B/browse">L-Trükit/KUN</a> <!-- field v --></td>
+<td width="23%" ><!-- field % -->&nbsp;TÄHTAEG 01.12.26 </td>
+<td width="21%" ><!-- field ! -->&nbsp;<!-- field n --></td></tr>
+</table>
+</td></tr>
+<div style="text-align:center"><form method="post" action="/search~S1*est?/.b2699522/.b2699522/1,1,1,B/holdings~2699522&FF=&1,0,">
+<input type="submit" value="VAATA K&Otilde;IKI EKSEMPLARE V&Otilde;I VALI AASTAK&Auml;IK / K&Ouml;IDE" />
+<input type="text" name="volume" size="6" />
+</form></div><p>
+</table>
+<!-- END BIBSCREEN -->
+<br />
+
+<!-- begin botlogo.html file -->
+<!-- Rel 2009B Example Set -->
+<!-- Updated: Sept 2009 -->
+</div><!-- pageContent  -->
+<div style="clear:both"></div>
+</div><!-- fullPage -->
+</div><!-- min-height -->
+<!-- kõiksugused javascriptid mis peavad rakenduma tervele lehele -->
+
+<!-- kui asi läheb LIVE'i siis pole vaja enam III otsikasti näidata -->
+<!-- <script type="text/javascript">hide_search_box();</script> -->
+
+<!-- kannab edasi top_logosse otsisõna -->
+<script type="text/javascript">toplogo_otsitav();</script> 
+
+<!-- valib aktiivse registri ja moodustab järgmise registri otsilause -->
+<script type="text/javascript">aktiivne_register();</script>
+
+<!-- väljastab otsitulemuste arvu ... seda ei saa kajuhks toplogosse panna -->
+<script type="text/javascript">tulem();</script>
+
+<!-- moodustab tulemuse ja sortimise/järjestamise menüü ... oli varem toplogos aga töötas ebakindalt ja tegime loogika ringi-->
+<script type="text/javascript">tulemus();</script>
+
+<!-- joonistab history kasti sisu -->
+<script type="text/javascript">get_search_history();</script>
+
+<!-- kuvab seemneraamatukogu kaanepildi -->
+<script type="text/javascript">display_small_image();</script>
+
+<!-- script language="JavaScript">make_map_link();</script -->
+<!-- end botlogo.html file -->
+
+</body>
+</html>
