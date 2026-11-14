@@ -98,3 +98,21 @@ Measured on X1 at about 1 req/s, roughly 450 requests in total.
   - Nightly: list (about 12 min), new records (a few), a seventh of kept books' holdings (about 1.3k, about 25 min).
   - Enrichment: Open Library about 2–3 requests and LoC 1 request per kept book, about 30k requests,
     so about 9 h the first time, then only new books.
+
+## Outside categories (BOOKS-12, 14 Nov 2026)
+
+- **LoC SRU ISBN index doesn't work.** `http://lx2.loc.gov:210/LCDB?...query=bath.isbn=…` returns 0 records,
+  even for ISBNs LoC holds (The Very Hungry Caterpillar). `bath.standardIdentifier` is unsupported. Title search
+  works but is too fuzzy to use.
+- **What works:** the LCCN permalink `https://lccn.loc.gov/{lccn}/marcxml` (full MARCXML; a miss returns
+  `<error>Record not found…`).
+  - The LCCN comes from the Open Library edition (`lccn`). So the chain is OL edition → LCCN → LoC record.
+  - Open Library editions also carry `lc_classifications` and `dewey_decimal_class`. The Very Hungry Caterpillar
+    has `PZ7…` and `[E]` but no LCCN.
+- **Signals and precedence:** see `crawler/categories.py`. ESTER first, then LoC, Google, Open Library.
+  Outside sources never override an ESTER children's/teen marker. They decide only when ESTER has no topic
+  (no UDC, no subjects), or refine topics and the audience band.
+- **Ordering:** `crawler/run.build` classifies with ESTER alone, prefetches lookups for candidates (kept books first,
+  then undecided adult books), then classifies again with the cached outside signals. Coverage per source is in
+  `meta.signal_coverage`.
+- **Google:** X1 has no `GOOGLE_BOOKS_API_KEY`, so there are no Google categories for now.

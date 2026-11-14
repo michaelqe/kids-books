@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?><record xmlns="http://www.loc.gov/MARC21/slim" xmlns:zs="http://docs.oasis-open.org/ns/search-ws/sruResponse">
+  <leader>01389cam a22003371  4500</leader>
+  <controlfield tag="001">6573047</controlfield>
+  <controlfield tag="005">20250608000041.2</controlfield>
+  <controlfield tag="008">750307s1963    xx            000 0 eng  </controlfield>
+  <datafield ind1=" " ind2=" " tag="035">
+    <subfield code="a">6573047</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="906">
+    <subfield code="a">7</subfield>
+    <subfield code="b">cbc</subfield>
+    <subfield code="c">oclcrpl</subfield>
+    <subfield code="d">u</subfield>
+    <subfield code="e">ncip</subfield>
+    <subfield code="f">19</subfield>
+    <subfield code="g">y-gencatlg</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="955">
+    <subfield code="a">LCAP batch update 2025-06-02-04:00: LCAPM-644</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="010">
+    <subfield code="a">   63021525 </subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="035">
+    <subfield code="9">(DLC)   63021525</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="035">
+    <subfield code="a">(OCoLC)1204998</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="040">
+    <subfield code="a">DLC</subfield>
+    <subfield code="c">OAkU</subfield>
+    <subfield code="d">OCoLC</subfield>
+    <subfield code="d">DLC</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="042">
+    <subfield code="a">premarc</subfield>
+  </datafield>
+  <datafield ind1="0" ind2="0" tag="050">
+    <subfield code="a">HV741</subfield>
+    <subfield code="b">.N38</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="082">
+    <subfield code="a">362.74</subfield>
+  </datafield>
+  <datafield ind1="0" ind2="4" tag="245">
+    <subfield code="a">The Neglected battered-child syndrome;</subfield>
+    <subfield code="b">role reversal in parents.</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="260">
+    <subfield code="a">New York,</subfield>
+    <subfield code="b">Child Welfare League of America,</subfield>
+    <subfield code="c">1963.</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="300">
+    <subfield code="a"> 49 p.</subfield>
+    <subfield code="b">illus.</subfield>
+    <subfield code="c">23 cm.</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="336">
+    <subfield code="a">text</subfield>
+    <subfield code="b">txt</subfield>
+    <subfield code="2">rdacontent</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="337">
+    <subfield code="a">unmediated</subfield>
+    <subfield code="b">n</subfield>
+    <subfield code="2">rdamedia</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="338">
+    <subfield code="a">volume</subfield>
+    <subfield code="b">nc</subfield>
+    <subfield code="2">rdacarrier</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="504">
+    <subfield code="a">Bibliographical footnotes.</subfield>
+  </datafield>
+  <datafield ind1="0" ind2=" " tag="505">
+    <subfield code="a">Who insures the child's right to health? by H. E. Boardman.--Malidentification of mother-baby-father relationships, expresssed in infant failure to thrive, by G. J. Barbero, M. G. Morris [and] M. T. Reford.--Role reversal, a concept in dealing with the neglected/battered-child syndrome, by M. G. Morris [and] R. W. Gould.</subfield>
+  </datafield>
+  <datafield ind1=" " ind2="0" tag="650">
+    <subfield code="a">Child abuse</subfield>
+    <subfield code="z">United States.</subfield>
+  </datafield>
+  <datafield ind1=" " ind2="0" tag="650">
+    <subfield code="a">Parent and child.</subfield>
+  </datafield>
+  <datafield ind1="2" ind2=" " tag="710">
+    <subfield code="a">Child Welfare League of America.</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="985">
+    <subfield code="e">OCLC REPLACEMENT cdsdistr</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="991">
+    <subfield code="b">c-GenColl</subfield>
+    <subfield code="h">HV741</subfield>
+    <subfield code="i">.N38</subfield>
+    <subfield code="t">Copy 1</subfield>
+    <subfield code="w">OCLCREP</subfield>
+  </datafield>
+</record>

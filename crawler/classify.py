@@ -150,7 +150,7 @@ def classify(rec: dict, signals: list[dict] | None = None) -> dict:
         child_why = "shelved in children's departments"
     if not child_why:
         for sig in signals:
-            if sig.get("audience") in AUDIENCES and sig["audience"] != "adult":
+            if sig.get("audience") in AUDIENCES + ("children",) and sig["audience"] != "adult":
                 child_why = f"{sig['source']} {sig['scheme']} {sig.get('label') or sig['code']}"
                 break
 

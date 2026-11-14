@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?><record xmlns="http://www.loc.gov/MARC21/slim" xmlns:zs="http://docs.oasis-open.org/ns/search-ws/sruResponse">
+  <leader>02019cam a2200421 a 4500</leader>
+  <controlfield tag="001">15901927</controlfield>
+  <controlfield tag="005">20250607032627.3</controlfield>
+  <controlfield tag="008">090910s2010    mauab         001 0 eng  </controlfield>
+  <datafield ind1=" " ind2=" " tag="035">
+    <subfield code="a">15901927</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="906">
+    <subfield code="a">7</subfield>
+    <subfield code="b">cbc</subfield>
+    <subfield code="c">orignew</subfield>
+    <subfield code="d">1</subfield>
+    <subfield code="e">ecip</subfield>
+    <subfield code="f">20</subfield>
+    <subfield code="g">y-gencatlg</subfield>
+  </datafield>
+  <datafield ind1="0" ind2=" " tag="925">
+    <subfield code="a">acquire</subfield>
+    <subfield code="b">2 shelf copies</subfield>
+    <subfield code="x">policy default</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="955">
+    <subfield code="b">xh11 2009-09-10</subfield>
+    <subfield code="c">xh11 2009-09-10</subfield>
+    <subfield code="f">xh11 2009-09-11 to Dewey</subfield>
+    <subfield code="w">rd11 2009-09-11</subfield>
+    <subfield code="a">xe05 2010-04-07 1 copy rec'd., to CIP ver.</subfield>
+    <subfield code="a">xh00 2010-04-09 to USPL/STM</subfield>
+    <subfield code="f">xh14 2010-06-17 Z-CipVer</subfield>
+    <subfield code="t">rc11 2010-07-13 copy 2 added</subfield>
+    <subfield code="a">Barcode 0024051123A returned from bindery 2010-07-19</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="955">
+    <subfield code="a">LCAP batch update 2025-06-01-04:00: LCAPM-644</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="010">
+    <subfield code="a">  2009037681</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="020">
+    <subfield code="a">9780547152462</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="020">
+    <subfield code="a">0547152469</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="035">
+    <subfield code="a">(OCoLC)317917948</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="040">
+    <subfield code="a">DLC</subfield>
+    <subfield code="c">DLC</subfield>
+    <subfield code="d">YDX</subfield>
+    <subfield code="d">YDXCP</subfield>
+    <subfield code="d">PZO</subfield>
+    <subfield code="d">DLC</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="043">
+    <subfield code="a">n------</subfield>
+  </datafield>
+  <datafield ind1="0" ind2="0" tag="050">
+    <subfield code="a">QL681</subfield>
+    <subfield code="b">.P45 2010</subfield>
+  </datafield>
+  <datafield ind1="0" ind2="0" tag="082">
+    <subfield code="a">598.097</subfield>
+    <subfield code="2">22</subfield>
+  </datafield>
+  <datafield ind1="0" ind2="0" tag="245">
+    <subfield code="a">Peterson field guide to birds of eastern and central North America /</subfield>
+    <subfield code="c">Roger Tory Peterson ; with contributions from Michael DiGiorgio ... [et al.].</subfield>
+  </datafield>
+  <datafield ind1="3" ind2="0" tag="246">
+    <subfield code="a">Field guide to birds of eastern and central North America</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="250">
+    <subfield code="a">6th ed.</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="260">
+    <subfield code="a">Boston :</subfield>
+    <subfield code="b">Houghton Mifflin Harcourt,</subfield>
+    <subfield code="c">2010.</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="300">
+    <subfield code="a">xiv, 445 p. :</subfield>
+    <subfield code="b">ill. (some col.), maps (some col.) ;</subfield>
+    <subfield code="c">21 cm.</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="336">
+    <subfield code="a">text</subfield>
+    <subfield code="b">txt</subfield>
+    <subfield code="2">rdacontent</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="337">
+    <subfield code="a">unmediated</subfield>
+    <subfield code="b">n</subfield>
+    <subfield code="2">rdamedia</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="338">
+    <subfield code="a">volume</subfield>
+    <subfield code="b">nc</subfield>
+    <subfield code="2">rdacarrier</subfield>
+  </datafield>
+  <datafield ind1="1" ind2=" " tag="490">
+    <subfield code="a">Peterson field guides</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="500">
+    <subfield code="a">Rev. ed. of: Field guide to the birds of eastern and central North America / Roger Tory Peterson and Virginia Marie Peterson. c2002.</subfield>
+  </datafield>
+  <datafield ind1=" " ind2=" " tag="500">
+    <subfield code="a">Includes index.</subfield>
+  </datafield>
+  <datafield ind1=" " ind2="0" tag="650">
+    <subfield code="a">Birds</subfield>
+    <subfield code="z">North America.</subfield>
+  </datafield>
+  <datafield ind1="1" ind2=" " tag="700">
+    <subfield code="a">Peterson, Roger Tory,</subfield>
+    <subfield code="d">1908-1996</subfield>
+  </datafield>
+  <datafield ind1="1" ind2=" " tag="700">
+    <subfield code="a">Peterson, Roger Tory,</subfield>
+    <subfield code="d">1908-1996.</subfield>
+    <subfield code="t">Field guide to the birds.</subfield>
+  </datafield>
+  <datafield ind1=" " ind2="0" tag="830">
+    <subfield code="a">Peterson field guide series.</subfield>
+  </datafield>
+  <datafield ind1="4" ind2="2" tag="856">
+    <subfield code="3">Contributor biographical information</subfield>
+    <subfield code="u">http://www.loc.gov/catdir/enhancements/fy1010/2009037681-b.html</subfield>
+  </datafield>
+  <datafield ind1="4" ind2="2" tag="856">
+    <subfield code="3">Publisher description</subfield>
+    <subfield code="u">http://www.loc.gov/catdir/enhancements/fy1010/2009037681-d.html</subfield>
+  </datafield>
+</record>

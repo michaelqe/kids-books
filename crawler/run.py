@@ -33,7 +33,7 @@ import time
 import zlib
 from pathlib import Path
 
-from . import classify
+from . import categories, classify
 from . import enrich as enrich_mod
 from . import ester
 from .terms import LANGUAGES, branch_name, genre_en, status_en, subject_en
@@ -266,23 +266,65 @@ def load_records(state: sqlite3.Connection):
         yield rid, ester.parse_record(zlib.decompress(body).decode("utf-8"), rid, hold), fetched_at
 
 
-def build(state: sqlite3.Connection, out: Path, status: str, requests: int, enrich=None, signals=None) -> dict:
-    """Write catalog.db from the cache. `signals(rec) -> list[dict]` adds outside signals
-    (crawler/enrich.py) to the classification; `enrich(db)` fills covers and summaries."""
+def undecided(rec: dict, facets: dict, why: str) -> bool:
+    """Dropped as adult non-nature non-fiction only because ESTER says nothing about the topic
+    (no UDC, no subject headings): an outside source may show it is a nature book."""
+    return why == "adult non-fiction, not nature" and not rec.get("udc") and not rec.get("subjects")
+
+
+def candidates(records: list[tuple[str, dict, str]]) -> list[dict]:
+    """Records worth an outside lookup, in priority order: kept children's books, kept adult
+    nature books, then undecided adult books. English with a lendable Tallinn copy only."""
+    ranked = []
+    for _rid, rec, _f in records:
+        if rec.get("language") != "eng" or not ester.lendable_tallinn_holdings(rec["holdings"]):
+            continue
+        facets = classify.classify(rec)
+        ok, why = classify.in_scope(rec, facets)
+        if ok:
+            ranked.append((0 if facets["audience"] != "adult" else 1, -(rec.get("year") or 0), rec))
+        elif undecided(rec, facets, why):
+            ranked.append((2, -(rec.get("year") or 0), rec))
+    ranked.sort(key=lambda t: (t[0], t[1]))
+    return [enrich_mod.book_from_record(rec) for _r, _y, rec in ranked]
+
+
+def build(
+    state: sqlite3.Connection,
+    out: Path,
+    status: str,
+    requests: int,
+    enrich=None,
+    signals=None,
+    prefetch=None,
+) -> dict:
+    """Write catalog.db from the cache.
+
+    `prefetch(books)` looks up outside categories for the candidate books first (network);
+    `signals(rec) -> list[dict]` reads them back (crawler/categories.py) for the classifier;
+    `enrich(db)` fills covers and summaries on the written books.
+    """
     out.parent.mkdir(parents=True, exist_ok=True)
     tmp = out.with_suffix(out.suffix + ".tmp")
     if tmp.exists():
         tmp.unlink()
+    records = list(load_records(state))
+    if prefetch:
+        prefetch(candidates(records))
     db = sqlite3.connect(tmp)
     db.executescript((HERE / "schema.sql").read_text(encoding="utf-8"))
     kept = dropped = 0
     reasons: dict[str, int] = {}
+    coverage: dict[str, int] = {}
     verdicts: list[tuple[int, str]] = []
-    for rid, rec, fetched_at in list(load_records(state)):
+    for rid, rec, fetched_at in records:
         extra = signals(rec) if signals and rec.get("language") == "eng" else []
         facets = classify.classify(rec, extra)
         ok, why = classify.in_scope(rec, facets)
         verdicts.append((int(ok), rid))
+        if ok:
+            for source in {sig["source"] for sig in extra}:
+                coverage[source] = coverage.get(source, 0) + 1
         if not ok:
             dropped += 1
             reasons[why] = reasons.get(why, 0) + 1
@@ -324,6 +366,7 @@ def build(state: sqlite3.Connection, out: Path, status: str, requests: int, enri
         "types": dict(db.execute("SELECT type, count(*) FROM books GROUP BY type").fetchall()),
         "dropped": dropped,
         "dropped_reasons": dict(sorted(reasons.items(), key=lambda kv: -kv[1])),
+        "signal_coverage": coverage,  # kept books with at least one signal from each outside source
     }
     meta = {
         "schema_version": SCHEMA_VERSION,
@@ -403,12 +446,20 @@ def main(argv: list[str] | None = None) -> int:
         state.commit()
         log(f"crawl only: {client.requests} requests in {time.monotonic() - t0:.0f}s; status {status}")
         return code
-    enrich = None
+    enrich = prefetch = sig = None
     if not args.no_enrich:
+        sig = categories.Signals(args.cache)
+        if not args.build_only:
+            prefetch = lambda books: enrich_mod.prefetch(  # noqa: E731
+                books, cache_dir=args.cache, log=log, max_lookups=args.enrich_max
+            )
+        # Lookups happened in prefetch; the apply step only reads the cache.
         enrich = lambda db: enrich_mod.run(  # noqa: E731
-            db, cache_dir=args.cache, log=log, network=not args.build_only, max_lookups=args.enrich_max
+            db, cache_dir=args.cache, log=log, network=False, max_lookups=args.enrich_max
         )
-    counts = build(state, args.out, status, client.requests, enrich)
+    counts = build(state, args.out, status, client.requests, enrich, sig.for_record if sig else None, prefetch)
+    if sig:
+        sig.close()
     state.execute(
         "UPDATE runs SET finished_at = ?, status = ?, requests = ? WHERE started_at = ?",
         (now(), status, client.requests, started),
@@ -419,7 +470,8 @@ def main(argv: list[str] | None = None) -> int:
         f"catalog: {counts['books']} books {counts['audiences']} ({langs}), {counts['nature_books']} about nature; "
         f"{counts['available_books']} on a shelf now; "
         f"{counts['covers']} covers, {counts['summaries']} English summaries; "
-        f"dropped {counts['dropped']} {counts['dropped_reasons']}; {client.requests} requests in "
+        f"dropped {counts['dropped']} {counts['dropped_reasons']}; outside signals {counts.get('signal_coverage', {})}; "
+        f"{client.requests} requests in "
         f"{time.monotonic() - t0:.0f}s; status {status}"
     )
     return code

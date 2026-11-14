@@ -4,8 +4,8 @@ Read the Magpie project AGENTS.md (Childrens Books, BOOKS) first; this file adds
 
 - No third-party dependencies: Python stdlib server, vanilla JS/HTML/CSS. Ask before adding any.
 - Users speak English only; all UI text is English. Translate Estonian catalogue fields where shown.
-- **Scraping happens on X1, never on the droplet.** Only `crawler/` fetches from ESTER, Open Library
-  or Google Books. The droplet server serves the uploaded `catalog.db` and makes no outbound requests.
+- **Scraping happens on X1, never on the droplet.** Only `crawler/` fetches from ESTER, Open Library,
+  Google Books or the Library of Congress. The droplet server serves the uploaded `catalog.db` and makes no outbound requests.
 - Scope (v2, BOOKS-9): **English books only** with at least one **lendable** Tallinn copy (no
   library-use-only, reading-room or archive copies), that are either **children's books** (baby to
   teen, fiction and non-fiction) or **adult non-fiction about the natural world** (weather, animals,

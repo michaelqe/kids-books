@@ -41,8 +41,10 @@ python3 server/app.py --port 8512 --db data/books.db --catalog data/catalog.db
 ```
 
 Useful crawl flags: `--max-list-pages N`, `--max-records N`, `--skip-list`, `--no-enrich`,
-`--enrich-max N`, `--refresh-days N`, `--recheck-days N`, `--no-build` (fetch only). Set `GOOGLE_BOOKS_API_KEY` to add Google Books summaries
-(the keyless quota is shared and usually exhausted).
+`--enrich-max N`, `--refresh-days N`, `--recheck-days N`, `--no-build` (fetch only).
+Set `GOOGLE_BOOKS_API_KEY` to add Google Books summaries and categories (the keyless quota is
+shared and usually exhausted; X1 has no key today). Outside categories come from the Library of
+Congress (by the LCCN Open Library knows) and Open Library; see `crawler/categories.py`.
 
 ## Tests
 
