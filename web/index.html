@@ -1,2 +1,38 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>Kids Books</title></head><body>placeholder</body></html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <title>Kids Books</title>
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="#/">kids books</a>
+    <nav>
+      <a href="#/" data-nav="search">Search</a>
+      <a href="#/lists" data-nav="lists">Lists</a>
+    </nav>
+  </header>
+  <main id="view" aria-live="polite"></main>
+  <footer id="foot" class="foot"></footer>
+  <div id="toast" class="toast" role="status" hidden></div>
+  <dialog id="listDialog" class="sheet">
+    <form method="dialog" class="sheet-body">
+      <div class="label">Save to a list</div>
+      <h2 id="listDialogTitle" class="sheet-title"></h2>
+      <div id="listDialogLists" class="check-list"></div>
+      <div class="new-list">
+        <input id="newListName" type="text" placeholder="New list name" maxlength="120" autocomplete="off">
+        <button id="newListBtn" type="button" class="btn">Create</button>
+      </div>
+      <div class="sheet-actions">
+        <button value="close" class="btn primary">Done</button>
+      </div>
+    </form>
+  </dialog>
+</body>
+</html>

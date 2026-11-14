@@ -149,6 +149,7 @@ def book_detail(cat: sqlite3.Connection, book_id: str) -> dict | None:
             "responsibility": row["responsibility"],
             "illustrators": [display_name(a) for a in dbm.loads(row["illustrators"], [])],
             "original_language": row["original_language"],
+            "original_title": row["original_title"] if "original_title" in row.keys() else "",
             "original_language_name": LANGUAGES.get(row["original_language"], row["original_language"]),
             "isbns": dbm.loads(row["isbns"], []),
             "extent": row["extent"],
