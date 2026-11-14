@@ -24,3 +24,77 @@
 - First full crawl: ~185 list pages + one MARC page per Tallinn record at 1 req/s. Later runs refetch the list and
   new records, and holdings older than `--refresh-days` (7), so about a seventh of the books each night.
 - State (`~/.cache/kids-books/state.db`, zlib pages) survives rebuilds; `--build-only` rebuilds offline.
+
+## ESTER v2 probe (BOOKS-10, 14 Nov 2026)
+
+Measured on X1 at about 1 req/s, roughly 450 requests in total.
+
+- **Query.** Use keyword search with limits. Two URL shapes:
+  - First page: `/search~S8*est/X?SEARCH=u:(201*)&searchscope=8&l=eng&m=a&b=vv&SORT=D`
+  - Page N: `/search~S8*est?/X{q}/X{q}&SUBKEY={quote(term)}/{offset}%2C{total}%2C{total}%2CB/browse`
+  - `q` is the whole `u:(…)&searchscope=…&SORT=D` string.
+  - Limits: `l=eng` language, `m=a` books, `b=vv` all TlnRK, `b=vlk` TlnRK children's literature,
+    `b=vve` OverDrive. Scopes: 8 TlnRK, 20 TlnRK lastekirjandus.
+  - `u:` is the publisher/place/year index, and it takes `*` truncation.
+  - An empty `SEARCH`, or a bare `*`, returns nothing.
+  - Results are brief citations in the same markup as the genre list, so `ester.parse_list` reads them.
+    The next-page link has a different shape, so page by offset up to the total.
+- **Size.**
+
+  | Slice | Records |
+  |---|---|
+  | `u:(19*)` | 3,675 |
+  | `u:(200*)` | 7,163 |
+  | `u:(201*)` | 14,897 |
+  | `u:(202*)` | 8,738 |
+
+  About 34.5k distinct records. Per-year counts for 1960–2026 sum to 35,050 for `vv` and 4,956 for `vlk`;
+  a reprint's imprint can carry two years, which explains the overlap. Peak years are 2018–2019
+  (about 2,000 a year for `vv`, 350 for `vlk`).
+- **Brief citations aren't proof of a copy.** Every TlnRK record lists "TlnRK Tallinna Raamatukogud", even when
+  the only copies are elsewhere or on OverDrive. Only the MARC/holdings page tells.
+- **No result cap.** The last page of a 14,897-record slice loads fine. Decade slices are enough.
+- **Narrowing.** No usable UDC limit: the `g:` keyword index and UDC browse don't honour `l=`/`b=`.
+  So fetch MARC for every English TlnRK record once. That's about 34.5k requests, roughly 10 h, run once.
+  After that, nightly runs fetch only new records plus the holdings rotation for kept books.
+- **Holdings bug (also in v1).** A MARC page shows at most 10 copies.
+  - 2,140 of the 5,330 cached v1 pages show exactly 10, so Tallinn copies can be hidden behind other libraries'.
+  - Fix: fetch the MARC view through scope 8 (`/search~S8*est?/.b{id}/…/marc~b{id}`), which lists Tallinn
+    copies first.
+  - When that view shows 10 rows, also fetch the Tallinn holdings page:
+    `/search~S8*est?/.b{id}/.b{id}/1%2C1%2C1%2CB/holdings~{id}&FF=&1%2C0%2C`. It lists every Tallinn copy
+    (19–26 copies seen where the MARC view showed 10).
+- **Language.** `l=eng` also matches bilingual and parallel-text records (Russian Alice, a Turkish/English
+  picture book). Keep only 008/35-37 = `eng`.
+
+**Signal coverage** (random sample of 198 MARC pages: 72 children's-location, 126 all-TlnRK):
+
+| Signal | Children's (72) | All TlnRK (126) | Notes |
+|---|---|---|---|
+| 080 UDC | 100% | 87% | `-93` = children's fiction (58% / 11%); `(0.053.2)`/`-053.2` = for children (most of the rest of the children's set); `(03)`/`(038)` reference 6% |
+| 072 | 100% | 88% | broad UDC, `821-93` etc. |
+| 655 genre | 100% | 89% | lastekirjandus 81% of children's; noorsookirjandus (YA) 12% of all; ilukirjandus 42% of all; e-raamatud flags OverDrive |
+| 008/33 form | 100% | 99% | `0` non-fiction, `1`/`f` fiction: reliable |
+| 008/22 audience | 1% | 5% | mostly `|` fill: useless |
+| 520 summary | rare | 17% | |
+| holdings dept | | | `lastekirjandus`, `laste koomiksikogu` (children's); `kojulaenutus` (adult lending); `koomiksikogu`; `lugemissaal` (reading room, library use); `muusika- ja filmisaal`; `miniraamatukogu` |
+| call no. | | | `L`, `L(P)` (picture book), `L-I`, `L-Luul`, `LI-74` children's; `I`, `I-74` fiction; `N`; UDC numbers for adult non-fiction (`59`, `913(E)`) |
+| holdings notes | | | mostly empty; `Kingitud raamat` (gift); `KAASAS LISA(D)` (comes with CD etc.); `KOHALKASUTUS` (library use only) |
+| status | | | `KOHAL`, `TÄHTAEG dd.mm.yy`, `VARUKOGUS` (in the reserve stock, can be ordered), `TÖÖTLUSES` (processing), `TEEL` (in transit) |
+
+- **Adult nature non-fiction is rare.** About 3% of the adult sample (UDC 57x/58x/59x/91x), so roughly 1k books.
+  Expect about 5k children's-shelf books, about 3k YA shelved for adults (noorsookirjandus), and about 1k adult
+  nature, so roughly 9k kept.
+- **Fixtures** (Tallinn-scoped MARC views) in `tests/fixtures/ester/`:
+  - `marc_b6062504_eng_adult_nature`, `marc_b2101439_eng_adult_nature2`: kept
+  - `marc_b4675367_eng_teen`: kept
+  - `marc_b4555593_eng_child_nonfiction`: kept
+  - `marc_b5674196_eng_adult_fiction`: dropped
+  - `marc_b1253057_library_use_only`: dropped
+  - `marc_b6101819_tln_ten` + `holdings_b6101819_tln`: 10 rows → 21 Tallinn copies
+  - `list_eng_vlk_2019_p1`: keyword list page
+- **Estimates at 1 req/s:**
+  - First crawl: about 700 list pages plus about 34.5k MARC pages plus about 1.5k holdings pages, roughly 10–11 h.
+  - Nightly: list (about 12 min), new records (a few), a seventh of kept books' holdings (about 1.3k, about 25 min).
+  - Enrichment: Open Library about 2–3 requests and LoC 1 request per kept book, about 30k requests,
+    so about 9 h the first time, then only new books.
