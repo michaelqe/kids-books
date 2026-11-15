@@ -630,9 +630,10 @@ const dialogLists = document.getElementById("listDialogLists");
 const newListName = document.getElementById("newListName");
 document.getElementById("newListBtn").addEventListener("click", createFromDialog);
 newListName.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); createFromDialog(); } });
-dialog.addEventListener("keydown", (e) => {
-  // Enter finishes the dialog (the new-list box keeps its own Enter = create)
-  if (e.key === "Enter" && e.target !== newListName && e.target.tagName !== "BUTTON") { e.preventDefault(); dialog.close(); }
+document.addEventListener("keydown", (e) => {
+  // Enter finishes the dialog (the new-list box keeps its own Enter = create). Listening on the
+  // document because repainting the list drops focus to <body>, outside the dialog element.
+  if (e.key === "Enter" && dialog.open && e.target !== newListName && e.target.tagName !== "BUTTON") { e.preventDefault(); dialog.close(); }
 });
 let dialogBook = null;
 let dialogButton = null;
@@ -655,6 +656,13 @@ async function openListDialog(book, button) {
 }
 
 function paintDialog() {
+  const hadFocus = dialogLists.contains(document.activeElement);
+  const idx = hadFocus ? [...dialogLists.querySelectorAll("input")].indexOf(document.activeElement) : -1;
+  paintDialogInner();
+  if (idx >= 0) dialogLists.querySelectorAll("input")[idx]?.focus();
+}
+
+function paintDialogInner() {
   const on = new Set(dialogBook.lists || []);
   if (!state.lists.length) {
     dialogLists.replaceChildren(h("p", { class: "muted" }, "No lists yet. Create one below."));
