@@ -630,6 +630,10 @@ const dialogLists = document.getElementById("listDialogLists");
 const newListName = document.getElementById("newListName");
 document.getElementById("newListBtn").addEventListener("click", createFromDialog);
 newListName.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); createFromDialog(); } });
+dialog.addEventListener("keydown", (e) => {
+  // Enter finishes the dialog (the new-list box keeps its own Enter = create)
+  if (e.key === "Enter" && e.target !== newListName && e.target.tagName !== "BUTTON") { e.preventDefault(); dialog.close(); }
+});
 let dialogBook = null;
 let dialogButton = null;
 
@@ -643,6 +647,8 @@ async function openListDialog(book, button) {
   try {
     await loadLists(true);
     paintDialog();
+    const first = dialogLists.querySelector("input");
+    if (first) first.focus();
   } catch (e) {
     dialogLists.replaceChildren(h("p", { class: "error" }, e.message));
   }

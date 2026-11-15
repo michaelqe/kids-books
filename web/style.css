@@ -128,16 +128,16 @@ h1.page { font-family: var(--font-head); font-weight: var(--head-weight); font-s
   background: var(--chip-bg); color: var(--chip-fg); padding: 2px 6px; border-radius: 4px;
 }
 .save-mark {
-  position: absolute; top: 6px; right: 6px; width: 10px; height: 10px; border-radius: 50%; background: var(--accent);
+  position: absolute; bottom: 6px; left: 6px; width: 10px; height: 10px; border-radius: 50%; background: var(--accent);
   box-shadow: 0 0 0 2px var(--bg);
 }
 
 .hide-btn {
-  position: absolute; bottom: 6px; right: 6px; width: 28px; height: 28px; border-radius: 50%; border: 0; cursor: pointer;
+  position: absolute; top: 6px; right: 6px; width: 28px; height: 28px; border-radius: 50%; border: 0; cursor: pointer;
   background: var(--chip-bg); color: var(--chip-fg); font-size: 18px; line-height: 1; opacity: .85;
 }
 .add-btn {
-  position: absolute; bottom: 6px; right: 40px; width: 28px; height: 28px; border-radius: 50%; border: 0; cursor: pointer;
+  position: absolute; bottom: 6px; right: 6px; width: 28px; height: 28px; border-radius: 50%; border: 0; cursor: pointer;
   background: var(--accent); color: #000; font-size: 20px; line-height: 1; opacity: .9;
 }
 .add-btn:hover, .add-btn:focus-visible { opacity: 1; filter: brightness(1.15); }
@@ -400,7 +400,7 @@ html[data-ui^="dk"] .top { padding-inline: max(var(--gutter), calc((100vw - 1560
   html[data-ui^="dk"] .card-title { font-size: 14px; }
   html[data-ui^="dk"] .card-meta + .card-meta, html[data-ui^="dk"] .card-pages { display: none; }
   html[data-ui^="dk"] .hide-btn { width: 34px; height: 34px; }
-  html[data-ui^="dk"] .add-btn { width: 34px; height: 34px; right: 46px; }
+  html[data-ui^="dk"] .add-btn { width: 34px; height: 34px; }
   html[data-ui^="dk"] .toast { bottom: calc(142px + env(safe-area-inset-bottom)); }
 
   /* book page: cover, title, buttons, summary, libraries; the long facts after that */
