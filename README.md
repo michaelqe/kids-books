@@ -48,7 +48,7 @@ Congress (by the LCCN Open Library knows) and Open Library; see `crawler/categor
 
 ## UIs (skins)
 
-`web/themes/<key>.css` loads on top of `style.css`; pick one with the **UI** button (remembered per
+`web/themes/<key>.css` loads on top of `style.css`. The default is **Wren Library** (`dkwren`); `classic` is still in the picker. Pick one with the **UI** button (remembered per
 device) or `?ui=<key>`. The list and blurbs are in `web/themes.js`: classic, catalog, atlas (robust
 filters: topics, libraries, year, length, sort), y2013, metro, shelf, coverflow, storybook,
 fieldguide, brutal, swiss, rails, pinboard, terminal, popart, nightlight, plus ten dark sidebar-filter

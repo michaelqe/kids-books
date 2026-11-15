@@ -11,7 +11,7 @@
   <script>
     // Apply the chosen UI before first paint (see themes.js). ?ui=<key> beats the saved choice.
     try {
-      var ui = new URLSearchParams(location.search).get("ui") || localStorage.getItem("kb-ui") || "classic";
+      var ui = new URLSearchParams(location.search).get("ui") || localStorage.getItem("kb-ui") || "dkwren";
       if (!/^[a-z0-9]+$/.test(ui)) ui = "classic";
       if (ui !== "classic") document.getElementById("theme").href = "themes/" + ui + ".css";
       document.documentElement.dataset.ui = ui;

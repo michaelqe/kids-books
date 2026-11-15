@@ -38,12 +38,13 @@ export const THEMES = [
 ];
 
 const KEY = "kb-ui";
+const DEFAULT = "dkwren";  // Wren Library; "classic" is still in the picker
 const known = (k) => THEMES.some((t) => t.key === k);
 
 export function currentUi() {
-  let k = "classic";
-  try { k = new URLSearchParams(location.search).get("ui") || localStorage.getItem(KEY) || "classic"; } catch { /* storage blocked */ }
-  return known(k) ? k : "classic";
+  let k = DEFAULT;
+  try { k = new URLSearchParams(location.search).get("ui") || localStorage.getItem(KEY) || DEFAULT; } catch { /* storage blocked */ }
+  return known(k) ? k : DEFAULT;
 }
 
 export const wantsAdv = () => !!THEMES.find((t) => t.key === currentUi())?.adv;
