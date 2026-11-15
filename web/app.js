@@ -479,6 +479,10 @@ function card(book) {
         class: "hide-btn", type: "button", title: "Never show this book again", "aria-label": `Never show "${book.title}" again`,
         onclick: (e) => { e.preventDefault(); e.stopPropagation(); hideBook(book, el); },
       }, "\u00d7"),
+      h("button", {
+        class: "add-btn", type: "button", title: "Add to a list", "aria-label": `Add "${book.title}" to a list`,
+        onclick: (e) => { e.preventDefault(); e.stopPropagation(); quickAdd(book, el); },
+      }, "+"),
       book.language && book.language !== "eng" ? h("span", { class: "lang-tag" }, book.language) : null,
       state.savedIds.has(book.id) ? h("span", { class: "save-mark", title: "On a list" }) : null),
     h("div", { class: "card-title" }, book.title),
@@ -489,6 +493,17 @@ function card(book) {
     h("div", { class: "spine", style: `--spine:${tint(book.title || "")}` }, h("span", {}, book.title)));
   el.prepend(h("div", { class: "cn" }, callNo(book)));
   return el;
+}
+
+async function quickAdd(book, el) {
+  let full;
+  try { full = await api(`/books/${encodeURIComponent(book.id)}`); } catch (e) { toast(e.message); return; }
+  dialog.addEventListener("close", () => {
+    const wrap = el.querySelector(".cover-wrap");
+    const mark = wrap.querySelector(".save-mark");
+    if (state.savedIds.has(book.id) && !mark) wrap.append(h("span", { class: "save-mark", title: "On a list" }));
+  }, { once: true });
+  openListDialog(full, null);
 }
 
 function pager(p, data) {
