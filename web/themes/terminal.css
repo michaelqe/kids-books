@@ -1,0 +1,51 @@
+/* Green-screen OPAC: a 1990s library terminal. Phosphor green, monospace, covers as CRT plates. */
+:root {
+  --bg: #020a02; --surface: #041a04; --tile: #062806; --line: #17661a; --text: #39ff14; --muted: #1fae0e;
+  --accent: #b6ff3a; --on-accent: #021a02; --radius: 0px; --pill: 0px; --cover-radius: 0px; --gutter: 14px;
+  --font: "IBM Plex Mono", "SF Mono", Menlo, Consolas, "Courier New", monospace; --head-weight: 700;
+  --bar-bg: #020a02; --chip-bg: #000; --chip-fg: #39ff14; --toast-bg: #041a04; --ok: #39ff14; --warn: #ffd23a;
+}
+body { font-size: 15px; text-shadow: 0 0 5px rgba(57,255,20,.55); }
+body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 60; background: repeating-linear-gradient(transparent 0 2px, rgba(0,0,0,.28) 2px 3px), radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,.55)); }
+.top { border-bottom: 1px solid var(--line); backdrop-filter: none; }
+.brand { font-size: 16px; text-transform: uppercase; letter-spacing: .1em; font-weight: 700; }
+.brand::before { content: "C:\\ESTER> "; opacity: .65; } .brand::after { content: "\2588"; animation: blink 1s steps(1) infinite; margin-left: 4px; }
+@keyframes blink { 50% { opacity: 0; } }
+.top nav a { border-radius: 0; text-transform: uppercase; font-size: 13px; }
+.top nav a::before { content: "F"; } .top nav a[data-nav=search]::before { content: "[F1] "; } .top nav a[data-nav=lists]::before { content: "[F2] "; } .top nav a[data-nav=hidden]::before { content: "[F3] "; }
+.top nav a.active { background: var(--text); color: #021a02; text-shadow: none; }
+h1.page { text-transform: uppercase; font-size: 20px; }
+.label { color: var(--muted); }
+.search input[type=search], .search select, .adv input, .adv select { background: #000; border: 1px solid var(--text); border-radius: 0; font-size: 17px; caret-color: var(--text); padding: 8px 10px; }
+.search input[type=search]::placeholder { color: #17661a; }
+.search-row::before { content: "SEARCH>"; align-self: center; margin-right: 4px; }
+.seg { background: none; padding: 0; gap: 4px; }
+.seg button { border: 1px solid var(--line); border-radius: 0; color: var(--muted); text-transform: uppercase; font-size: 12px; }
+.seg button[aria-pressed=true] { background: var(--text); color: #021a02; text-shadow: none; box-shadow: none; }
+.toggle { border: 1px solid var(--line); border-radius: 0; background: none; text-transform: uppercase; font-size: 12px; }
+.toggle[aria-pressed=true] { box-shadow: none; border-color: var(--text); }
+.toggle .dot { border-radius: 0; }
+.chip { border-radius: 0; font-size: 12px; text-transform: uppercase; }
+.chip[aria-pressed=true] { background: var(--text); color: #021a02; text-shadow: none; }
+.chip .count { color: inherit; opacity: .7; }
+.summary-line .label::before { content: "** "; } .summary-line .label::after { content: " **"; }
+.grid { grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 18px 14px; }
+.card { border: 1px solid var(--line); padding: 8px; background: #031003; gap: 2px; }
+.card:hover { border-color: var(--text); box-shadow: 0 0 14px rgba(57,255,20,.45); }
+.card .cover { filter: grayscale(1) contrast(1.15) brightness(.9) sepia(1) hue-rotate(60deg) saturate(2.4); border: 1px solid var(--line); transition: filter .25s; }
+.card:hover .cover { filter: none; }
+.card-title { font-weight: 700; text-transform: uppercase; font-size: 13px; margin-top: 4px; }
+.card-meta { font-size: 12px; }
+.card-pages, .cn { display: block; font-size: 11px; color: var(--muted); } .card-pages:empty { display: none; }
+.badge { font-size: 11px; text-transform: uppercase; } .badge::before { border-radius: 0; }
+.badge.in::before { content: "\25B6"; background: none; width: auto; height: auto; font-size: 9px; } .badge.out::before { background: var(--warn); }
+.hide-btn { border-radius: 0; border: 1px solid var(--text); background: #000; }
+.btn { border: 1px solid var(--text); background: #000; border-radius: 0; text-transform: uppercase; font-size: 13px; }
+.btn:hover { background: var(--text); color: #021a02; text-shadow: none; }
+.btn.primary { background: var(--text); color: #021a02; text-shadow: none; }
+.detail { border: 1px solid var(--text); padding: 16px; box-shadow: 0 0 18px rgba(57,255,20,.25); }
+.detail .cover { filter: grayscale(1) sepia(1) hue-rotate(60deg) saturate(2.4) contrast(1.1); border: 1px solid var(--text); }
+.branch, .list-card { border: 1px solid var(--line); background: #031003; }
+dialog.sheet { border: 1px solid var(--text); border-radius: 0; }
+.toast { border: 1px solid var(--text); border-radius: 0; }
+.ui-fab { text-shadow: none; }

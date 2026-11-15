@@ -1,0 +1,12 @@
+/* Graphite (square): dark sidebar family (see style.css). Not pure black. */
+:root {
+  --bg: #222427; --surface: #2b2d31; --tile: #34373c; --line: #42454b; --text: #dddfe3; --muted: #9a9ea6;
+  --accent: #ff9a3c; --on-accent: #2a1500; --bar-bg: #222427;
+  --radius: 0px; --pill: 0px; --cover-radius: 4px;
+  --card-r: 0px; --panel-r: 0px;
+  --toast-bg: #34373c; --chip-bg: rgba(20,22,26,.78); --chip-fg: #dddfe3;
+  --font: Inter, 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif; --head-weight: 600;
+}
+html[data-ui=dkgraphite] .label{font-family:ui-monospace,'SF Mono',Menlo,monospace}
+html[data-ui=dkgraphite] .card{border-left:3px solid var(--line)}
+html[data-ui=dkgraphite] .card:hover{border-left-color:var(--accent)}

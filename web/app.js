@@ -2,6 +2,8 @@
 // Tallinn's libraries, save them to shared lists.
 // Plain ES module, no build step. Routes live in the hash: #/?q=..., #/book/b123, #/lists, #/lists/4.
 
+import { applyUi, currentUi, mountPicker, wantsAdv } from "./themes.js";
+
 const view = document.getElementById("view");
 const foot = document.getElementById("foot");
 const toastEl = document.getElementById("toast");
@@ -45,6 +47,8 @@ function parseHash() {
 }
 
 function go(hash) {
+  freshNav = true;
+  scrollAt.set(pageKey, window.scrollY);
   if (location.hash === hash) route();
   else location.hash = hash;
 }
@@ -92,6 +96,14 @@ function availability(book) {
     return h("span", { class: "badge in" }, book.available_copies === 1 ? "1 on the shelf" : `${book.available_copies} on the shelf`);
   }
   return h("span", { class: "badge out" }, "All on loan");
+}
+
+const AUD_CODE = { baby_toddler: "B", picture_book: "E", early_reader: "ER", middle_grade: "J", teen: "YA", adult: "590" };
+/** A shelf-mark look-alike for themes that show one (not the real ESTER call number): J CAR 1969. */
+function callNo(book) {
+  const first = (book.authors || [])[0] || book.title || "";
+  const last = first.trim().split(/\s+/).pop().replace(/[^A-Za-z]/g, "").slice(0, 3).toUpperCase();
+  return [AUD_CODE[book.audience] || "", last, book.year].filter(Boolean).join(" ");
 }
 
 function authorsLine(book) {
@@ -163,6 +175,14 @@ function searchParams(params) {
     audience: listParam(params, "audience", fresh ? PICTURE : []),
     type: listParam(params, "type", []),
     nature: params.get("nature") === "1",
+    sort: params.get("sort") || "",
+    yfrom: params.get("year_from") || "",
+    yto: params.get("year_to") || "",
+    pmin: params.get("pages_min") || "",
+    pmax: params.get("pages_max") || "",
+    topics: listParam(params, "topics", []),
+    topicsAll: params.get("topics_all") === "1",
+    branch: listParam(params, "branch", []),
     page: Math.max(1, parseInt(params.get("page") || "1", 10) || 1),
   };
 }
@@ -178,6 +198,14 @@ function searchHash(p) {
   q.set("audience", (p.audience || []).join(","));
   if ((p.type || []).length) q.set("type", p.type.join(","));
   if (p.nature) q.set("nature", "1");
+  if (p.sort) q.set("sort", p.sort);
+  if (p.yfrom) q.set("year_from", p.yfrom);
+  if (p.yto) q.set("year_to", p.yto);
+  if (p.pmin) q.set("pages_min", p.pmin);
+  if (p.pmax) q.set("pages_max", p.pmax);
+  if ((p.topics || []).length) q.set("topics", p.topics.join(","));
+  if (p.topicsAll) q.set("topics_all", "1");
+  if ((p.branch || []).length) q.set("branch", p.branch.join(","));
   if (p.page > 1) q.set("page", String(p.page));
   return "#/?" + q.toString().replace(/%2C/g, ",");
 }
@@ -195,7 +223,7 @@ async function renderSearch(params) {
   setNav("search");
   const p = searchParams(params);
   const input = h("input", {
-    type: "search", value: p.q, placeholder: "Search books: title, author, subject",
+    type: "search", value: p.q, placeholder: matchMedia("(max-width: 860px)").matches ? "Search books" : "Search books: title, author, subject",
     "aria-label": "Search", autocomplete: "off", enterkeyhint: "search",
   });
   const field = h("select", { "aria-label": "Search in" },
@@ -204,11 +232,24 @@ async function renderSearch(params) {
   const chips = h("div", { class: "chips", role: "group", "aria-label": "Topics" });
   const shortcuts = h("div", { class: "seg", role: "group", "aria-label": "Shortcuts" });
   const facetBox = h("div", { class: "facets" });
+  const advBox = h("div", { class: "adv" });
+  const topicFilter = h("input", { type: "search", placeholder: "Find a topic", "aria-label": "Find a topic", autocomplete: "off" });
+  let lastFacets = null;
+  // Phones: the filters live in a bottom sheet (see style.css); on desktop .filter-body is transparent.
+  const form = h("form", { class: "search", role: "search", onsubmit: (e) => e.preventDefault() });
+  const setSheet = (open) => { form.classList.toggle("open", open); document.documentElement.classList.toggle("sheet-lock", open); };
+  const filterBadge = h("span", { class: "badge-count" });
+  const filtersBtn = h("button", { class: "filters-btn", type: "button", onclick: () => setSheet(true) }, "Filters", filterBadge);
+  const activeStrip = h("div", { class: "active-strip" });
+  const doneBtn = h("button", { class: "btn primary", type: "button", onclick: () => setSheet(false) }, "Show books");
+  const sheetHead = h("div", { class: "sheet-head" }, h("strong", {}, "Filters"), h("button", { class: "linkbtn", type: "button", onclick: () => setSheet(false) }, "Close"));
+  const sheetFoot = h("div", { class: "sheet-foot" }, doneBtn);
 
   const update = (patch) => {
     const next = { ...p, ...patch };
     if (!("page" in patch)) next.page = 1;
     history.replaceState(null, "", searchHash(next));
+    pageKey = location.hash;
     Object.assign(p, next);
     paintControls();
     runSearch(p, results, paintFacets);
@@ -228,7 +269,74 @@ async function renderSearch(params) {
 
   const toggleIn = (list, value) => (list.includes(value) ? list.filter((x) => x !== value) : [...list, value]);
 
-  function paintFacets(facets) {
+  const ANY_ADV = { sort: "", yfrom: "", yto: "", pmin: "", pmax: "", topics: [], topicsAll: false, branch: [], subject: "", available: false };
+  const LENGTHS = [["Any", "", ""], ["Under 32 pages", "", "31"], ["32 to 64", "32", "64"], ["65 to 200", "65", "200"], ["Over 200", "201", ""]];
+  const SORTS = [["", "Best match"], ["newest", "Newest first"], ["oldest", "Oldest first"], ["title", "Title A to Z"], ["shortest", "Shortest first"], ["longest", "Longest first"], ["shelf", "Most on the shelf"]];
+
+  function activeChips(facets) {
+    const active = [];
+    const chip = (label, patch) => active.push(h("button", { class: "chip", type: "button", "aria-pressed": "true", onclick: () => update(patch) }, label));
+    if (p.subject) chip(p.subject, { subject: "" });
+    for (const t of p.topics) chip(t, { topics: p.topics.filter((x) => x !== t) });
+    for (const b of p.branch) chip(b, { branch: p.branch.filter((x) => x !== b) });
+    if (p.yfrom || p.yto) chip(`${p.yfrom || "…"} to ${p.yto || "…"}`, { yfrom: "", yto: "" });
+    if (p.pmin || p.pmax) chip((LENGTHS.find(([, a, b]) => a === p.pmin && b === p.pmax) || ["Pages " + (p.pmin || "0") + " to " + (p.pmax || "…")])[0], { pmin: "", pmax: "" });
+    if (p.available) chip("On the shelf now", { available: false });
+    if (p.audience.length) for (const a of p.audience) chip((facets.audience.find((o) => o.value === a) || { label: a }).label, { audience: p.audience.filter((x) => x !== a) });
+    if (p.type.length) for (const t of p.type) chip((facets.type.find((o) => o.value === t) || { label: t }).label, { type: p.type.filter((x) => x !== t) });
+    if (p.nature) chip("Nature", { nature: false });
+    return active;
+  }
+
+  function paintAdv(facets) {
+    if (!wantsAdv() || !facets || !facets.topics) { advBox.replaceChildren(); activeStrip.replaceChildren(); filterBadge.textContent = ""; return; }
+    lastFacets = facets;
+    const years = facets.years || {};
+    const numInput = (name, value, placeholder) => h("input", {
+      type: "number", inputmode: "numeric", value, placeholder: String(placeholder || ""), "aria-label": name,
+      onchange: (e) => update({ [name === "From year" ? "yfrom" : "yto"]: e.target.value.trim() }),
+    });
+    const pick = (field, o) => h("label", {},
+      h("input", { type: "checkbox", checked: p[field].includes(o.value), onchange: () => update({ [field]: toggleIn(p[field], o.value) }) }),
+      o.label, h("span", { class: "count" }, o.count.toLocaleString("en-GB")));
+    const topicList = h("div", { class: "picks", role: "group", "aria-label": "Topics" });
+    const paintTopics = () => {
+      const needle = topicFilter.value.trim().toLowerCase();
+      topicList.replaceChildren(...facets.topics.filter((o) => !needle || o.label.toLowerCase().includes(needle)).map((o) => pick("topics", o)));
+    };
+    topicFilter.oninput = paintTopics;
+    paintTopics();
+
+    const active = activeChips(facets);
+
+    advBox.replaceChildren(
+      h("div", { class: "adv-sec" },
+        h("div", { class: "label" }, "Filters in use", active.length ? h("button", { class: "linkbtn", type: "button", onclick: () => update({ ...ANY_ADV, audience: [], type: [], nature: false }) }, "Clear all") : null),
+        h("div", { class: "active" }, active),
+        active.length ? null : h("div", { class: "muted small" }, "None yet: showing everything.")),
+      h("div", { class: "adv-sec" }, h("div", { class: "label" }, "Sort"),
+        h("select", { "aria-label": "Sort", onchange: (e) => update({ sort: e.target.value }) },
+          SORTS.map(([v, l]) => h("option", { value: v, selected: v === p.sort }, l)))),
+      h("div", { class: "adv-sec" }, h("div", { class: "label" }, "Year published"),
+        h("div", { class: "range" }, numInput("From year", p.yfrom, years.min), h("span", { class: "muted" }, "to"), numInput("To year", p.yto, years.max))),
+      h("div", { class: "adv-sec" }, h("div", { class: "label" }, "Length"),
+        h("div", { class: "chips facet", role: "group", style: "flex-wrap:wrap" }, LENGTHS.map(([l, a, b]) =>
+          h("button", { class: "chip", type: "button", "aria-pressed": String(p.pmin === a && p.pmax === b), onclick: () => update({ pmin: a, pmax: b }) }, l)))),
+      h("div", { class: "adv-sec" },
+        h("div", { class: "label" }, "Topics",
+          h("label", { class: "small", style: "text-transform:none;letter-spacing:0;display:flex;gap:6px;align-items:center" },
+            h("input", { type: "checkbox", checked: p.topicsAll, onchange: (e) => update({ topicsAll: e.target.checked }) }), "match all")),
+        topicFilter, topicList),
+      h("div", { class: "adv-sec" }, h("div", { class: "label" }, "Libraries with a copy"),
+        h("div", { class: "picks", role: "group", "aria-label": "Libraries" }, facets.branches.map((o) => pick("branch", o)))),
+    );
+    activeStrip.replaceChildren(...activeChips(facets));
+    filterBadge.textContent = active.length ? String(active.length) : "";
+  }
+
+  function paintFacets(facets, total) {
+    paintAdv(facets);
+    if (total !== undefined) doneBtn.textContent = `Show ${total.toLocaleString("en-GB")} ${total === 1 ? "book" : "books"}`;
     if (!facets || !facets.audience) {  // a v1 catalogue: no facets, the language filter instead
       facetBox.replaceChildren();
       langSeg.hidden = false;
@@ -259,16 +367,21 @@ async function renderSearch(params) {
     for (const c of chips.children) c.setAttribute("aria-pressed", String(c.dataset.subject === p.subject));
   }
 
-  view.replaceChildren(
-    h("form", { class: "search", role: "search", onsubmit: (e) => e.preventDefault() },
-      h("div", { class: "search-row" }, input, field),
+  form.append(
+    h("div", { class: "search-row" }, input, field),
+    filtersBtn,
+    activeStrip,
+    h("div", { class: "filter-body" },
+      sheetHead,
       h("div", { class: "filters" }, shortcuts, langSeg, availBtn),
       facetBox,
-      chips),
-    results,
-  );
+      chips,
+      advBox,
+      sheetFoot));
+  view.replaceChildren(form, results);
+  setSheet(false);
   paintControls();
-  if (!p.q) input.focus({ preventScroll: true });
+  if (!p.q && matchMedia("(pointer: fine)").matches) input.focus({ preventScroll: true });  // not on phones: it would pop the keyboard
 
   loadSubjects().then((subjects) => {
     chips.replaceChildren(...subjects.slice(0, 24).map((s) =>
@@ -295,6 +408,15 @@ async function runSearch(p, results, paintFacets) {
   if (p.audience.length) q.set("audience", p.audience.join(","));
   if (p.type.length) q.set("type", p.type.join(","));
   if (p.nature) q.set("nature", "1");
+  if (p.sort) q.set("sort", p.sort);
+  if (p.yfrom) q.set("year_from", p.yfrom);
+  if (p.yto) q.set("year_to", p.yto);
+  if (p.pmin) q.set("pages_min", p.pmin);
+  if (p.pmax) q.set("pages_max", p.pmax);
+  if (p.topics.length) q.set("topics", p.topics.join(","));
+  if (p.topicsAll) q.set("topics_all", "1");
+  if (p.branch.length) q.set("branch", p.branch.join(","));
+  if (wantsAdv()) q.set("adv", "1");
   results.replaceChildren(h("div", { class: "grid" }, Array.from({ length: 8 }, () => h("div", { class: "skeleton" }))));
   let data;
   try {
@@ -309,11 +431,12 @@ async function runSearch(p, results, paintFacets) {
     results.replaceChildren(h("div", { class: "empty" }, "The catalogue hasn't been loaded yet. It's updated every night from ESTER."));
     return;
   }
-  if (paintFacets) paintFacets(data.facets);
+  if (paintFacets) paintFacets(data.facets, data.total);
   const v2 = !!(data.facets && data.facets.audience);
   const what = [p.q && `"${p.q}"`, p.subject, p.nature && "nature"].filter(Boolean).join(" · ");
   const lang = LANGS.find(([v]) => v === p.lang)[1].replace(" language", "");
-  const filtered = p.audience.length || p.type.length || p.nature || p.subject || p.available;
+  const filtered = p.audience.length || p.type.length || p.nature || p.subject || p.available
+    || p.topics.length || p.branch.length || p.yfrom || p.yto || p.pmin || p.pmax;
   results.replaceChildren(
     h("div", { class: "summary-line" },
       h("div", { class: "label" },
@@ -325,12 +448,13 @@ async function runSearch(p, results, paintFacets) {
       : h("div", { class: "empty" },
           "No books found.",
           v2 && filtered
-            ? h("div", {}, h("button", { class: "linkbtn", type: "button", onclick: () => go(searchHash({ ...p, audience: [], type: [], nature: false, subject: "", available: false, page: 1 })) }, "Clear the filters"))
+            ? h("div", {}, h("button", { class: "linkbtn", type: "button", onclick: () => go(searchHash({ ...p, audience: [], type: [], nature: false, subject: "", available: false, topics: [], branch: [], yfrom: "", yto: "", pmin: "", pmax: "", sort: "", page: 1 })) }, "Clear the filters"))
             : !v2 && p.lang !== "any"
               ? h("div", {}, h("button", { class: "linkbtn", type: "button", onclick: () => go(searchHash({ ...p, lang: "any", page: 1 })) }, "Try any language"))
               : null),
-    pager(p, data),
+    pager(p, data) || [],
   );
+  if (restoreY) { const y = restoreY; restoreY = 0; requestAnimationFrame(() => window.scrollTo(0, y)); }
 }
 
 async function hideBook(book, el) {
@@ -348,8 +472,8 @@ async function hideBook(book, el) {
 }
 
 function card(book) {
-  const el = h("a", { class: "card", href: `#/book/${book.id}` },
-    h("div", { style: "position:relative" },
+  const el = h("a", { class: "card", href: `#/book/${book.id}`, dataset: { aud: book.audience || "", type: book.type || "" } },
+    h("div", { class: "cover-wrap", style: "position:relative" },
       cover(book),
       h("button", {
         class: "hide-btn", type: "button", title: "Never show this book again", "aria-label": `Never show "${book.title}" again`,
@@ -360,7 +484,10 @@ function card(book) {
     h("div", { class: "card-title" }, book.title),
     h("div", { class: "card-meta" }, [authorsLine(book), book.year].filter(Boolean).join(" · ")),
     book.audience_label ? h("div", { class: "card-meta" }, [book.audience_label, book.type_label].filter(Boolean).join(" · ")) : null,
-    availability(book));
+    h("div", { class: "card-pages" }, book.pages ? `${book.pages} pages` : ""),
+    availability(book),
+    h("div", { class: "spine", style: `--spine:${tint(book.title || "")}` }, h("span", {}, book.title)));
+  el.prepend(h("div", { class: "cn" }, callNo(book)));
   return el;
 }
 
@@ -445,14 +572,14 @@ async function renderBook(id) {
         (book.topics || []).length || (book.subjects_en || []).length || (book.genres_en || []).length
           ? h("div", { class: "tags" },
               [...new Set([...(book.topics || []), ...(book.subjects_en || []), ...(book.genres_en || []).filter((g) => g !== "picture books" && g !== "children's books")])]
-                .map((s) => h("a", { class: "chip", href: searchHash({ q: "", field: "any", lang: "any", available: false, subject: s, audience: [], type: [], nature: false, page: 1 }) }, s)))
+                .map((s) => h("a", { class: "chip", href: searchHash({ q: "", field: "any", lang: "any", available: false, subject: s, audience: [], type: [], nature: false, topics: [], branch: [], page: 1 }) }, s)))
           : null,
         (book.reasons || []).length
           ? h("details", { class: "why" },
               h("summary", { class: "muted small" }, "Why this category"),
               h("ul", { class: "muted small" }, book.reasons.map((r) => h("li", {}, r))))
           : null,
-        h("div", { class: "section" },
+        h("div", { class: "section libraries" },
           h("div", { class: "label" }, "Tallinn libraries"),
           book.holdings.length
             ? h("div", { class: "branches" }, book.holdings.map(branchCard))
@@ -705,10 +832,26 @@ async function renderHidden() {
 
 // --- router -------------------------------------------------------------------------------------
 
+// Scroll position per page (keyed by hash), so Back from a book lands where you were in the results.
+// Only Back/Forward restores it; following a link or the nav starts at the top.
+history.scrollRestoration = "manual";
+const scrollAt = new Map();
+let pageKey = location.hash || "#/";  // the page on screen; scroll events can arrive after the hash has already changed
+let freshNav = false;  // set when the user clicked an in-app link
+let restoreY = 0;      // consumed by runSearch once the results are on screen
+window.addEventListener("scroll", () => { scrollAt.set(pageKey, window.scrollY); }, { passive: true });
+document.addEventListener("click", (e) => {
+  if (e.target.closest && e.target.closest('a[href^="#"]')) { freshNav = true; scrollAt.set(pageKey, window.scrollY); }
+}, true);
+
 async function route() {
   hideToast();
   if (dialog.open) dialog.close();
   const { parts, params } = parseHash();
+  const wantY = freshNav ? 0 : scrollAt.get(location.hash || "#/") || 0;
+  freshNav = false;
+  pageKey = location.hash || "#/";
+  restoreY = 0;
   window.scrollTo(0, 0);
   document.title = "Kids Books";
   try {
@@ -716,6 +859,7 @@ async function route() {
     if (parts[0] === "hidden") return await renderHidden();
     if (parts[0] === "lists" && parts[1]) return await renderList(parts[1]);
     if (parts[0] === "lists") return await renderLists();
+    restoreY = wantY;
     return await renderSearch(params);
   } catch (e) {
     view.replaceChildren(h("p", { class: "error" }, "Something went wrong: " + e.message));
@@ -738,6 +882,9 @@ async function renderFoot() {
   } catch { /* the footer is optional */ }
 }
 
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") document.documentElement.classList.remove("sheet-lock"); document.querySelector("form.search.open")?.classList.remove("open"); });
+applyUi(currentUi());
+mountPicker(() => route());  // atlas wants extra facets, so repaint the current view
 window.addEventListener("hashchange", route);
 route();
 renderFoot();

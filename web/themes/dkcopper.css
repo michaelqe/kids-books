@@ -1,0 +1,12 @@
+/* Copper (square): dark sidebar family (see style.css). Not pure black. */
+:root {
+  --bg: #272523; --surface: #312e2b; --tile: #3b3733; --line: #4b4540; --text: #ebe5de; --muted: #aca398;
+  --accent: #e2845a; --on-accent: #2a0f04; --bar-bg: #272523;
+  --radius: 2px; --pill: 2px; --cover-radius: 4px;
+  --card-r: 0px; --panel-r: 0px;
+  --toast-bg: #3b3733; --chip-bg: rgba(20,22,26,.78); --chip-fg: #ebe5de;
+  --font: Inter, 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif; --head-weight: 600;
+}
+html[data-ui=dkcopper] .card{border-left:4px solid #e2845a}
+html[data-ui=dkcopper] .card-title{text-transform:uppercase;letter-spacing:.03em;font-size:14px}
+html[data-ui=dkcopper] .brand{text-transform:uppercase;letter-spacing:.14em;font-size:18px;font-weight:600}

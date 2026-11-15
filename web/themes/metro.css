@@ -1,0 +1,54 @@
+/* Metro on a Lumia: Segoe UI Light, flat live-tile covers, big lowercase titles, a bottom app bar. */
+:root {
+  --bg: #000; --surface: #1f1f1f; --tile: #2b2b2b; --line: #3a3a3a; --text: #fff; --muted: #a8a8a8;
+  --accent: #00aba9; --on-accent: #fff; --radius: 0px; --pill: 0px; --cover-radius: 0px; --gutter: 14px;
+  --font: "Segoe UI", "Segoe WP", "Selawik", system-ui, -apple-system, "Helvetica Neue", sans-serif;
+  --head-weight: 200; --bar-bg: #1a1a1a; --toast-bg: #333;
+}
+body { padding-bottom: 72px; }
+.top { position: static; display: block; padding: 22px var(--gutter) 0; background: none; border: 0; backdrop-filter: none; }
+.brand { display: block; font-size: 54px; line-height: 1; font-weight: 200; letter-spacing: -.02em; text-transform: lowercase; margin-bottom: 6px; }
+.top nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; justify-content: space-around; background: #1a1a1a; padding: 6px 0 calc(6px + env(safe-area-inset-bottom)); }
+.top nav a { flex: 1; text-align: center; padding: 10px 0 12px; font-size: 12px; letter-spacing: .02em; color: #fff; border-radius: 50%; }
+.top nav a::before { content: ""; display: block; width: 32px; height: 32px; margin: 0 auto 4px; border: 2px solid #fff; border-radius: 50%; }
+.top nav a[data-nav=search]::before { content: "\2315"; font-size: 22px; line-height: 28px; text-align: center; transform: scaleX(-1); }
+.top nav a[data-nav=lists]::before { content: "\2630"; font-size: 17px; line-height: 28px; text-align: center; }
+.top nav a[data-nav=hidden]::before { content: "\2205"; font-size: 17px; line-height: 28px; text-align: center; }
+.top nav a.active { background: none; color: var(--accent); }
+.top nav a.active::before { border-color: var(--accent); }
+.ui-fab { bottom: 84px; }
+h1.page { font-size: 40px; font-weight: 200; }
+.search input[type=search] { background: #fff; color: #000; border: 2px solid #bbb; border-radius: 0; font-size: 20px; font-weight: 300; padding: 10px 12px; }
+.search input[type=search]::placeholder { color: #666; }
+.search select { background: #fff; color: #000; border: 2px solid #bbb; border-radius: 0; }
+.seg { background: none; padding: 0; gap: 14px; }
+.seg button { padding: 0; font-size: 24px; font-weight: 200; color: #777; background: none; }
+.seg button[aria-pressed=true] { background: none; box-shadow: none; color: #fff; }
+.toggle { background: var(--tile); color: #fff; padding: 8px 14px; font-weight: 300; }
+.toggle[aria-pressed=true] { background: var(--accent); box-shadow: none; }
+.toggle .dot { display: none; }
+.chip { background: var(--tile); border: 0; color: #fff; padding: 8px 14px; font-weight: 300; }
+.chip[aria-pressed=true] { background: var(--accent); }
+.chip .count { color: rgba(255,255,255,.7); }
+.summary-line .label { color: var(--accent); font-size: 14px; }
+/* flat tiles: the cover is the tile, text sits on a coloured strip below */
+.grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; }
+@media (max-width: 520px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.card { background: var(--tile); gap: 0; transition: transform .12s; }
+.card:active { transform: scale(.96); }
+.card:nth-child(8n+1) { --t: #00aba9; } .card:nth-child(8n+2) { --t: #1ba1e2; } .card:nth-child(8n+3) { --t: #a05000; } .card:nth-child(8n+4) { --t: #e51400; }
+.card:nth-child(8n+5) { --t: #647687; } .card:nth-child(8n+6) { --t: #60a917; } .card:nth-child(8n+7) { --t: #aa00ff; } .card:nth-child(8n+8) { --t: #f0a30a; }
+.card { background: var(--t); }
+.card-title { padding: 8px 8px 0; font-weight: 400; font-size: 14px; }
+.card-meta { padding: 0 8px; color: rgba(255,255,255,.85); }
+.badge { padding: 4px 8px 8px; color: #fff; font-weight: 600; }
+.badge::before { display: none; }
+.badge.out { opacity: .75; }
+.hide-btn { bottom: 4px; right: 4px; border-radius: 0; background: rgba(0,0,0,.55); }
+.save-mark { border-radius: 0; background: #fff; box-shadow: none; }
+.btn { border: 2px solid #fff; background: none; padding: 9px 18px; font-weight: 400; }
+.btn.primary { background: var(--accent); border-color: var(--accent); }
+.detail h1 { font-size: 38px; }
+.branch, .list-card { background: var(--tile); }
+dialog.sheet { background: #1f1f1f; width: min(440px, 100vw); border-radius: 0; margin: auto 0 0; max-width: 100vw; }
+.toast { border-radius: 0; border: 0; bottom: 84px; background: #333; }

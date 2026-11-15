@@ -1,0 +1,40 @@
+/* Night-light: bedtime navy with stars; every cover glows like a little lamp. */
+:root {
+  --bg: #0b1030; --surface: #161e48; --tile: #1e2860; --line: #2e3a7a; --text: #f4efe0; --muted: #a9b0d8;
+  --accent: #ffd479; --on-accent: #1a1535; --radius: 16px; --pill: 999px; --cover-radius: 10px;
+  --font: ui-rounded, "SF Pro Rounded", "Nunito", system-ui, sans-serif; --head-weight: 600;
+  --bar-bg: rgba(11,16,48,.8); --toast-bg: #1e2860; --ok: #8be6b0; --warn: #ffb870;
+}
+body {
+  background:
+    radial-gradient(1.5px 1.5px at 12% 18%, #fff, transparent), radial-gradient(1px 1px at 28% 64%, #fff, transparent), radial-gradient(1.5px 1.5px at 47% 30%, #ffe9b0, transparent),
+    radial-gradient(1px 1px at 63% 82%, #fff, transparent), radial-gradient(2px 2px at 78% 22%, #fff, transparent), radial-gradient(1px 1px at 90% 58%, #cfe0ff, transparent),
+    radial-gradient(1px 1px at 8% 90%, #fff, transparent), radial-gradient(1.5px 1.5px at 55% 8%, #fff, transparent),
+    radial-gradient(ellipse at 80% -10%, #2b2f78 0, transparent 55%), linear-gradient(#0b1030, #060a1f);
+  background-size: 480px 480px, 380px 380px, 520px 520px, 420px 420px, 600px 600px, 340px 340px, 400px 400px, 560px 560px, auto, auto; background-attachment: fixed;
+}
+.top { border-bottom: 1px solid rgba(255,255,255,.08); }
+.brand { color: var(--accent); font-weight: 600; }
+.brand::before { content: "\263E  "; }
+.top nav a.active { background: rgba(255,212,121,.14); color: var(--accent); }
+.search input[type=search] { background: rgba(22,30,72,.8); border-color: var(--line); border-radius: 999px; padding-inline: 20px; }
+.search input[type=search]:focus { box-shadow: 0 0 0 3px rgba(255,212,121,.3); outline: 0; }
+.seg { background: rgba(22,30,72,.8); }
+.seg button[aria-pressed=true] { background: var(--accent); color: var(--on-accent); box-shadow: 0 0 14px rgba(255,212,121,.5); font-weight: 700; }
+.toggle { background: rgba(22,30,72,.8); }
+.toggle[aria-pressed=true] { box-shadow: inset 0 0 0 1px var(--accent), 0 0 12px rgba(255,212,121,.35); }
+.chip { background: rgba(22,30,72,.6); }
+.chip[aria-pressed=true] { background: rgba(255,212,121,.16); border-color: var(--accent); color: var(--accent); }
+.summary-line .label { color: var(--muted); }
+.grid { grid-template-columns: repeat(auto-fill, minmax(156px, 1fr)); gap: 28px 18px; }
+.card { padding: 10px; border-radius: 20px; background: linear-gradient(rgba(30,40,96,.55), rgba(16,22,58,.55)); border: 1px solid rgba(255,255,255,.07); transition: transform .25s, box-shadow .25s; }
+.card .cover { box-shadow: 0 0 22px 2px rgba(255,212,121,.22), 0 8px 18px rgba(0,0,0,.5); transition: box-shadow .25s; }
+.card:hover { transform: translateY(-5px); }
+.card:hover .cover { box-shadow: 0 0 38px 8px rgba(255,212,121,.5), 0 8px 18px rgba(0,0,0,.5); }
+.card-title { font-weight: 600; }
+.badge.in { color: #bff3d2; } .badge.in::before { box-shadow: 0 0 8px var(--ok); }
+.btn { background: rgba(22,30,72,.8); }
+.btn.primary { box-shadow: 0 0 18px rgba(255,212,121,.45); }
+.detail .cover { box-shadow: 0 0 60px 10px rgba(255,212,121,.3); }
+.branch, .list-card { background: rgba(22,30,72,.7); border: 1px solid rgba(255,255,255,.07); }
+dialog.sheet { background: #161e48; border: 1px solid rgba(255,255,255,.1); }

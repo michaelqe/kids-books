@@ -1,0 +1,11 @@
+/* Ember (rounded): dark sidebar family (see style.css). Not pure black. */
+:root {
+  --bg: #272220; --surface: #322b28; --tile: #3d3430; --line: #4e423c; --text: #eee3d8; --muted: #b3a393;
+  --accent: #ffb454; --on-accent: #2b1700; --bar-bg: #272220;
+  --radius: 8px; --pill: 8px; --cover-radius: 4px;
+  --card-r: 16px; --panel-r: 14px;
+  --toast-bg: #3d3430; --chip-bg: rgba(20,22,26,.78); --chip-fg: #eee3d8;
+  --font: Inter, 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif; --head-weight: 600;
+}
+html[data-ui=dkember] .brand,html[data-ui=dkember] .detail h1,html[data-ui=dkember] .card-title{font-family:Georgia,'Iowan Old Style',serif}
+html[data-ui=dkember] .card-title{font-weight:600}

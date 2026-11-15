@@ -1,0 +1,11 @@
+/* Plum (rounded): dark sidebar family (see style.css). Not pure black. */
+:root {
+  --bg: #231d2c; --surface: #2d2538; --tile: #382e46; --line: #473b58; --text: #e6dff0; --muted: #a99bbd;
+  --accent: #d69bff; --on-accent: #2a1238; --bar-bg: #231d2c;
+  --radius: 12px; --pill: 12px; --cover-radius: 4px;
+  --card-r: 20px; --panel-r: 20px;
+  --toast-bg: #382e46; --chip-bg: rgba(20,22,26,.78); --chip-fg: #e6dff0;
+  --font: Inter, 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif; --head-weight: 600;
+}
+html[data-ui=dkplum] .card:hover{box-shadow:0 12px 30px rgba(214,155,255,.16)}
+html[data-ui=dkplum] .brand{color:#d69bff}

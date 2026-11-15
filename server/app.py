@@ -45,6 +45,15 @@ AUDIENCES = {
     "adult": "Adult nature",
 }
 TYPES = {"fiction": "Fiction", "nonfiction": "Non-fiction", "poetry": "Poetry", "comics": "Comics", "activity": "Activity"}
+# `sort=` values; anything else (or none) means relevance when searching, newest first when browsing.
+SORTS = {
+    "newest": "b.year IS NULL, b.year DESC, b.title COLLATE NOCASE",
+    "oldest": "b.year IS NULL, b.year ASC, b.title COLLATE NOCASE",
+    "title": "b.title COLLATE NOCASE",
+    "shortest": "b.pages IS NULL, b.pages ASC, b.title COLLATE NOCASE",
+    "longest": "b.pages IS NULL, b.pages DESC, b.title COLLATE NOCASE",
+    "shelf": "b.available_copies DESC, b.title COLLATE NOCASE",
+}
 
 
 class ApiError(Exception):
@@ -97,6 +106,17 @@ def _multi(params: dict, name: str, allowed: dict) -> list[str]:
     return [v for v in params.get(name, "").split(",") if v in allowed]
 
 
+def _int(params: dict, name: str) -> int | None:
+    try:
+        return int(params[name])
+    except (KeyError, ValueError):
+        return None
+
+
+def _csv(params: dict, name: str, limit: int = 40) -> list[str]:
+    return [v.strip() for v in params.get(name, "").split(",") if v.strip()][:limit]
+
+
 def book_card(row: sqlite3.Row) -> dict:
     authors = [display_name(a) for a in dbm.loads(row["authors"], [])]
     keys = row.keys()
@@ -125,7 +145,9 @@ def book_card(row: sqlite3.Row) -> dict:
 
 def search(cat: sqlite3.Connection, params: dict, hidden: list[str] | None = None) -> dict:
     """Full-text search plus filters. v2 filters: audience and type (comma-separated, any of),
-    topic, and nature=1. `lang` is accepted and ignored on a v2 catalogue (all English)."""
+    topic, and nature=1. Also: year_from/year_to, pages_min/pages_max, branch (comma-separated),
+    topics (comma-separated; topics_all=1 wants every one), sort (see SORTS), and adv=1 for the
+    topic, branch and year facets. `lang` is accepted and ignored on a v2 catalogue (all English)."""
     q = params.get("q", "").strip()
     field = params.get("field", "any")
     lang = params.get("lang", "any")
@@ -170,6 +192,31 @@ def search(cat: sqlite3.Connection, params: dict, hidden: list[str] | None = Non
         base.append(("b.id IN (SELECT book_id FROM topics WHERE topic = ?)", [topic]))
     if nature and facets_on:
         base.append(("b.nature = 1", []))
+    year_from, year_to = _int(params, "year_from"), _int(params, "year_to")
+    pages_min, pages_max = _int(params, "pages_min"), _int(params, "pages_max")
+    if year_from is not None:
+        base.append(("b.year >= ?", [year_from]))
+    if year_to is not None:
+        base.append(("b.year <= ?", [year_to]))
+    if pages_min is not None:
+        base.append(("b.pages >= ?", [pages_min]))
+    if pages_max is not None:
+        base.append(("b.pages <= ?", [pages_max]))
+    topic_list = _csv(params, "topics") if facets_on else []
+    branch_list = _csv(params, "branch")
+    topic_cond = branch_cond = None
+    if topic_list:
+        marks = ",".join("?" * len(topic_list))
+        if params.get("topics_all") in ("1", "true", "yes"):  # every chosen topic, not just one of them
+            topic_cond = (
+                f"b.id IN (SELECT book_id FROM topics WHERE topic IN ({marks}) GROUP BY book_id HAVING count(DISTINCT topic) = ?)",
+                topic_list + [len(topic_list)],
+            )
+        else:
+            topic_cond = (f"b.id IN (SELECT book_id FROM topics WHERE topic IN ({marks}))", topic_list)
+    if branch_list:
+        branch_cond = (
+            f"b.id IN (SELECT book_id FROM holdings WHERE branch IN ({','.join('?' * len(branch_list))}))", branch_list)
     aud_cond = (f"b.audience IN ({','.join('?' * len(audiences))})", audiences) if audiences else None
     type_cond = (f"b.type IN ({','.join('?' * len(types))})", types) if types else None
 
@@ -178,7 +225,9 @@ def search(cat: sqlite3.Connection, params: dict, hidden: list[str] | None = Non
         sql = " AND ".join(c[0] for c in parts)
         return ("WHERE " + sql) if sql else "", [a for c in parts for a in c[1]]
 
-    sql_where, args = where(*base, aud_cond, type_cond)
+    sql_where, args = where(*base, aud_cond, type_cond, topic_cond, branch_cond)
+    if params.get("sort") in SORTS:
+        order = SORTS[params["sort"]]
     try:
         total = cat.execute(f"SELECT count(*) FROM books b {join} {sql_where}", args).fetchone()[0]
         rows = cat.execute(
@@ -188,12 +237,30 @@ def search(cat: sqlite3.Connection, params: dict, hidden: list[str] | None = Non
         facets = empty_facets(facets_on)
         if facets_on:
             # Each facet counts with every other filter applied, so its options stay pickable.
-            w, a = where(*base, type_cond)
+            w, a = where(*base, type_cond, topic_cond, branch_cond)
             counts = dict(cat.execute(f"SELECT b.audience, count(*) FROM books b {join} {w} GROUP BY b.audience", a).fetchall())
             facets["audience"] = [{"value": k, "label": v, "count": counts.get(k, 0)} for k, v in AUDIENCES.items()]
-            w, a = where(*base, aud_cond)
+            w, a = where(*base, aud_cond, topic_cond, branch_cond)
             counts = dict(cat.execute(f"SELECT b.type, count(*) FROM books b {join} {w} GROUP BY b.type", a).fetchall())
             facets["type"] = [{"value": k, "label": v, "count": counts.get(k, 0)} for k, v in TYPES.items()]
+        if facets_on and params.get("adv") in ("1", "true", "yes"):
+            # The long facets: each counts with every other filter applied, like audience and type.
+            w, a = where(*base, aud_cond, type_cond, branch_cond)
+            rows_t = cat.execute(
+                f"""SELECT topic, count(DISTINCT book_id) AS n FROM topics
+                    WHERE book_id IN (SELECT b.id FROM books b {join} {w}) GROUP BY topic ORDER BY n DESC, topic LIMIT 40""", a).fetchall()
+            seen = {r[0]: r[1] for r in rows_t}
+            facets["topics"] = [{"value": k, "label": k, "count": n} for k, n in seen.items()] + [
+                {"value": t, "label": t, "count": 0} for t in topic_list if t not in seen]
+            w, a = where(*base, aud_cond, type_cond, topic_cond)
+            rows_b = cat.execute(
+                f"""SELECT branch, count(DISTINCT book_id) AS n FROM holdings
+                    WHERE book_id IN (SELECT b.id FROM books b {join} {w}) GROUP BY branch ORDER BY n DESC, branch LIMIT 60""", a).fetchall()
+            seen = {r[0]: r[1] for r in rows_b}
+            facets["branches"] = [{"value": k, "label": k, "count": n} for k, n in seen.items()] + [
+                {"value": t, "label": t, "count": 0} for t in branch_list if t not in seen]
+            lo, hi = cat.execute("SELECT min(year), max(year) FROM books WHERE year > 0").fetchone()
+            facets["years"] = {"min": lo, "max": hi}
     except sqlite3.OperationalError as e:  # a query FTS5 can't parse
         raise ApiError(400, f"bad search: {e}") from e
     return {

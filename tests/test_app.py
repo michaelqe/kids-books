@@ -138,6 +138,21 @@ class ServerTest(unittest.TestCase):
         _, subjects = self.call("GET", "/api/subjects")
         self.assertIn("birds", [s["subject"] for s in subjects])
 
+    def test_advanced_filters(self):
+        _, body = self.call("GET", "/api/search?adv=1")
+        self.assertIn("birds", [t["value"] for t in body["facets"]["topics"]])
+        self.assertTrue(body["facets"]["branches"])
+        self.assertLessEqual(body["facets"]["years"]["min"], body["facets"]["years"]["max"])
+        _, body = self.call("GET", "/api/search?topics=birds&topics_all=1")
+        self.assertEqual([r["id"] for r in body["results"]], ["b6062504"])
+        _, body = self.call("GET", "/api/search?year_from=9999")
+        self.assertEqual(body["total"], 0)
+        _, everything = self.call("GET", "/api/search?sort=title")
+        titles = [r["title"].lower() for r in everything["results"]]
+        self.assertEqual(titles, sorted(titles))
+        _, body = self.call("GET", "/api/search?pages_max=1")
+        self.assertEqual(body["total"], 0)
+
     def test_book_detail(self):
         status, book = self.call("GET", "/api/books/b6062504")
         self.assertEqual(status, 200)

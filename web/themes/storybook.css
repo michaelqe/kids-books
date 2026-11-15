@@ -1,0 +1,45 @@
+/* Storybook: bouncy, rounded, sticker-bright. Every audience gets its own colour. */
+:root {
+  --bg: #fff4d6; --surface: #ffffff; --tile: #ffe9a8; --line: #f1d68a; --text: #3a2b4d; --muted: #7b6b8f;
+  --accent: #ff7a59; --on-accent: #fff; --radius: 22px; --pill: 999px; --cover-radius: 14px; --gutter: 18px;
+  --font: ui-rounded, "SF Pro Rounded", "Nunito", "Baloo 2", "Comic Sans MS", "Trebuchet MS", system-ui, sans-serif; --head-weight: 800;
+  --bar-bg: #ffd24a; --chip-bg: #3a2b4d; --chip-fg: #fff; --toast-bg: #3a2b4d; --ok: #2fb67a; --warn: #ff9f1c; color-scheme: light;
+}
+body { background: #fff4d6 radial-gradient(#ffe2a0 2px, transparent 2.5px) 0 0/26px 26px; color: var(--text); }
+.top { border: 0; border-radius: 0 0 28px 28px; box-shadow: 0 5px 0 #f0b800; backdrop-filter: none; }
+.brand { font-size: 28px; font-weight: 900; color: #3a2b4d; transform: rotate(-2deg); letter-spacing: -.01em; }
+.top nav a { color: #5a3d00; font-weight: 800; }
+.top nav a.active { background: #fff; box-shadow: 0 3px 0 #f0b800; color: #3a2b4d; }
+.search input[type=search] { border: 4px solid #3a2b4d; border-radius: 999px; padding: 12px 20px; font-weight: 700; box-shadow: 0 5px 0 #3a2b4d; }
+.search select { border: 3px solid #3a2b4d; border-radius: 999px; font-weight: 700; background: #fff; padding: 0 14px; }
+.seg { background: #fff; border: 3px solid #3a2b4d; box-shadow: 0 4px 0 #3a2b4d; }
+.seg button { font-weight: 800; color: #7b6b8f; }
+.seg button[aria-pressed=true] { background: #ff7a59; color: #fff; box-shadow: none; }
+.toggle { background: #fff; border: 3px solid #3a2b4d; font-weight: 800; color: #3a2b4d; box-shadow: 0 4px 0 #3a2b4d; }
+.toggle[aria-pressed=true] { background: #7be0b0; box-shadow: 0 4px 0 #3a2b4d; }
+.chip { background: #fff; border: 3px solid #3a2b4d; color: #3a2b4d; font-weight: 800; box-shadow: 0 3px 0 #3a2b4d; }
+.chip:nth-child(4n+1) { background: #ffd1c4; } .chip:nth-child(4n+2) { background: #c9ecf2; } .chip:nth-child(4n+3) { background: #ffe9a8; } .chip:nth-child(4n+4) { background: #e1d4ff; }
+.chip[aria-pressed=true] { background: #3a2b4d; color: #fff; }
+.chip .count { color: inherit; opacity: .6; }
+.summary-line .label { color: #3a2b4d; font-size: 15px; text-transform: none; letter-spacing: 0; font-weight: 800; }
+.grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 26px 18px; padding-top: 8px; }
+.card { background: #fff; border: 4px solid #3a2b4d; border-radius: 26px; padding: 10px 10px 14px; box-shadow: 0 6px 0 #3a2b4d; transition: transform .2s cubic-bezier(.3,1.8,.5,1); }
+.card:nth-child(3n+1) { transform: rotate(-1.6deg); } .card:nth-child(3n+2) { transform: rotate(1.2deg); } .card:nth-child(3n) { transform: rotate(-.5deg); }
+.card:hover { transform: rotate(0) scale(1.06) translateY(-4px); }
+.card[data-aud=baby_toddler] { --c: #ffb3c7; } .card[data-aud=picture_book] { --c: #ffe08a; } .card[data-aud=early_reader] { --c: #9be3c1; }
+.card[data-aud=middle_grade] { --c: #a9d4ff; } .card[data-aud=teen] { --c: #d4b8ff; } .card[data-aud=adult] { --c: #c9e08a; }
+.card { background: var(--c, #fff); }
+.card .cover { border: 3px solid #3a2b4d; }
+.card-title { font-weight: 800; font-size: 16px; margin-top: 4px; }
+.card-meta { color: #4d3c63; }
+.badge { background: #fff; border: 2px solid #3a2b4d; border-radius: 999px; padding: 2px 10px; width: fit-content; color: #3a2b4d; font-weight: 700; }
+.badge::before { width: 9px; height: 9px; }
+.hide-btn { border-radius: 50%; }
+.save-mark { width: 22px; height: 22px; background: #ff7a59 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M12 21l-1.5-1.3C5.4 15.1 2 12 2 8.5 2 5.4 4.4 3 7.500 3c1.700 0 3.400.8 4.500 2.100C13.100 3.800 14.800 3 16.500 3 19.600 3 22 5.400 22 8.500c0 3.500-3.400 6.600-8.500 11.200z'/%3E%3C/svg%3E") center/14px no-repeat; border: 2px solid #3a2b4d; box-shadow: none; }
+.btn { border: 3px solid #3a2b4d; background: #fff; font-weight: 800; box-shadow: 0 4px 0 #3a2b4d; }
+.btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #3a2b4d; }
+.btn.primary { background: #ff7a59; border-color: #3a2b4d; color: #fff; }
+.detail { background: #fff; border: 4px solid #3a2b4d; border-radius: 30px; padding: 22px; box-shadow: 0 8px 0 #3a2b4d; }
+.detail .cover { border: 4px solid #3a2b4d; transform: rotate(-2deg); }
+.branch, .list-card { border: 3px solid #3a2b4d; box-shadow: 0 4px 0 #3a2b4d; background: #fff; }
+dialog.sheet { border: 4px solid #3a2b4d; }

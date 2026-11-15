@@ -1,0 +1,12 @@
+/* Midnight (square): dark sidebar family (see style.css). Not pure black. */
+:root {
+  --bg: #1b1d33; --surface: #232644; --tile: #2c3055; --line: #3a3f6b; --text: #dfe2f5; --muted: #9a9fc9;
+  --accent: #ffd75e; --on-accent: #241f00; --bar-bg: #1b1d33;
+  --radius: 4px; --pill: 4px; --cover-radius: 4px;
+  --card-r: 0px; --panel-r: 0px;
+  --toast-bg: #2c3055; --chip-bg: rgba(20,22,26,.78); --chip-fg: #dfe2f5;
+  --font: Inter, 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif; --head-weight: 600;
+}
+html[data-ui=dkmidnight] .grid{gap:0;border-top:1px solid var(--line);border-left:1px solid var(--line)}
+html[data-ui=dkmidnight] .card{border-width:0 1px 1px 0;background:transparent;padding:12px}
+html[data-ui=dkmidnight] .card:hover{background:var(--surface);transform:none;box-shadow:inset 0 0 0 2px var(--accent)}

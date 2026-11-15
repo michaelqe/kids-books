@@ -7,6 +7,16 @@
   <title>Kids Books</title>
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
+  <link id="theme" rel="stylesheet">
+  <script>
+    // Apply the chosen UI before first paint (see themes.js). ?ui=<key> beats the saved choice.
+    try {
+      var ui = new URLSearchParams(location.search).get("ui") || localStorage.getItem("kb-ui") || "classic";
+      if (!/^[a-z0-9]+$/.test(ui)) ui = "classic";
+      if (ui !== "classic") document.getElementById("theme").href = "themes/" + ui + ".css";
+      document.documentElement.dataset.ui = ui;
+    } catch (e) {}
+  </script>
   <script type="module" src="app.js"></script>
 </head>
 <body>

@@ -1,0 +1,27 @@
+/* Navy leather: the Forest square-card look on a textured background. Texture is a tiled SVG
+   (feTurbulence + lighting) blended softly over the colour; nothing to download. */
+:root {
+  --bg: #18223a; --surface: #212d4a; --tile: #2a3859; --line: #3a4a70; --text: #e6e9f1; --muted: #9aa6c2;
+  --accent: #e0c079; --on-accent: #2a1f00; --bar-bg: transparent;
+  --radius: 2px; --pill: 2px; --cover-radius: 0px; --card-r: 0px; --panel-r: 0px;
+  --toast-bg: #2a3859; --chip-bg: rgba(20,22,20,.8); --chip-fg: #e6e9f1;
+  --font: Inter, 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif; --head-weight: 600;
+  --texture: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='3' seed='3' result='t'/%3E%3CfeDiffuseLighting in='t' lighting-color='%23fff' surfaceScale='2.2'%3E%3CfeDistantLight azimuth='45' elevation='55'/%3E%3C/feDiffuseLighting%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23n%29'/%3E%3C/svg%3E");
+}
+html[data-ui=dknavyleather] body {
+  background-color: var(--bg);
+  background-image: radial-gradient(ellipse at 50% 30%, rgba(255,255,255,.05), transparent 60%), radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.35)), var(--texture);
+  background-blend-mode: normal, normal, soft-light;
+  background-attachment: fixed;
+}
+html[data-ui=dknavyleather] .brand, html[data-ui=dknavyleather] .card-title, html[data-ui=dknavyleather] .detail h1 { font-family: Georgia, 'Iowan Old Style', serif; }
+html[data-ui=dknavyleather] .brand { color: var(--accent); letter-spacing: .04em; }
+html[data-ui=dknavyleather] .top { background: linear-gradient(rgba(255,255,255,.06), rgba(0,0,0,.18)), var(--bg); border-bottom: 1px solid rgba(0,0,0,.45); box-shadow: 0 2px 10px rgba(0,0,0,.35); }
+html[data-ui=dknavyleather] .search { background: linear-gradient(rgba(255,255,255,.035), rgba(0,0,0,.08)), var(--surface); box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 6px 16px rgba(0,0,0,.35); }
+html[data-ui=dknavyleather] .card { background: linear-gradient(rgba(255,255,255,.035), rgba(0,0,0,.08)), var(--surface); box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 3px 4px 0 rgba(0,0,0,.28); }
+html[data-ui=dknavyleather] .card .cover { box-shadow: 0 3px 8px rgba(0,0,0,.5); }
+html[data-ui=dknavyleather] .top { position: sticky; }
+html[data-ui=dknavyleather] .top::after { content: ""; position: absolute; left: 8px; right: 8px; bottom: 5px; border-bottom: 2px dashed color-mix(in srgb, var(--accent) 45%, transparent); pointer-events: none; }
+html[data-ui=dknavyleather] .search::after, html[data-ui=dknavyleather] .card::after { content: ""; position: absolute; inset: 4px; border: 1px dashed color-mix(in srgb, var(--accent) 28%, transparent); pointer-events: none; }
+html[data-ui=dknavyleather] .search { position: sticky; }
+html[data-ui=dknavyleather] .card { position: relative; }

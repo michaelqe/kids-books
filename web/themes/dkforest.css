@@ -1,0 +1,11 @@
+/* Forest (square): dark sidebar family (see style.css). Not pure black. */
+:root {
+  --bg: #1f251c; --surface: #283024; --tile: #323b2d; --line: #434e3c; --text: #e9e6d2; --muted: #a6ae95;
+  --accent: #c9d66a; --on-accent: #1d2305; --bar-bg: #1f251c;
+  --radius: 2px; --pill: 2px; --cover-radius: 4px;
+  --card-r: 0px; --panel-r: 0px;
+  --toast-bg: #323b2d; --chip-bg: rgba(20,22,26,.78); --chip-fg: #e9e6d2;
+  --font: Inter, 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif; --head-weight: 600;
+}
+html[data-ui=dkforest] .brand,html[data-ui=dkforest] .card-title,html[data-ui=dkforest] .detail h1{font-family:Georgia,'Iowan Old Style',serif}
+html[data-ui=dkforest] .card{box-shadow:3px 3px 0 rgba(0,0,0,.28)}

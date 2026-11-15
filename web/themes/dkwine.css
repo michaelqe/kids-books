@@ -1,0 +1,12 @@
+/* Wine (square): dark sidebar family (see style.css). Not pure black. */
+:root {
+  --bg: #2a1f24; --surface: #35282e; --tile: #403238; --line: #5a4650; --text: #f0e2e4; --muted: #b9a0a8;
+  --accent: #e8b4a0; --on-accent: #2e140c; --bar-bg: #2a1f24;
+  --radius: 0px; --pill: 0px; --cover-radius: 4px;
+  --card-r: 0px; --panel-r: 0px;
+  --toast-bg: #403238; --chip-bg: rgba(20,22,26,.78); --chip-fg: #f0e2e4;
+  --font: Inter, 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif; --head-weight: 600;
+}
+html[data-ui=dkwine] .card{border-color:#5a4650;padding:10px}
+html[data-ui=dkwine] .card .cover{box-shadow:0 0 0 1px rgba(232,180,160,.35)}
+html[data-ui=dkwine] .brand{letter-spacing:.2em;text-transform:uppercase;font-size:18px;font-weight:400}

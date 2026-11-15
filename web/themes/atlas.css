@@ -1,0 +1,47 @@
+/* Atlas: the robust-filtering UI. A sticky filter sidebar (see .adv in app.js) beside a dense cover grid. */
+:root {
+  --bg: #f3f4f7; --surface: #ffffff; --tile: #eceef3; --line: #d9dce4; --text: #161a23; --muted: #5b6372;
+  --accent: #2563eb; --on-accent: #fff; --radius: 8px; --pill: 8px; --cover-radius: 4px;
+  --font: Inter, "Segoe UI", system-ui, -apple-system, Roboto, sans-serif; --head-weight: 650;
+  --bar-bg: rgba(255,255,255,.94); --chip-bg: rgba(22,26,35,.8); --chip-fg: #fff; --toast-bg: #161a23;
+  --ok: #15803d; --warn: #b45309; color-scheme: light;
+}
+.top { border-bottom: 1px solid var(--line); }
+.brand { font-weight: 700; letter-spacing: -.01em; }
+.toast { color: #fff; }
+.top nav a.active { background: #e0e9ff; color: var(--accent); }
+main { max-width: 1500px; }
+#view:has(> form.search) { display: grid; grid-template-columns: 310px minmax(0, 1fr); gap: 20px 28px; align-items: start; }
+@media (max-width: 860px) { #view:has(> form.search) { grid-template-columns: 1fr; } }
+.search {
+  position: sticky; top: 72px; max-height: calc(100vh - 88px); overflow: auto; margin: 0;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px; gap: 12px;
+  box-shadow: 0 1px 2px rgba(16,24,40,.06);
+}
+@media (max-width: 860px) { .search { position: static; max-height: none; } }
+.search-row { flex-direction: column; }
+.search input[type=search] { font-size: 16px; padding: 10px 12px; }
+.seg { background: var(--tile); border-radius: 8px; width: 100%; }
+.seg button { flex: 1; border-radius: 6px; font-size: 13px; padding: 6px 4px; }
+.seg button[aria-pressed=true] { background: #fff; box-shadow: 0 1px 2px rgba(16,24,40,.2); color: var(--accent); }
+.filters { gap: 8px; }
+.facets .chips, .adv .chips { flex-wrap: wrap; overflow: visible; }
+.chips { flex-wrap: wrap; max-height: 8.5em; overflow: auto; }
+.chip { background: #fff; border-radius: 6px; font-size: 13px; padding: 3px 9px; }
+.chip[aria-pressed=true] { background: #e0e9ff; border-color: var(--accent); color: var(--accent); }
+.chip .count { color: inherit; opacity: .65; }
+.adv { display: grid; border-top: 1px solid var(--line); padding-top: 12px; }
+.adv-sec .label { font-weight: 600; color: var(--text); letter-spacing: .08em; }
+.adv .active .chip { background: var(--accent); color: #fff; border-color: var(--accent); }
+.adv .picks { max-height: 200px; }
+.chips:has(.chip[data-subject]) { display: none; }  /* the topic checklist replaces the topic chips */
+.grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px 16px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 8px 8px 10px; transition: box-shadow .15s, transform .15s; }
+.card:hover { box-shadow: 0 8px 22px rgba(16,24,40,.16); transform: translateY(-2px); }
+.card .cover { border-radius: 4px; box-shadow: 0 1px 4px rgba(16,24,40,.3); }
+.card-title { font-weight: 600; margin-top: 4px; }
+.summary-line .label { color: var(--text); font-size: 14px; letter-spacing: 0; text-transform: none; font-weight: 600; }
+.btn { border-radius: 8px; }
+.btn.primary { color: #fff; }
+.card-pages { display: block; font-size: 12px; color: var(--muted); }
+.card-pages:empty { display: none; }

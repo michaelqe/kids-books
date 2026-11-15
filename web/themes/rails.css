@@ -1,0 +1,38 @@
+/* Streaming rails: cinematic black, huge covers in horizontally scrolling rows, hover to zoom. */
+:root {
+  --bg: #141414; --surface: #1f1f1f; --tile: #2b2b2b; --line: #333; --text: #fff; --muted: #b3b3b3;
+  --accent: #e50914; --on-accent: #fff; --radius: 4px; --pill: 4px; --cover-radius: 4px;
+  --font: "Netflix Sans", "Helvetica Neue", Helvetica, Arial, sans-serif; --head-weight: 700;
+  --bar-bg: linear-gradient(rgba(0,0,0,.9), rgba(20,20,20,.55)); --toast-bg: #333;
+}
+.top { border: 0; backdrop-filter: none; }
+.brand { color: #e50914; font-weight: 900; font-size: 26px; text-transform: uppercase; letter-spacing: .02em; }
+.top nav a { font-size: 14px; color: #e5e5e5; }
+.top nav a.active { background: none; font-weight: 700; color: #fff; }
+main { max-width: none; padding-inline: 0; }
+.search, .summary-line, .pager, .empty { padding-inline: 4%; }
+.search input[type=search] { background: rgba(0,0,0,.7); border: 1px solid #fff; border-radius: 3px; }
+.seg { background: none; }
+.seg button { border: 1px solid #555; margin-right: 6px; }
+.seg button[aria-pressed=true] { background: #fff; color: #000; box-shadow: none; }
+.toggle { border: 1px solid #555; background: none; }
+.chip { border-color: #555; }
+.chip[aria-pressed=true] { background: #fff; color: #000; border-color: #fff; }
+.chip .count { color: inherit; opacity: .6; }
+.summary-line .label { font-size: 20px; color: #fff; text-transform: none; letter-spacing: 0; font-weight: 700; }
+/* rows */
+.grid { display: grid; grid-auto-flow: column; grid-template-columns: none; grid-template-rows: repeat(2, auto); grid-auto-columns: 190px; gap: 38px 8px; overflow-x: auto; padding: 24px 4% 56px; scroll-snap-type: x proximity; scrollbar-width: thin; scrollbar-color: #555 transparent; }
+@media (max-width: 600px) { .grid { grid-auto-columns: 140px; } }
+.card { scroll-snap-align: start; transition: transform .2s ease; transform-origin: center bottom; position: relative; }
+.card:hover { transform: scale(1.12); z-index: 5; }
+.card .cover { box-shadow: 0 6px 18px rgba(0,0,0,.6); }
+.card-title { font-weight: 700; margin-top: 6px; }
+.card-meta { opacity: .85; }
+.card:hover .cover { box-shadow: 0 14px 36px rgba(0,0,0,.85); outline: 2px solid #fff; }
+.card::before { content: ""; position: absolute; inset: -6px -4px; background: #181818; opacity: 0; transition: opacity .2s; border-radius: 6px; z-index: -1; box-shadow: 0 8px 30px #000; }
+.card:hover::before { opacity: 1; }
+.btn { background: #333; border-color: #333; } .btn:hover { background: #444; }
+.btn.primary { background: #fff; color: #000; border-color: #fff; }
+.detail, .list-head, .lists, .section, .branches { max-width: 1100px; }
+#view > .detail, #view > div { padding-inline: 4%; }
+.detail { margin-inline: auto; }

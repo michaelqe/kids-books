@@ -46,6 +46,17 @@ Set `GOOGLE_BOOKS_API_KEY` to add Google Books summaries and categories (the key
 shared and usually exhausted; X1 has no key today). Outside categories come from the Library of
 Congress (by the LCCN Open Library knows) and Open Library; see `crawler/categories.py`.
 
+## UIs (skins)
+
+`web/themes/<key>.css` loads on top of `style.css`; pick one with the **UI** button (remembered per
+device) or `?ui=<key>`. The list and blurbs are in `web/themes.js`: classic, catalog, atlas (robust
+filters: topics, libraries, year, length, sort), y2013, metro, shelf, coverflow, storybook,
+fieldguide, brutal, swiss, rails, pinboard, terminal, popart, nightlight, plus ten dark sidebar-filter
+skins (`dk*`, shared layout in `style.css`): dkslate, dkmoss, dkplum, dkember, dkocean (rounded cards),
+dkgraphite, dkforest, dkwine, dkmidnight, dkcopper (square cards), and textured Forest variants
+(dkwren, dknavyleather, dkoxblood, dkcognac, dkforestgrain; the texture is a tiled inline SVG). `python3 dev/demo_catalog.py`
+builds a small demo catalogue to look at them without the real one.
+
 ## Tests
 
 ```sh

@@ -1,0 +1,12 @@
+/* Ocean glass (rounded): dark sidebar family (see style.css). Not pure black. */
+:root {
+  --bg: #18272f; --surface: rgba(255,255,255,.055); --tile: rgba(255,255,255,.09); --line: rgba(255,255,255,.13); --text: #dcebf0; --muted: #92aab4;
+  --accent: #5fd4e8; --on-accent: #06222a; --bar-bg: #18272f;
+  --radius: 8px; --pill: 8px; --cover-radius: 4px;
+  --card-r: 18px; --panel-r: 18px;
+  --toast-bg: #2f3749; --chip-bg: rgba(20,22,26,.78); --chip-fg: #dcebf0;
+  --font: Inter, 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif; --head-weight: 600;
+}
+html[data-ui=dkocean] body{background:radial-gradient(1100px 600px at 80% -10%,#25505c,transparent 60%),radial-gradient(900px 600px at 0 100%,#1f3d55,transparent 60%),#18272f;background-attachment:fixed}
+html[data-ui=dkocean] .card,html[data-ui=dkocean] .search{backdrop-filter:blur(10px)}
+html[data-ui=dkocean] .search input[type=search],html[data-ui=dkocean] .search select,html[data-ui=dkocean] .adv input,html[data-ui=dkocean] .adv select{background:rgba(0,0,0,.2)}

@@ -1,0 +1,43 @@
+/* Pop art: Ben-Day halftone dots, heavy outlines, comic-yellow, speech-bubble badges. */
+:root {
+  --bg: #ffe600; --surface: #ffffff; --tile: #fff3a0; --line: #000; --text: #111; --muted: #333;
+  --accent: #e6007e; --on-accent: #fff; --radius: 14px; --pill: 999px; --cover-radius: 4px;
+  --font: "Comic Neue", "Chalkboard SE", "Trebuchet MS", system-ui, sans-serif; --font-head: Impact, "Arial Black", "Haettenschweiler", sans-serif; --head-weight: 400;
+  --bar-bg: #e6007e; --chip-bg: #000; --chip-fg: #ffe600; --toast-bg: #fff; --ok: #00a3e0; --warn: #e6007e; color-scheme: light;
+}
+body { background: #ffe600 radial-gradient(rgba(230,0,126,.35) 22%, transparent 24%) 0 0/14px 14px; font-weight: 600; }
+.top { border-bottom: 5px solid #000; backdrop-filter: none; }
+.brand { font-family: Impact, "Arial Black", sans-serif; font-size: 32px; color: #ffe600; text-transform: uppercase; -webkit-text-stroke: 2px #000; paint-order: stroke fill; text-shadow: 3px 3px 0 #000; letter-spacing: .03em; transform: rotate(-2deg); }
+.top nav a { color: #fff; font-family: Impact, "Arial Black", sans-serif; text-transform: uppercase; letter-spacing: .04em; font-size: 15px; font-weight: 400; text-shadow: 2px 2px 0 #000; }
+.top nav a.active { background: #ffe600; color: #000; text-shadow: none; border: 3px solid #000; }
+.search input[type=search], .search select { border: 4px solid #000; background: #fff; box-shadow: 5px 5px 0 #00a3e0; font-weight: 700; }
+.seg { background: #fff; border: 4px solid #000; padding: 2px; box-shadow: 4px 4px 0 #000; }
+.seg button { font-family: Impact, "Arial Black", sans-serif; text-transform: uppercase; font-weight: 400; color: #000; letter-spacing: .03em; }
+.seg button[aria-pressed=true] { background: #00a3e0; color: #fff; box-shadow: none; }
+.toggle { background: #fff; border: 4px solid #000; box-shadow: 4px 4px 0 #000; color: #000; font-weight: 800; }
+.toggle[aria-pressed=true] { background: #e6007e; color: #fff; box-shadow: 4px 4px 0 #000; }
+.chip { background: #fff; color: #000; border: 3px solid #000; font-weight: 800; box-shadow: 3px 3px 0 #000; }
+.chip[aria-pressed=true] { background: #00a3e0; color: #fff; }
+.chip .count { color: inherit; opacity: .7; }
+.summary-line .label { background: #fff; border: 3px solid #000; padding: 2px 12px; color: #000; font-family: Impact, "Arial Black", sans-serif; font-weight: 400; letter-spacing: .06em; transform: rotate(-1deg); box-shadow: 3px 3px 0 #000; }
+.grid { grid-template-columns: repeat(auto-fill, minmax(166px, 1fr)); gap: 30px 20px; }
+.card { background: #fff; border: 4px solid #000; padding: 8px; box-shadow: 7px 7px 0 #000; position: relative; transition: transform .12s; border-radius: 4px; }
+.card:hover { transform: rotate(-1.5deg) scale(1.04); }
+.card .cover { border: 3px solid #000; }
+.card .cover::after { content: ""; position: absolute; inset: 0; background: radial-gradient(rgba(0,0,0,.18) 20%, transparent 22%) 0 0/6px 6px; mix-blend-mode: multiply; pointer-events: none; }
+.card .cover { position: relative; }
+.card-title { font-family: Impact, "Arial Black", sans-serif; font-weight: 400; text-transform: uppercase; letter-spacing: .02em; font-size: 16px; margin-top: 6px; }
+.card-meta { color: #333; }
+.badge { position: absolute; right: -14px; top: -14px; z-index: 3; background: #fff; border: 3px solid #000; border-radius: 50%; width: 62px; height: 62px; flex-direction: column; justify-content: center; text-align: center; font: 400 11px/1.05 Impact, "Arial Black", sans-serif; text-transform: uppercase; color: #000; padding: 4px; transform: rotate(10deg); box-shadow: 2px 2px 0 #000; gap: 0; white-space: normal; }
+.badge::before { display: none; }
+.badge.in { background: #00a3e0; color: #fff; } .badge.out { background: #e6007e; color: #fff; }
+.hide-btn { border: 2px solid #ffe600; }
+.save-mark { background: #e6007e; box-shadow: 0 0 0 3px #000; }
+.btn { background: #fff; border: 4px solid #000; font-family: Impact, "Arial Black", sans-serif; font-weight: 400; letter-spacing: .04em; text-transform: uppercase; box-shadow: 4px 4px 0 #000; }
+.btn.primary { background: #e6007e; color: #fff; }
+.detail { background: #fff; border: 5px solid #000; padding: 24px; box-shadow: 10px 10px 0 #000; border-radius: 6px; }
+.detail .cover { border: 4px solid #000; box-shadow: 6px 6px 0 #e6007e; }
+.detail h1 { text-transform: uppercase; font-size: 42px; letter-spacing: .01em; line-height: 1; }
+.branch, .list-card { background: #fff; border: 4px solid #000; box-shadow: 5px 5px 0 #000; }
+dialog.sheet { border: 5px solid #000; }
+.toast { border: 4px solid #000; }

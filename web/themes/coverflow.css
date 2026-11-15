@@ -1,0 +1,47 @@
+/* Cover Flow: a 3D carousel of covers on a glossy black floor. Scroll sideways. */
+:root {
+  --bg: #050507; --surface: #16161c; --tile: #1e1e26; --line: #2c2c36; --text: #f2f3f7; --muted: #8e93a3;
+  --accent: #6aa8ff; --on-accent: #06101f; --radius: 8px; --pill: 999px; --cover-radius: 2px;
+  --font: "Lucida Grande", "Helvetica Neue", system-ui, sans-serif; --head-weight: 400;
+  --bar-bg: linear-gradient(#3a3d44, #17181c); --toast-bg: #222;
+}
+body { background: radial-gradient(ellipse at 50% 38%, #2a2c36 0, #0a0a0e 55%, #000 100%) fixed; }
+.top { border-bottom: 1px solid #000; box-shadow: inset 0 1px 0 rgba(255,255,255,.18); backdrop-filter: none; }
+.brand { font-weight: 400; font-size: 18px; letter-spacing: .02em; }
+.top nav a { font-size: 13px; }
+.top nav a.active { background: linear-gradient(#5a5e68, #31343b); box-shadow: inset 0 1px 0 rgba(255,255,255,.25); }
+main { max-width: none; padding-inline: 0; }
+.search { max-width: 1100px; margin-inline: auto; padding-inline: var(--gutter); }
+.search input[type=search] { background: #0c0c10; border-radius: 999px; box-shadow: inset 0 2px 4px rgba(0,0,0,.8); text-align: center; }
+.summary-line { max-width: 1100px; margin-inline: auto; padding-inline: var(--gutter); }
+.pager { margin-top: 12px; }
+/* the carousel */
+.grid {
+  display: flex; gap: 0; overflow-x: auto; scroll-snap-type: x mandatory; padding: 36px calc(50% - 100px) 110px; perspective: 900px;
+  perspective-origin: 50% 40%; scrollbar-width: none; align-items: flex-start;
+}
+.grid::-webkit-scrollbar { display: none; }
+.card { flex: none; width: 200px; margin: 0 -32px; scroll-snap-align: center; gap: 3px; transform-style: preserve-3d; text-align: center; align-items: stretch; }
+.cover-wrap { -webkit-box-reflect: below 2px linear-gradient(transparent 62%, rgba(255,255,255,.32)); }
+.card .cover { box-shadow: 0 10px 30px rgba(0,0,0,.7); }
+.card-title, .card-meta, .badge { opacity: 0; transition: opacity .2s; }
+.card-title { margin-top: 70px; font-size: 16px; }
+.badge { justify-content: center; }
+@supports (animation-timeline: view(inline)) {
+  .card { animation: flow linear both; animation-timeline: view(inline); animation-range: cover 0% cover 100%; }
+  @keyframes flow {
+    0%   { transform: translateX(-90px) rotateY(62deg) scale(.82); z-index: 1; }
+    42%  { transform: translateX(-30px) rotateY(62deg) scale(.88); z-index: 2; }
+    50%  { transform: translateX(0) rotateY(0) scale(1.18); z-index: 9; }
+    58%  { transform: translateX(30px) rotateY(-62deg) scale(.88); z-index: 2; }
+    100% { transform: translateX(90px) rotateY(-62deg) scale(.82); z-index: 1; }
+  }
+  .card-title, .card-meta, .badge { animation: cap linear both; animation-timeline: view(inline); }
+  @keyframes cap { 0%, 44% { opacity: 0; } 49%, 51% { opacity: 1; } 56%, 100% { opacity: 0; } }
+}
+@supports not (animation-timeline: view(inline)) {
+  .card { margin: 0 8px; } .card-title, .card-meta, .badge { opacity: 1; } .card-title { margin-top: 6px; }
+}
+.hide-btn { opacity: 0; } .card:hover .hide-btn { opacity: .9; }
+.btn { border-radius: 999px; background: linear-gradient(#4a4d55, #2a2c32); border-color: #000; }
+.btn.primary { background: linear-gradient(#7db4ff, #3d78d6); }

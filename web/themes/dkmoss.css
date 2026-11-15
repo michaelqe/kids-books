@@ -1,0 +1,12 @@
+/* Moss (rounded): dark sidebar family (see style.css). Not pure black. */
+:root {
+  --bg: #1c2622; --surface: #25322d; --tile: #2e3d37; --line: #3b4d45; --text: #dce8e1; --muted: #95aba0;
+  --accent: #7be0b0; --on-accent: #0b2218; --bar-bg: #1c2622;
+  --radius: 999px; --pill: 999px; --cover-radius: 4px;
+  --card-r: 12px; --panel-r: 14px;
+  --toast-bg: #2e3d37; --chip-bg: rgba(20,22,26,.78); --chip-fg: #dce8e1;
+  --font: Inter, 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif; --head-weight: 600;
+}
+html[data-ui=dkmoss] .search input[type=search]{padding-inline:16px}
+html[data-ui=dkmoss] .seg{border-radius:999px}
+html[data-ui=dkmoss] .seg button{border-radius:999px}
