@@ -45,6 +45,14 @@ CASES = [
     ("lift-the-flap weather book, 008/33 says fiction",
      rec(genres=["lastekirjandus", "pildiraamatud", "vigurraamatud"], udc=["551.577.2(0.053.2)"], form="1", pages=12, holdings=[LENDABLE_CHILD]),
      [], "baby_toddler", "nonfiction", True, ""),
+    ("ESTER says literature, outside sources say juvenile non-fiction about weather",
+     rec(genres=["lastekirjandus", "pildiraamatud", "vigurraamatud"], udc=["821-93(0.029)"], udc_bt=["821-93"], form="1", pages=12, holdings=[LENDABLE_CHILD]),
+     [{"source": "openlibrary", "scheme": "subject", "code": "Weather, juvenile literature", "audience": "children", "type": "nonfiction", "topics": ["weather"], "nature": True}],
+     "baby_toddler", "nonfiction", True, ""),
+    ("literature UDC, outside source says non-fiction but ESTER has a fiction genre",
+     rec(genres=["lastekirjandus", "muinasjutud"], udc=["821-93"], form="1", pages=32, holdings=[LENDABLE_CHILD]),
+     [{"source": "openlibrary", "scheme": "subject", "code": "Bears, juvenile literature", "audience": "children", "type": "nonfiction", "nature": True}],
+     "picture_book", "fiction", True, ""),
     ("adult bird field guide",
      rec(genres=["määrajad"], udc=["598.2(4)(083.71)"], form="0", pages=448, subjects=["linnud"]),
      [], "adult", "nonfiction", True, ""),
@@ -109,6 +117,13 @@ class Rules(unittest.TestCase):
         r = rec(genres=["lastekirjandus", "pildiraamatud"], udc=["821.111-93-32"], form="1", pages=32)
         facets = classify.classify(r, [{"source": "openlibrary", "scheme": "subject", "code": "Fiction", "audience": "adult"}])
         self.assertEqual(facets["audience"], "picture_book")
+
+    def test_recatalogued_book_is_nature_but_children_fiction_is_not(self):
+        sig = [{"source": "openlibrary", "scheme": "subject", "code": "Weather, juvenile literature", "type": "nonfiction", "nature": True}]
+        r = rec(genres=["lastekirjandus", "pildiraamatud"], udc=["821-93"], udc_bt=["821-93"], form="1", pages=12, holdings=[LENDABLE_CHILD])
+        self.assertTrue(classify.classify(r, sig)["nature"])
+        fic = [{"source": "openlibrary", "scheme": "subject", "code": "Bears", "nature": True}]
+        self.assertFalse(classify.classify(r, fic)["nature"])
 
     def test_udc_topics(self):
         self.assertEqual(classify.udc_topics(["598.2(4)", "551.5(0.053.2)", "523.4"]), ["birds", "weather", "the solar system"])

@@ -109,7 +109,7 @@ def _udc_main(u: str) -> str:
     return re.split(r"[(\-:\"=+/ ']", u, maxsplit=1)[0]
 
 
-def is_nature(rec: dict, signals: list[dict] | None = None) -> tuple[bool, str]:
+def is_nature(rec: dict, signals: list[dict] | None = None, ignore_udc: bool = False) -> tuple[bool, str]:
     """Is this book about the natural world (weather, animals, plants, the sky, rocks, ...)?
 
     The primary UDC number (the first 080) decides when there is one: a secondary number
@@ -119,16 +119,17 @@ def is_nature(rec: dict, signals: list[dict] | None = None) -> tuple[bool, str]:
     guides = _genres(rec) & FIELD_GUIDE_GENRES
     if guides:
         return True, "genre " + sorted(guides)[0]
-    udcs = rec.get("udc", [])
+    udcs = [] if ignore_udc else rec.get("udc", [])
     if udcs:
         primary = udcs[0]
         if _udc_main(primary).startswith(ADULT_NATURE_UDC):
             return True, f"UDC {primary}"
         return False, ""
-    for u in rec.get("udc_bt", []):
+    udc_bt = [] if ignore_udc else rec.get("udc_bt", [])
+    for u in udc_bt:
         if u.startswith("5") and not u.startswith(("51", "53", "54")):
             return True, f"UDC broad term {u}"
-    if rec.get("udc_bt"):
+    if udc_bt:
         return False, ""
     for s in rec.get("subjects", []):
         base = re.split(r"\s*(?:\(|--)", s.lower())[0].strip()
@@ -187,6 +188,17 @@ def classify(rec: dict, signals: list[dict] | None = None) -> dict:
         typ, why = "fiction", (f"008/33 {form}" if form else "genre " + sorted(genres & FICTION_GENRES)[0])
     else:
         typ, why = _type_from_signals(signals) or ("nonfiction", "default")
+    # ESTER sometimes files a children's non-fiction book under literature (UDC 82). With no fiction
+    # genre or subject heading to back that up, and outside sources saying "juvenile literature"
+    # (non-fiction) and nothing saying fiction, trust them.
+    recatalogued = False
+    if typ == "fiction" and primary.startswith("82") and not genres & FICTION_GENRES and not rec.get("subjects"):
+        sig_types = {sig.get("type") for sig in signals}
+        if "nonfiction" in sig_types and "fiction" not in sig_types:
+            typ = "nonfiction"
+            src = next(sig for sig in signals if sig.get("type") == "nonfiction")
+            why = f"{src['source']} {src['scheme']} {src.get('label') or src['code']} (ESTER UDC {primary} is literature)"
+            recatalogued = True
     reasons.append(f"type {typ}: {why}")
 
     # --- audience ----------------------------------------------------------------------
@@ -232,7 +244,7 @@ def classify(rec: dict, signals: list[dict] | None = None) -> dict:
         for t in sig.get("topics", []):
             if t not in topics:
                 topics.append(t)
-    nature, nature_why = is_nature(rec, signals)
+    nature, nature_why = is_nature(rec, signals, ignore_udc=recatalogued)
     if nature:
         reasons.append(f"nature: {nature_why}")
     return {"audience": audience, "type": typ, "topics": topics[:12], "nature": nature, "reasons": reasons}

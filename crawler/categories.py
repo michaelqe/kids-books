@@ -282,6 +282,8 @@ def openlibrary_signals(result: dict) -> list[dict]:
             sig["audience"] = "baby_toddler"
         elif s in ("young adult fiction",):
             sig["audience"] = "teen"
+        elif s.endswith(", juvenile literature") or s == "juvenile literature":
+            sig["audience"], sig["type"] = "children", "nonfiction"
         topic = HEADING_TOPICS.get(re.split(r"\s*,\s*|\s+--\s+", s)[0])
         if topic:
             sig["topics"] = [topic]

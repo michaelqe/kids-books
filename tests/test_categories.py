@@ -52,6 +52,11 @@ class Loc(unittest.TestCase):
         lcsh = [s for s in sigs if s["scheme"] == "lcsh"][0]
         self.assertEqual((lcsh["audience"], lcsh["type"], lcsh["topics"]), ("children", "nonfiction", ["weather"]))
 
+    def test_openlibrary_juvenile_literature_is_nonfiction(self):
+        sigs = categories.openlibrary_signals({"ol_subjects": ["Picture books", "Weather, juvenile literature"]})
+        sig = [s for s in sigs if s["code"].startswith("Weather")][0]
+        self.assertEqual((sig["audience"], sig["type"], sig["nature"]), ("children", "nonfiction", True))
+
     def test_lcc_and_ddc_ranges(self):
         self.assertTrue(categories._lcc_nature("QC 870"))
         self.assertFalse(categories._lcc_nature("QC 21"))   # physics
