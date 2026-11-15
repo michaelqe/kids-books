@@ -100,7 +100,10 @@ h1.page { font-weight: 300; font-size: 32px; margin: 8px 0 16px; text-transform:
 .cover.placeholder {
   padding: 12px; text-align: center; font-weight: 300; font-size: 17px; line-height: 1.2;
   color: rgba(255, 255, 255, .92); overflow-wrap: anywhere;
+  flex-direction: column; gap: 10px; box-shadow: inset 0 0 0 6px rgba(255, 255, 255, .08);
 }
+.cover.placeholder .ph-title { display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
+.cover.placeholder .ph-author { font-size: 13px; opacity: .75; }
 .card-title { font-size: 15px; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .card-meta { font-size: 13px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .badge {

@@ -39,6 +39,18 @@ class FakeFetcher(enrich.Fetcher):
             return {"docs": [{"key": "/works/OL9W", "title": "Something else entirely"}]}
         return CANNED.get(url)
 
+    GOOGLE_HAS = {"9782222222222"}
+
+    def bytes(self, url):
+        self.urls.append(url)
+        self.requests += 1
+        if self.refuse:
+            raise enrich.Stop("HTTP 429 from books.google.com")
+        jpeg = b"\xff\xd8\xff\xe0"
+        if any(isbn in url for isbn in self.GOOGLE_HAS):
+            return jpeg + b"x" * 12000
+        return jpeg + b"x" * (10794 - 4)  # Google's "image not available"
+
 
 def catalog(books):
     db = sqlite3.connect(":memory:")
@@ -119,6 +131,36 @@ class Enrich(unittest.TestCase):
         f = FakeFetcher()
         stats = enrich.run(catalog(BOOKS), self.cache, log=lambda m: None, fetcher=f, max_lookups=1)
         self.assertEqual(stats["looked_up"], 1)
+
+    def test_google_cover_fallback_tries_every_isbn(self):
+        books = [{"id": "g1", "title": "New book", "isbns": ["9781111111111", "9782222222222"], "authors": ["A, B"]}]
+        db = catalog(books)
+        enrich.prefetch([enrich.book_from_record({**books[0]})], self.cache, log=lambda m: None, fetcher=FakeFetcher())
+        enrich.run(db, self.cache, log=lambda m: None, network=False, fetcher=FakeFetcher())
+        self.assertEqual(self.row(db, "g1")[0], enrich.GOOGLE_COVER.format(isbn="9782222222222"))
+
+    def test_google_placeholder_is_not_a_cover(self):
+        self.assertFalse(enrich.real_cover(b"\xff\xd8\xff" + b"x" * 10791))
+        self.assertFalse(enrich.real_cover(b"\x89PNG" + b"x" * 1265))
+        self.assertFalse(enrich.real_cover(None))
+        self.assertTrue(enrich.real_cover(b"\xff\xd8\xff" + b"x" * 12000))
+
+    def test_top_up_of_old_cache_entries(self):
+        books = [{"id": "g1", "title": "New book", "isbns": ["9782222222222"], "authors": []}]
+        book = enrich.book_from_record(books[0])
+        cache = enrich.open_cache(self.cache)
+        old = {"cover_url": "", "summary": "s", "summary_source": "openlibrary"}  # cached before the fallback
+        cache.execute("INSERT INTO lookups VALUES (?, ?, ?, 1, ?)", ("g1", enrich.lookup_key(book), json.dumps(old),
+                      __import__("datetime").datetime.now(__import__("datetime").timezone.utc).isoformat()))
+        cache.commit(); cache.close()
+        f = FakeFetcher()
+        stats = enrich.prefetch([book], self.cache, log=lambda m: None, fetcher=f)
+        self.assertEqual(stats["google_covers"], 1)
+        enrich.prefetch([book], self.cache, log=lambda m: None, fetcher=f)  # marked: not asked again
+        self.assertEqual(len(f.urls), 1)
+        db = catalog(books)
+        enrich.run(db, self.cache, log=lambda m: None, network=False, fetcher=FakeFetcher())
+        self.assertIn("9782222222222", self.row(db, "g1")[0])
 
     def test_helpers(self):
         self.assertTrue(enrich.titles_match("The Gruffalo", "Gruffalo"))

@@ -69,7 +69,10 @@ function tint(text) {
 }
 
 function cover(book, { size = "card" } = {}) {
-  const ph = h("div", { class: "cover placeholder", style: `background:${tint(book.title || "")}` }, book.title || "");
+  const who = Array.isArray(book.authors) && book.authors.length ? book.authors[0].split(",").reverse().join(" ").trim() : "";
+  const ph = h("div", { class: "cover placeholder", style: `background:${tint(book.title || "")}` },
+    h("span", { class: "ph-title" }, book.title || ""),
+    who ? h("span", { class: "ph-author" }, who) : null);
   if (!book.cover_url) return ph;
   const box = h("div", { class: "cover" });
   const img = h("img", {

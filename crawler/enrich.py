@@ -69,6 +69,24 @@ class Fetcher:
         except (urllib.error.URLError, TimeoutError, OSError, ValueError):
             return None
 
+    def bytes(self, url: str) -> bytes | None:
+        """A binary body (a cover image), or None on a 404 or a network error."""
+        wait = self._last + self.delay - time.monotonic()
+        if wait > 0:
+            time.sleep(wait)
+        self._last = time.monotonic()
+        self.requests += 1
+        req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+        try:
+            with urllib.request.urlopen(req, timeout=self.timeout) as resp:
+                return resp.read()
+        except urllib.error.HTTPError as e:
+            if e.code in (403, 429):
+                raise Stop(f"HTTP {e.code} from {urllib.parse.urlsplit(url).netloc}") from e
+            return None
+        except (urllib.error.URLError, TimeoutError, OSError):
+            return None
+
     def text(self, url: str) -> str | None:
         """A text body (the LoC MARCXML), or None on a 404 or a network error."""
         wait = self._last + self.delay - time.monotonic()
@@ -136,6 +154,30 @@ def surname(authors_json: str) -> str:
     return authors[0].split(",")[0].strip() if authors else ""
 
 
+GOOGLE_COVER = "https://books.google.com/books/content?vid=ISBN{isbn}&printsec=frontcover&img=1&zoom=1"
+GOOGLE_NO_COVER = {10794}  # byte size of Google's grey "image not available" JPEG
+COVER_ISBNS = 5            # ISBNs tried per book (ESTER lists every edition's ISBN)
+COVER_MAX = 3000           # Google cover top-ups per run
+
+
+def real_cover(data: bytes | None) -> bool:
+    """A JPEG that is not Google's placeholder (which also comes as a tiny PNG)."""
+    return bool(data) and data[:3] == b"\xff\xd8\xff" and len(data) not in GOOGLE_NO_COVER and len(data) > 3000
+
+
+def google_cover(isbns: list, f: Fetcher) -> str:
+    """Google Books cover URL for the first ISBN that has a real cover, else ''.
+
+    The keyless image endpoint always answers with an image, so the bytes are checked here
+    (on X1); the browser later loads the stored URL directly.
+    """
+    for isbn in isbns[:COVER_ISBNS]:
+        url = GOOGLE_COVER.format(isbn=isbn)
+        if real_cover(f.bytes(url)):
+            return url
+    return ""
+
+
 # --- lookups ---------------------------------------------------------------------------
 
 
@@ -148,7 +190,7 @@ def lookup(book: dict, f: Fetcher, google_key: str = "") -> dict:
     }
     work_key = ""
     covers: list = []
-    for isbn in book["isbns"][:3]:
+    for isbn in book["isbns"][:COVER_ISBNS]:
         edition = f.json(f"{OL}/isbn/{isbn}.json")
         if edition:
             covers = [c for c in edition.get("covers") or [] if isinstance(c, int) and c > 0]
@@ -199,6 +241,9 @@ def lookup(book: dict, f: Fetcher, google_key: str = "") -> dict:
             if not out["cover_url"] and thumb:
                 out["cover_url"] = thumb.replace("http://", "https://").replace("&edge=curl", "")
             out["google_books"] = info.get("infoLink", "").replace("http://", "https://")
+    if not out["cover_url"] and book["isbns"]:
+        out["cover_url"] = google_cover(book["isbns"], f)
+        out["gcover"] = 1
     return out
 
 
@@ -312,6 +357,19 @@ def book_from_record(rec: dict) -> dict:
     }
 
 
+def top_up_cover(cache: sqlite3.Connection, book: dict, result: dict, f: Fetcher) -> bool:
+    """Google cover for a cached miss that predates the fallback. True if a request was made."""
+    if result.get("cover_url") or result.get("gcover") or not book["isbns"]:
+        return False
+    result["cover_url"] = google_cover(book["isbns"], f)
+    result["gcover"] = 1
+    cache.execute(
+        "UPDATE lookups SET result = ?, hit = ? WHERE book_id = ?",
+        (json.dumps(result, ensure_ascii=False), int(bool(result["cover_url"] or result.get("summary"))), book["id"]),
+    )
+    return True
+
+
 def prefetch(
     books: list[dict],
     cache_dir: Path,
@@ -332,16 +390,18 @@ def prefetch(
     signals = Signals(cache_dir, db=cache)
     google_key = os.environ.get("GOOGLE_BOOKS_API_KEY", "")
     f = fetcher or Fetcher()
-    looked = loc_looked = 0
+    looked = loc_looked = topped = 0
     stopped = ""
     for book in books:
-        if stopped or looked >= max_lookups:
+        if stopped or (looked >= max_lookups and topped >= COVER_MAX):
             break
         key = lookup_key(book)
         row = cache.execute("SELECT key, result, hit, fetched_at FROM lookups WHERE book_id = ?", (book["id"],)).fetchone()
         result = json.loads(row[1]) if row else {}
         try:
-            if not is_fresh(row, key):
+            if is_fresh(row, key) and result and topped < COVER_MAX:
+                topped += top_up_cover(cache, book, result, f)
+            elif not is_fresh(row, key) and looked < max_lookups:
                 result = lookup(book, f, google_key)
                 looked += 1
                 hit = int(bool(result["cover_url"] or result["summary"]))
@@ -363,7 +423,7 @@ def prefetch(
             log(f"prefetch: {looked} looked up, {loc_looked} Library of Congress records")
     signals.close()
     cache.close()
-    stats = {"looked_up": looked, "loc": loc_looked, "requests": f.requests, "stopped": stopped}
-    log(f"prefetch: {looked} looked up, {loc_looked} Library of Congress records ({f.requests} requests)"
+    stats = {"looked_up": looked, "google_covers": topped, "loc": loc_looked, "requests": f.requests, "stopped": stopped}
+    log(f"prefetch: {looked} looked up, {topped} cover top-ups, {loc_looked} Library of Congress records ({f.requests} requests)"
         + (f"; stopped: {stopped}" if stopped else ""))
     return stats
