@@ -2,7 +2,7 @@
 // Tallinn's libraries, save them to shared lists.
 // Plain ES module, no build step. Routes live in the hash: #/?q=..., #/book/b123, #/lists, #/lists/4.
 
-import { applyUi, currentUi, mountPicker, wantsAdv } from "./themes.js";
+import { appName, applyUi, currentUi, mountPicker, wantsAdv } from "./themes.js";
 
 const view = document.getElementById("view");
 const foot = document.getElementById("foot");
@@ -512,7 +512,7 @@ async function renderBook(id) {
     view.replaceChildren(h("p", { class: "error" }, e.message === "book not found" ? "This book isn't in the catalogue any more." : e.message));
     return;
   }
-  document.title = `${book.title} · Kids Books`;
+  document.title = `${book.title} · ${appName()}`;
   const links = book.links || {};
   const facts = [
     ["For", book.audience_label || ""],
@@ -689,7 +689,7 @@ async function createFromDialog() {
 
 async function renderLists() {
   setNav("lists");
-  document.title = "Lists · Kids Books";
+  document.title = `Lists · ${appName()}`;
   view.replaceChildren(h("h1", { class: "page" }, "lists"), h("p", { class: "muted" }, "Loading..."));
   let lists;
   try { lists = await loadLists(true); } catch (e) { view.replaceChildren(h("p", { class: "error" }, e.message)); return; }
@@ -728,7 +728,7 @@ async function renderList(id) {
     view.replaceChildren(h("p", { class: "error" }, e.message === "list not found" ? "This list was deleted." : e.message), h("a", { href: "#/lists" }, "All lists"));
     return;
   }
-  document.title = `${list.name} · Kids Books`;
+  document.title = `${list.name} · ${appName()}`;
 
   const title = h("h1", { class: "page", style: "text-transform:none;margin:0" }, list.name);
   const rename = async () => {
@@ -806,7 +806,7 @@ function listItem(list, it, repaint) {
 
 async function renderHidden() {
   setNav("hidden");
-  document.title = "Hidden · Kids Books";
+  document.title = `Hidden · ${appName()}`;
   view.replaceChildren(h("h1", { class: "page" }, "hidden"), h("p", { class: "muted" }, "Loading..."));
   let items = await api("/hidden");
   const paint = () => view.replaceChildren(
@@ -853,7 +853,7 @@ async function route() {
   pageKey = location.hash || "#/";
   restoreY = 0;
   window.scrollTo(0, 0);
-  document.title = "Kids Books";
+  document.title = appName();
   try {
     if (parts[0] === "book" && parts[1]) return await renderBook(parts[1]);
     if (parts[0] === "hidden") return await renderHidden();

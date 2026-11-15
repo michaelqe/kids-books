@@ -47,6 +47,9 @@ export function currentUi() {
   return known(k) ? k : DEFAULT;
 }
 
+/** The name for the tab title: the theme's brand, else "Kids Books". */
+export const appName = () => THEMES.find((t) => t.key === currentUi())?.brand || "Kids Books";
+
 export const wantsAdv = () => !!THEMES.find((t) => t.key === currentUi())?.adv;
 
 export function applyUi(key) {
