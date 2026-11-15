@@ -330,16 +330,35 @@ async function runSearch(p, results, paintFacets) {
   );
 }
 
+async function hideBook(book, el) {
+  try {
+    await api("/hidden", { method: "POST", body: { book_id: book.id } });
+  } catch (e) { toast(e.message); return false; }
+  if (el) el.remove();
+  toast(`Hidden "${book.title}"`, {
+    label: "Undo",
+    run: async () => {
+      try { await api(`/hidden/${book.id}`, { method: "DELETE" }); route(); } catch (e) { toast(e.message); }
+    },
+  });
+  return true;
+}
+
 function card(book) {
-  return h("a", { class: "card", href: `#/book/${book.id}` },
+  const el = h("a", { class: "card", href: `#/book/${book.id}` },
     h("div", { style: "position:relative" },
       cover(book),
+      h("button", {
+        class: "hide-btn", type: "button", title: "Never show this book again", "aria-label": `Never show "${book.title}" again`,
+        onclick: (e) => { e.preventDefault(); e.stopPropagation(); hideBook(book, el); },
+      }, "\u00d7"),
       book.language && book.language !== "eng" ? h("span", { class: "lang-tag" }, book.language) : null,
       state.savedIds.has(book.id) ? h("span", { class: "save-mark", title: "On a list" }) : null),
     h("div", { class: "card-title" }, book.title),
     h("div", { class: "card-meta" }, [authorsLine(book), book.year].filter(Boolean).join(" · ")),
     book.audience_label ? h("div", { class: "card-meta" }, [book.audience_label, book.type_label].filter(Boolean).join(" · ")) : null,
     availability(book));
+  return el;
 }
 
 function pager(p, data) {
@@ -379,6 +398,19 @@ async function renderBook(id) {
 
   const saveBtn = h("button", { class: "btn primary", type: "button", onclick: () => openListDialog(book, saveBtn) },
     saveLabel(book));
+  const hideLabel = (b) => (b.hidden ? "Show in search again" : "Never show again");
+  const hideBtn = h("button", { class: "btn", type: "button", onclick: async () => {
+    try {
+      if (book.hidden) {
+        await api(`/hidden/${book.id}`, { method: "DELETE" });
+        book.hidden = false; toast("This book will show up in search again");
+      } else {
+        await api("/hidden", { method: "POST", body: { book_id: book.id } });
+        book.hidden = true; toast("Hidden from search. You can undo this on the Hidden page.");
+      }
+      hideBtn.textContent = hideLabel(book);
+    } catch (e) { toast(e.message); }
+  } }, hideLabel(book));
   const back = history.length > 1
     ? h("button", { class: "linkbtn", type: "button", onclick: () => history.back() }, "Back")
     : h("a", { class: "linkbtn", href: "#/" }, "Search");
@@ -394,6 +426,7 @@ async function renderBook(id) {
         availability(book),
         h("div", { class: "actions" },
           saveBtn,
+          hideBtn,
           h("a", { class: "btn", href: book.url, target: "_blank", rel: "noopener" }, "Open in ESTER"),
           links.goodreads ? h("a", { class: "btn", href: links.goodreads, target: "_blank", rel: "noopener noreferrer" }, "Goodreads") : null,
           links.openlibrary ? h("a", { class: "btn", href: links.openlibrary, target: "_blank", rel: "noopener noreferrer" }, "Open Library") : null),
@@ -639,6 +672,34 @@ function listItem(list, it, repaint) {
       h("button", { class: "linkbtn", type: "button", onclick: removeItem }, "Remove")));
 }
 
+// --- hidden view ------------------------------------------------------------------------------
+
+async function renderHidden() {
+  setNav("hidden");
+  document.title = "Hidden · Kids Books";
+  view.replaceChildren(h("h1", { class: "page" }, "hidden"), h("p", { class: "muted" }, "Loading..."));
+  let items = await api("/hidden");
+  const paint = () => view.replaceChildren(
+    h("h1", { class: "page" }, "hidden"),
+    h("p", { class: "muted" }, "Books nobody wants to see in search again. Everyone who signs in shares this."),
+    items.length
+      ? h("div", { class: "grid" }, items.map((it) => {
+          const restore = async () => {
+            try { items = await api(`/hidden/${it.book_id}`, { method: "DELETE" }); paint(); toast(`"${it.title}" will show up in search again`); }
+            catch (e) { toast(e.message); }
+          };
+          return h("div", { class: "card" },
+            h("a", { href: `#/book/${it.book_id}`, style: "text-decoration:none" }, cover({ cover_url: it.cover_url, title: it.title })),
+            h("a", { class: "card-title", href: `#/book/${it.book_id}`, style: "text-decoration:none" }, it.title),
+            h("div", { class: "card-meta" }, it.author),
+            h("div", { class: "card-meta" }, `Hidden by ${it.hidden_by}`),
+            h("div", { class: "item-actions" }, h("button", { class: "linkbtn", type: "button", onclick: restore }, "Show again")));
+        }))
+      : h("div", { class: "empty" }, "Nothing hidden."),
+  );
+  paint();
+}
+
 // --- router -------------------------------------------------------------------------------------
 
 async function route() {
@@ -649,6 +710,7 @@ async function route() {
   document.title = "Kids Books";
   try {
     if (parts[0] === "book" && parts[1]) return await renderBook(parts[1]);
+    if (parts[0] === "hidden") return await renderHidden();
     if (parts[0] === "lists" && parts[1]) return await renderList(parts[1]);
     if (parts[0] === "lists") return await renderLists();
     return await renderSearch(params);

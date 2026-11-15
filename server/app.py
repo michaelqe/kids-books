@@ -123,7 +123,7 @@ def book_card(row: sqlite3.Row) -> dict:
     }
 
 
-def search(cat: sqlite3.Connection, params: dict) -> dict:
+def search(cat: sqlite3.Connection, params: dict, hidden: list[str] | None = None) -> dict:
     """Full-text search plus filters. v2 filters: audience and type (comma-separated, any of),
     topic, and nature=1. `lang` is accepted and ignored on a v2 catalogue (all English)."""
     q = params.get("q", "").strip()
@@ -150,6 +150,8 @@ def search(cat: sqlite3.Connection, params: dict) -> dict:
         join = "JOIN books_fts f ON f.rowid = b.rowid"
         base.append(("books_fts MATCH ?", [match]))
         order = "f.rank"
+    if hidden:  # "never show again": one JSON parameter, however many are hidden
+        base.append(("b.id NOT IN (SELECT value FROM json_each(?))", [json.dumps(hidden)]))
     if not facets_on:
         if lang in ("eng", "est", "rus"):
             base.append(("b.language = ?", [lang]))
@@ -307,6 +309,14 @@ def list_detail(lists: sqlite3.Connection, list_id: int) -> dict | None:
         "SELECT * FROM list_items WHERE list_id = ? ORDER BY added_at DESC, title", (list_id,)
     )]
     return {**dict(r), "items": items, "count": len(items)}
+
+
+def hidden_ids(lists: sqlite3.Connection) -> list[str]:
+    return [r[0] for r in lists.execute("SELECT book_id FROM hidden_books")]
+
+
+def hidden_list(lists: sqlite3.Connection) -> list[dict]:
+    return [dict(r) for r in lists.execute("SELECT * FROM hidden_books ORDER BY hidden_at DESC, title")]
 
 
 def touch(lists: sqlite3.Connection, list_id: int) -> None:
@@ -483,6 +493,8 @@ def make_handler(app: App):
                 return self.catalog_api(method, parts, params)
             if parts and parts[0] == "lists":
                 return self.lists_api(method, parts[1:])
+            if parts and parts[0] == "hidden":
+                return self.hidden_api(method, parts[1:])
             raise ApiError(404, "not found")
 
         def catalog_api(self, method: str, parts: list[str], params: dict) -> None:
@@ -497,7 +509,12 @@ def make_handler(app: App):
                 raise ApiError(404, "no catalogue yet")
             try:
                 if parts == ["search"]:
-                    return self.send_json(200, search(cat, params))
+                    lists = dbm.connect_lists(app.db_path)
+                    try:
+                        hidden = hidden_ids(lists)
+                    finally:
+                        lists.close()
+                    return self.send_json(200, search(cat, params, hidden))
                 if parts == ["subjects"]:
                     return self.send_json(200, subjects(cat))
                 if len(parts) == 2 and parts[0] == "books":
@@ -509,12 +526,47 @@ def make_handler(app: App):
                         book["lists"] = [
                             r[0] for r in lists.execute("SELECT list_id FROM list_items WHERE book_id = ?", (parts[1],))
                         ]
+                        book["hidden"] = lists.execute(
+                            "SELECT 1 FROM hidden_books WHERE book_id = ?", (parts[1],)
+                        ).fetchone() is not None
                     finally:
                         lists.close()
                     return self.send_json(200, book)
             finally:
                 cat.close()
             raise ApiError(404, "not found")
+
+        def hidden_api(self, method: str, parts: list[str]) -> None:
+            """GET /hidden; POST /hidden {book_id}; DELETE /hidden/<book_id> (idempotent)."""
+            lists = dbm.connect_lists(app.db_path)
+            try:
+                with lists:
+                    if not parts and method == "GET":
+                        out = hidden_list(lists)
+                    elif not parts and method == "POST":
+                        body = self.read_json()
+                        book_id = str(body.get("book_id") or "").strip()
+                        if not re.fullmatch(r"b\d{5,9}", book_id):
+                            raise ApiError(400, "book_id must be an ESTER record id like b5260625")
+                        cat = dbm.connect_catalog(app.catalog_path)
+                        try:
+                            snap = item_snapshot(cat, book_id, body)
+                        finally:
+                            if cat:
+                                cat.close()
+                        lists.execute(
+                            "INSERT OR IGNORE INTO hidden_books (book_id, title, author, cover_url, hidden_by) VALUES (?, ?, ?, ?, ?)",
+                            (book_id, snap["title"], snap["author"], snap["cover_url"], self.user),
+                        )
+                        out = hidden_list(lists)
+                    elif len(parts) == 1 and method == "DELETE":
+                        lists.execute("DELETE FROM hidden_books WHERE book_id = ?", (parts[0],))
+                        out = hidden_list(lists)
+                    else:
+                        raise ApiError(405 if method not in ("GET", "POST", "DELETE") else 404, "not found")
+            finally:
+                lists.close()
+            self.send_json(200 if method != "POST" else 201, out)
 
         def lists_api(self, method: str, parts: list[str]) -> None:
             lists = dbm.connect_lists(app.db_path)

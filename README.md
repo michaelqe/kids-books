@@ -28,7 +28,7 @@ X1 (nightly 03:30, kids-books-crawl.timer)            droplet
   1 request a second. After that, nightly runs fetch new records, a seventh of the kept books'
   holdings, and re-check out-of-scope records every 60 days.
 - `server/` (droplet; X1 for dev, Python 3 stdlib): serves `web/` and the JSON API. Search reads
-  `catalog.db`; lists live in `books.db`. **It never calls ESTER or any other site.**
+  `catalog.db`; lists and the hidden-books override list live in `books.db`. **It never calls ESTER or any other site.**
 - `web/`: plain HTML, CSS and an ES module. No build step, no npm.
 
 ## Run locally

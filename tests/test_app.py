@@ -255,6 +255,37 @@ class ServerTest(unittest.TestCase):
         self.assertEqual(self.call("POST", f"/api/lists/{lst['id']}/items", {"book_id": "b0000001"})[0], 404)
         self.assertEqual(self.call("POST", "/api/lists/999999/items", {"book_id": "b5260625"})[0], 404)
 
+    def test_hidden_books(self):
+        _, before = self.call("GET", "/api/search")
+        self.assertIn("b5260625", [r["id"] for r in before["results"]])
+        status, body = self.call("POST", "/api/hidden", {"book_id": "b5260625"}, user="anna")
+        self.assertEqual(status, 201)
+        self.assertEqual(body[0]["book_id"], "b5260625")
+        self.assertEqual(body[0]["hidden_by"], "anna")
+        self.assertTrue(body[0]["title"])
+        self.call("POST", "/api/hidden", {"book_id": "b5260625"}, user="ben")  # again: no duplicate, first hider kept
+        _, shown = self.call("GET", "/api/hidden", user="ben")
+        self.assertEqual([(h["book_id"], h["hidden_by"]) for h in shown], [("b5260625", "anna")])
+        # gone from search, text search and the facet counts
+        _, after = self.call("GET", "/api/search")
+        self.assertNotIn("b5260625", [r["id"] for r in after["results"]])
+        self.assertEqual(after["total"], before["total"] - 1)
+        self.assertEqual(self.call("GET", "/api/search?q=bumblebee")[1]["total"], 0)
+        self.assertEqual(sum(f["count"] for f in after["facets"]["type"]), after["total"])
+        # still openable, so it can be restored
+        _, book = self.call("GET", "/api/books/b5260625")
+        self.assertTrue(book["hidden"])
+        # restore
+        self.assertEqual(self.call("DELETE", "/api/hidden/b5260625")[1], [])
+        self.assertEqual(self.call("DELETE", "/api/hidden/b5260625")[0], 200)  # idempotent
+        self.assertEqual(self.call("GET", "/api/search")[1]["total"], before["total"])
+        self.assertFalse(self.call("GET", "/api/books/b5260625")[1]["hidden"])
+
+    def test_hidden_validation(self):
+        self.assertEqual(self.call("POST", "/api/hidden", {"book_id": "nope"})[0], 400)
+        self.assertEqual(self.call("POST", "/api/hidden", {"book_id": "b0000001"})[0], 404)
+        self.assertEqual(self.call("PATCH", "/api/hidden", {})[0], 405)
+
     def test_migrations_keep_data(self):
         _, lst = self.call("POST", "/api/lists", {"name": "Keep me"})
         self.assertEqual(dbm.migrate(self.tmp / "books.db"), [])

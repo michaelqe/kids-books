@@ -118,6 +118,12 @@ h1.page { font-weight: 300; font-size: 32px; margin: 8px 0 16px; text-transform:
   box-shadow: 0 0 0 2px #000;
 }
 
+.hide-btn {
+  position: absolute; bottom: 6px; right: 6px; width: 28px; height: 28px; border-radius: 50%; border: 0; cursor: pointer;
+  background: rgba(0, 0, 0, .75); color: var(--text); font-size: 18px; line-height: 1; opacity: .85;
+}
+.hide-btn:hover, .hide-btn:focus-visible { background: var(--warn); color: #000; opacity: 1; }
+
 .pager { display: flex; justify-content: center; gap: 12px; margin-top: 24px; }
 
 .btn {
