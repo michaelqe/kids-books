@@ -128,12 +128,12 @@ h1.page { font-family: var(--font-head); font-weight: var(--head-weight); font-s
   background: var(--chip-bg); color: var(--chip-fg); padding: 2px 6px; border-radius: 4px;
 }
 .save-mark {
-  position: absolute; bottom: 6px; left: 6px; width: 10px; height: 10px; border-radius: 50%; background: var(--accent);
+  position: absolute; top: 6px; right: 6px; width: 10px; height: 10px; border-radius: 50%; background: var(--accent);
   box-shadow: 0 0 0 2px var(--bg);
 }
 
 .hide-btn {
-  position: absolute; top: 6px; right: 6px; width: 28px; height: 28px; border-radius: 50%; border: 0; cursor: pointer;
+  position: absolute; bottom: 6px; left: 6px; width: 28px; height: 28px; border-radius: 50%; border: 0; cursor: pointer;
   background: var(--chip-bg); color: var(--chip-fg); font-size: 18px; line-height: 1; opacity: .85;
 }
 .add-btn {
