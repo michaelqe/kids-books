@@ -178,7 +178,8 @@ def classify(rec: dict, signals: list[dict] | None = None) -> dict:
     elif primary.startswith("82"):
         # literature; ESTER sometimes leaves 008/33 at 0 even for stories
         typ, why = "fiction", f"UDC {primary}"
-    elif primary and (form in FORM_NONFICTION or not form):
+    elif primary and (form in FORM_NONFICTION or not form or not genres & FICTION_GENRES):
+        # a primary UDC outside 82 beats 008/33, which ESTER fills in unreliably for children's books
         typ, why = "nonfiction", f"UDC {primary}" + (f", 008/33 {form}" if form else "")
     elif form in FORM_NONFICTION and not genres & FICTION_GENRES:
         typ, why = "nonfiction", f"008/33 {form}"
