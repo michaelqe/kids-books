@@ -356,6 +356,12 @@ html[data-ui^="dk"] .top { padding-inline: max(var(--gutter), calc((100vw - 1560
   html[data-ui^="dk"] .top nav a[data-nav=lists]::before { content: "\2630"; }
   html[data-ui^="dk"] .top nav a[data-nav=hidden]::before { content: "\2298"; }
   html[data-ui^="dk"] .ui-fab { top: 10px; right: 10px; left: auto; bottom: auto; padding: 8px 11px; }
+  /* scrolling down tucks the header away, scrolling up brings it back (app.js sets html.top-tucked).
+     Moves `top`, not transform: a transform would carry the fixed tab bar (a child of .top) away with it. */
+  html[data-ui^="dk"] .top { transition: top .22s ease; }
+  html[data-ui^="dk"].top-tucked .top { top: calc(-1 * var(--top-h, 60px) - 14px); }  /* 14px more hides the shadow too */
+  html[data-ui^="dk"] .ui-fab { transition: transform .22s ease; }
+  html[data-ui^="dk"].top-tucked .ui-fab { transform: translateY(calc(-100% - 20px)); }
 
   /* search: compact box, active filters as a strip, the Filters button floats above the tab bar */
   /* relative, never sticky: a stacking context here would trap the floating button and the sheet under the cards */

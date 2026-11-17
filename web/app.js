@@ -869,6 +869,23 @@ let pageKey = location.hash || "#/";  // the page on screen; scroll events can a
 let freshNav = false;  // set when the user clicked an in-app link
 let restoreY = 0;      // consumed by runSearch once the results are on screen
 window.addEventListener("scroll", () => { scrollAt.set(pageKey, window.scrollY); }, { passive: true });
+
+// Phones: the header slides away while scrolling down and returns on any scroll up (CSS: html.top-tucked).
+const phone = matchMedia("(max-width: 860px)");
+const topBar = document.querySelector(".top");
+let lastY = window.scrollY;
+function tuckHeader(on) {
+  if (on) document.documentElement.style.setProperty("--top-h", topBar.offsetHeight + "px");
+  document.documentElement.classList.toggle("top-tucked", on);
+}
+window.addEventListener("scroll", () => {
+  const y = window.scrollY, dy = y - lastY;
+  if (!phone.matches || y <= topBar.offsetHeight) { tuckHeader(false); lastY = y; return; }
+  if (Math.abs(dy) < 8) return;  // ignore jitter (and iOS bounce) until the move is clear
+  tuckHeader(dy > 0);
+  lastY = y;
+}, { passive: true });
+phone.addEventListener("change", () => tuckHeader(false));
 document.addEventListener("click", (e) => {
   if (e.target.closest && e.target.closest('a[href^="#"]')) { freshNav = true; scrollAt.set(pageKey, window.scrollY); }
 }, true);
