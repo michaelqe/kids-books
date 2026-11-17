@@ -130,3 +130,12 @@ Measured on X1 at about 1 req/s, roughly 450 requests in total.
 - **Fix after the first upload:** "nature" is decided by the primary UDC number only. A broad term of 91, a
   secondary 591.5 or a subject heading was letting in travel guides, cat care, crafts and houseplants.
   Adult picks went from 284 to 139 on the same cache.
+
+## Demo (BOOKS-15, 17 Nov 2026)
+
+- `/demo/` is the app without a login. Caddy skips `import protected` for `/demo` and `/demo/*` and strips
+  any client-sent `X-Remote-User`. The server maps `/demo/api/...` onto the normal API, but uses `demo.db`
+  (next to `books.db`, or `--demo-db`) for lists and hidden books, and the user is always `demo`.
+- The demo is public, so writes are capped (`DEMO_MAX_LISTS`, `DEMO_MAX_ITEMS`, `DEMO_MAX_HIDDEN` in
+  `server/app.py`; 409 when full). To reset it, stop the service and delete `data/demo.db`.
+- The Caddy block only goes live after `sudo ~/kids-books/deploy/droplet/install.sh` on the droplet.

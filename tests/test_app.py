@@ -87,8 +87,8 @@ class ServerTest(unittest.TestCase):
         self.assertEqual(body["catalog"]["status"], "ok")
 
     def test_me(self):
-        self.assertEqual(self.call("GET", "/api/me")[1], {"user": "dev"})
-        self.assertEqual(self.call("GET", "/api/me", user="hj")[1], {"user": "hj"})
+        self.assertEqual(self.call("GET", "/api/me")[1], {"user": "dev", "demo": False})
+        self.assertEqual(self.call("GET", "/api/me", user="hj")[1], {"user": "hj", "demo": False})
 
     def test_static(self):
         status, body = self.call("GET", "/")
@@ -99,6 +99,60 @@ class ServerTest(unittest.TestCase):
         self.assertEqual(self.call("GET", "/nope.js")[0], 404)
         self.assertEqual(self.call("GET", "/../server/app.py")[0], 404)
         self.assertEqual(self.call("GET", "/api/nope")[0], 404)
+
+    # --- demo (no login, its own lists)
+
+    def test_demo_static_and_redirect(self):
+        status, body = self.call("GET", "/demo/")
+        self.assertEqual(status, 200)
+        self.assertIn(b"<html", body.lower())
+        self.assertEqual(self.call("GET", "/demo/app.js")[0], 200)
+        self.assertEqual(self.call("GET", "/demo/themes/dkwren.css")[0], 200)
+        self.assertEqual(self.call("GET", "/demo/../server/app.py")[0], 404)
+        req = urllib.request.Request(self.base + "/demo?ui=classic")
+        opener = urllib.request.build_opener(type("NoRedirect", (urllib.request.HTTPRedirectHandler,), {
+            "redirect_request": lambda *a, **k: None}))
+        with self.assertRaises(urllib.error.HTTPError) as cm:
+            opener.open(req, timeout=10)
+        self.assertEqual((cm.exception.code, cm.exception.headers["Location"]), (301, "/demo/?ui=classic"))
+
+    def test_demo_lists_are_separate(self):
+        # the demo ignores a client-sent X-Remote-User
+        self.assertEqual(self.call("GET", "/demo/api/me", user="mk")[1], {"user": "demo", "demo": True})
+        self.assertTrue(self.call("GET", "/demo/api/health")[1]["demo"])
+        _, real = self.call("POST", "/api/lists", {"name": "Real list"}, user="mk")
+        status, demo = self.call("POST", "/demo/api/lists", {"name": "Demo list"}, user="mk")
+        self.assertEqual((status, demo["created_by"]), (201, "demo"))
+        self.call("POST", f"/demo/api/lists/{demo['id']}/items", {"book_id": "b4675367"})
+        real_names = [l["name"] for l in self.call("GET", "/api/lists")[1]]
+        demo_names = [l["name"] for l in self.call("GET", "/demo/api/lists")[1]]
+        self.assertIn("Real list", real_names)
+        self.assertNotIn("Demo list", real_names)
+        self.assertEqual(demo_names, ["Demo list"])
+        # same catalogue; book detail shows demo list membership only
+        self.assertEqual(self.call("GET", "/demo/api/search")[1]["total"], self.call("GET", "/api/search")[1]["total"])
+        self.assertEqual(self.call("GET", "/demo/api/books/b4675367")[1]["lists"], [demo["id"]])
+        self.assertEqual(self.call("GET", "/api/books/b4675367")[1]["lists"], [])
+        # hiding a book in the demo does not hide it for real
+        self.call("POST", "/demo/api/hidden", {"book_id": "b4555593"})
+        self.assertNotIn("b4555593", [r["id"] for r in self.call("GET", "/demo/api/search")[1]["results"]])
+        self.assertIn("b4555593", [r["id"] for r in self.call("GET", "/api/search")[1]["results"]])
+        self.call("DELETE", "/demo/api/hidden/b4555593")
+        self.call("DELETE", f"/demo/api/lists/{demo['id']}")
+        self.call("DELETE", f"/api/lists/{real['id']}")
+
+    def test_demo_caps(self):
+        old = server.DEMO_MAX_LISTS
+        server.DEMO_MAX_LISTS = 1
+        try:
+            _, first = self.call("POST", "/demo/api/lists", {"name": "One"})
+            status, body = self.call("POST", "/demo/api/lists", {"name": "Two"})
+            self.assertEqual(status, 409)
+            self.assertIn("demo", body["error"])
+            self.assertEqual(self.call("POST", "/api/lists", {"name": "Real two"})[0], 201)  # no cap outside the demo
+            self.call("DELETE", f"/demo/api/lists/{first['id']}")
+        finally:
+            server.DEMO_MAX_LISTS = old
 
     # --- catalogue
 

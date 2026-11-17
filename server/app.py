@@ -5,6 +5,10 @@
 It makes no outbound requests. Search reads catalog.db (built and uploaded by the
 X1 crawler); lists live in books.db. Behind Caddy, the user comes from
 X-Remote-User (forward-auth); locally it falls back to --dev-user.
+
+/demo/ is the same app without a login (Caddy skips forward-auth there). Its API
+(/demo/api/...) reads the same catalogue but keeps lists and hidden books in a
+separate demo.db, so nothing done in the demo touches the real lists.
 """
 from __future__ import annotations
 
@@ -35,6 +39,12 @@ LANGUAGES = {
 }
 FIELDS = {"title": "title", "author": "authors", "subject": "subjects"}
 PER_PAGE = 48
+DEMO_PREFIX = "/demo"
+DEMO_USER = "demo"
+# The demo is public, so cap what anyone can write into demo.db.
+DEMO_MAX_LISTS = 50
+DEMO_MAX_ITEMS = 1000
+DEMO_MAX_HIDDEN = 500
 # v2 facets (crawler/classify.py). Order is display order.
 AUDIENCES = {
     "baby_toddler": "Baby & toddler",
@@ -433,13 +443,17 @@ def _safe_url(value) -> str:
 
 
 class App:
-    def __init__(self, db_path: Path, catalog_path: Path, dev_user: str, quiet: bool = False):
+    def __init__(
+        self, db_path: Path, catalog_path: Path, dev_user: str, quiet: bool = False, demo_db_path: Path | None = None
+    ):
         self.quiet = quiet
         self.db_path = db_path
+        self.demo_db_path = demo_db_path or db_path.with_name("demo.db")
         self.catalog_path = catalog_path
         self.dev_user = dev_user
         self.sha = git_sha()
         dbm.migrate(db_path)
+        dbm.migrate(self.demo_db_path)
 
 
 def make_handler(app: App):
@@ -453,9 +467,21 @@ def make_handler(app: App):
 
         # --- plumbing
 
+        demo = False  # set per request by dispatch() for /demo/ paths
+
         @property
         def user(self) -> str:
+            if self.demo:  # no login in the demo; never trust a client-sent X-Remote-User there
+                return DEMO_USER
             return (self.headers.get("X-Remote-User") or "").strip() or app.dev_user
+
+        @property
+        def lists_path(self) -> Path:
+            return app.demo_db_path if self.demo else app.db_path
+
+        def demo_cap(self, db: sqlite3.Connection, sql: str, limit: int, what: str) -> None:
+            if self.demo and db.execute(sql).fetchone()[0] >= limit:
+                raise ApiError(409, f"the demo holds at most {limit} {what}")
 
         _deferred: list | None = None
 
@@ -491,6 +517,16 @@ def make_handler(app: App):
             parsed = urllib.parse.urlsplit(self.path)
             path = parsed.path
             params = {k: v[-1] for k, v in urllib.parse.parse_qs(parsed.query).items()}
+            self.demo = False
+            if path == DEMO_PREFIX and method in ("GET", "HEAD"):
+                self.send_response(301)
+                self.send_header("Location", DEMO_PREFIX + "/" + ("?" + parsed.query if parsed.query else ""))
+                self.send_header("Content-Length", "0")
+                self.end_headers()
+                return
+            if path.startswith(DEMO_PREFIX + "/"):
+                self.demo = True
+                path = path[len(DEMO_PREFIX):]
             try:
                 if path.startswith("/api/"):
                     self.api(method, path, params)
@@ -553,9 +589,11 @@ def make_handler(app: App):
                 finally:
                     if cat:
                         cat.close()
-                return self.send_json(200, {"ok": True, "git_sha": app.sha, "version": app.sha[:7], "catalog": meta})
+                return self.send_json(
+                    200, {"ok": True, "git_sha": app.sha, "version": app.sha[:7], "catalog": meta, "demo": self.demo}
+                )
             if parts == ["me"] and method == "GET":
-                return self.send_json(200, {"user": self.user})
+                return self.send_json(200, {"user": self.user, "demo": self.demo})
             if parts and parts[0] in ("search", "books", "subjects"):
                 return self.catalog_api(method, parts, params)
             if parts and parts[0] == "lists":
@@ -576,7 +614,7 @@ def make_handler(app: App):
                 raise ApiError(404, "no catalogue yet")
             try:
                 if parts == ["search"]:
-                    lists = dbm.connect_lists(app.db_path)
+                    lists = dbm.connect_lists(self.lists_path)
                     try:
                         hidden = hidden_ids(lists)
                     finally:
@@ -588,7 +626,7 @@ def make_handler(app: App):
                     book = book_detail(cat, parts[1])
                     if book is None:
                         raise ApiError(404, "book not found")
-                    lists = dbm.connect_lists(app.db_path)
+                    lists = dbm.connect_lists(self.lists_path)
                     try:
                         book["lists"] = [
                             r[0] for r in lists.execute("SELECT list_id FROM list_items WHERE book_id = ?", (parts[1],))
@@ -605,7 +643,7 @@ def make_handler(app: App):
 
         def hidden_api(self, method: str, parts: list[str]) -> None:
             """GET /hidden; POST /hidden {book_id}; DELETE /hidden/<book_id> (idempotent)."""
-            lists = dbm.connect_lists(app.db_path)
+            lists = dbm.connect_lists(self.lists_path)
             try:
                 with lists:
                     if not parts and method == "GET":
@@ -615,6 +653,7 @@ def make_handler(app: App):
                         book_id = str(body.get("book_id") or "").strip()
                         if not re.fullmatch(r"b\d{5,9}", book_id):
                             raise ApiError(400, "book_id must be an ESTER record id like b5260625")
+                        self.demo_cap(lists, "SELECT count(*) FROM hidden_books", DEMO_MAX_HIDDEN, "hidden books")
                         cat = dbm.connect_catalog(app.catalog_path)
                         try:
                             snap = item_snapshot(cat, book_id, body)
@@ -636,7 +675,7 @@ def make_handler(app: App):
             self.send_json(200 if method != "POST" else 201, out)
 
         def lists_api(self, method: str, parts: list[str]) -> None:
-            lists = dbm.connect_lists(app.db_path)
+            lists = dbm.connect_lists(self.lists_path)
             self._deferred = []
             try:
                 with lists:  # commits on success, rolls back on ApiError
@@ -656,6 +695,7 @@ def make_handler(app: App):
                     name = str(self.read_json().get("name") or "").strip()[:120]
                     if not name:
                         raise ApiError(400, "name is required")
+                    self.demo_cap(lists, "SELECT count(*) FROM lists", DEMO_MAX_LISTS, "lists")
                     cur = lists.execute("INSERT INTO lists (name, created_by) VALUES (?, ?)", (name, self.user))
                     return self.send_json(201, list_detail(lists, cur.lastrowid))
                 raise ApiError(405, "method not allowed")
@@ -696,6 +736,7 @@ def make_handler(app: App):
                 book_id = str(body.get("book_id") or "").strip()
                 if not re.fullmatch(r"b\d{5,9}", book_id):
                     raise ApiError(400, "book_id must be an ESTER record id like b5260625")
+                self.demo_cap(lists, "SELECT count(*) FROM list_items", DEMO_MAX_ITEMS, "saved books")
                 cat = dbm.connect_catalog(app.catalog_path)
                 try:
                     snap = item_snapshot(cat, book_id, body)
@@ -738,9 +779,10 @@ def make_handler(app: App):
 
 
 def serve(
-    host: str, port: int, db_path: Path, catalog_path: Path, dev_user: str = "dev", quiet: bool = False
+    host: str, port: int, db_path: Path, catalog_path: Path, dev_user: str = "dev", quiet: bool = False,
+    demo_db_path: Path | None = None,
 ) -> ThreadingHTTPServer:
-    app = App(db_path, catalog_path, dev_user, quiet)
+    app = App(db_path, catalog_path, dev_user, quiet, demo_db_path)
     httpd = ThreadingHTTPServer((host, port), make_handler(app))
     httpd.daemon_threads = True
     return httpd
@@ -752,9 +794,10 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--port", type=int, default=8512)
     ap.add_argument("--db", type=Path, default=ROOT / "data" / "books.db")
     ap.add_argument("--catalog", type=Path, default=ROOT / "data" / "catalog.db")
+    ap.add_argument("--demo-db", type=Path, default=None, help="lists DB for /demo/ (default: demo.db next to --db)")
     ap.add_argument("--dev-user", default="dev", help="user when there is no X-Remote-User header")
     args = ap.parse_args(argv)
-    httpd = serve(args.host, args.port, args.db, args.catalog, args.dev_user)
+    httpd = serve(args.host, args.port, args.db, args.catalog, args.dev_user, demo_db_path=args.demo_db)
     print(f"kids-books on http://{args.host}:{args.port} (catalog {args.catalog}, lists {args.db})", flush=True)
     try:
         httpd.serve_forever()

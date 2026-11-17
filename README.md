@@ -6,6 +6,7 @@ with covers and summaries from Open Library, categories from several sources, an
 lists.
 
 - Live: https://books.app.kennedy.ee (droplet, behind Caddy `import protected`)
+- Demo (no login): https://books.app.kennedy.ee/demo/ — same catalogue, its own lists in `data/demo.db`
 - Dev: X1 (`~/src/personal/kids-books`), http://127.0.0.1:8512 via `kids-books-dev`
 - Magpie project: Childrens Books (BOOKS)
 
@@ -75,6 +76,8 @@ ssh michael@running.app.kennedy.ee
 git clone https://github.com/michaelqe/kids-books.git ~/kids-books   # or let deploy.sh clone it
 sudo ~/kids-books/deploy/droplet/install.sh
 ```
+
+Re-run `install.sh` whenever `Caddyfile.books` changes; `deploy.sh` doesn't touch Caddy.
 
 Then every deploy (the X1 poller runs this after a merge; see `.magpie.toml`):
 

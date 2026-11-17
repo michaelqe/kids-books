@@ -7,6 +7,9 @@ import { appName, applyUi, currentUi, mountPicker, wantsAdv } from "./themes.js"
 const view = document.getElementById("view");
 const foot = document.getElementById("foot");
 const toastEl = document.getElementById("toast");
+// /demo/ is the no-login demo: same catalogue, its own lists (server/app.py).
+const DEMO = location.pathname === "/demo" || location.pathname.startsWith("/demo/");
+const API = DEMO ? "/demo/api" : "/api";
 
 // --- helpers -----------------------------------------------------------------------------
 
@@ -28,7 +31,7 @@ function h(tag, attrs = {}, ...children) {
 }
 
 async function api(path, { method = "GET", body } = {}) {
-  const res = await fetch("/api" + path, {
+  const res = await fetch(API + path, {
     method,
     headers: body ? { "Content-Type": "application/json" } : {},
     body: body ? JSON.stringify(body) : undefined,
@@ -929,6 +932,11 @@ async function renderFoot() {
 }
 
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") document.documentElement.classList.remove("sheet-lock"); document.querySelector("form.search.open")?.classList.remove("open"); });
+if (DEMO) {
+  document.documentElement.classList.add("demo");
+  document.querySelector("header.top").after(h("div", { class: "demo-note", role: "note" },
+    "Lists you make here are kept apart from the real ones and anyone using the demo can see them."));
+}
 applyUi(currentUi());
 mountPicker(() => route());  // atlas wants extra facets, so repaint the current view
 window.addEventListener("hashchange", route);

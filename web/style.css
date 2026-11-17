@@ -53,6 +53,8 @@ button, input, select { font: inherit; color: inherit; }
   text-decoration: none; color: var(--muted); padding: 6px 12px; border-radius: var(--pill);
 }
 .top nav a.active { color: var(--text); background: var(--tile); }
+.demo-note { max-width: 1180px; margin: 12px auto 0; padding: 8px var(--gutter); color: var(--muted); font-size: 13px; }
+.demo-note::before { content: "DEMO"; margin-right: 8px; font-size: 11px; letter-spacing: .12em; color: var(--accent); }
 
 main { max-width: 1180px; margin: 0 auto; padding: 16px var(--gutter) 40px; }
 h1.page { font-family: var(--font-head); font-weight: var(--head-weight); font-size: 32px; margin: 8px 0 16px; text-transform: lowercase; }
@@ -284,6 +286,7 @@ dialog.ui-pick::backdrop { background: rgba(0, 0, 0, .65); }
    A theme sets the palette plus --card-r (cards), --panel-r (sidebar) and --radius/--pill (controls). */
 html[data-ui^="dk"] { --card-r: 12px; --panel-r: 14px; --shadow: 0 1px 2px rgba(0, 0, 0, .25); }
 html[data-ui^="dk"] main { max-width: 1560px; }
+html[data-ui^="dk"] .demo-note { max-width: 1560px; }
 html[data-ui^="dk"] #view:has(> form.search) { display: grid; grid-template-columns: 310px minmax(0, 1fr); gap: 20px 28px; align-items: start; }
 @media (max-width: 860px) { html[data-ui^="dk"] #view:has(> form.search) { grid-template-columns: 1fr; } }
 html[data-ui^="dk"] .top { background: var(--bar-bg); backdrop-filter: none; }
@@ -338,7 +341,7 @@ html[data-ui^="dk"] .top { padding-inline: max(var(--gutter), calc((100vw - 1560
 @media (max-width: 860px) {  /* every width where the sidebar would stack */
   html.sheet-lock { overflow: hidden; }
   html[data-ui^="dk"] body { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
-  html[data-ui^="dk"] main { padding-inline: 12px; }
+  html[data-ui^="dk"] main, html[data-ui^="dk"] .demo-note { padding-inline: 12px; }
 
   /* header: logo and name; the UI button moves to the right corner; nav becomes a tab bar */
   html[data-ui^="dk"] .top { padding: 8px var(--gutter); gap: 8px; }
