@@ -138,4 +138,7 @@ Measured on X1 at about 1 req/s, roughly 450 requests in total.
   (next to `books.db`, or `--demo-db`) for lists and hidden books, and the user is always `demo`.
 - The demo is public, so writes are capped (`DEMO_MAX_LISTS`, `DEMO_MAX_ITEMS`, `DEMO_MAX_HIDDEN` in
   `server/app.py`; 409 when full). To reset it, stop the service and delete `data/demo.db`.
-- The Caddy block only goes live after `sudo ~/kids-books/deploy/droplet/install.sh` on the droplet.
+- The Caddy block only goes live after `sudo ~/kids-books/deploy/droplet/install.sh` on the droplet. Run it only
+  after the deploy: install.sh installs whatever `Caddyfile.books` the droplet checkout has. The first try ran
+  it before the merge, so it reinstalled the old block, and `/demo/` (served by old code) 404ed its `app.js`
+  and showed a blank page behind the login. `deploy.sh` now warns when the live block differs from the repo.

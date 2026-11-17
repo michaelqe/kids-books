@@ -37,6 +37,14 @@ for _ in $(seq 1 20); do
     body="$(curl -sf --max-time 5 http://127.0.0.1:8512/api/health || true)"
     if [[ "$body" == *"\"git_sha\": \"$SHA\""* ]]; then
         echo "health: ok ($SHA) $body"
+        # deploy.sh can't write /etc/caddy; say so when the live block is out of date.
+        live="$(sed -n '/^# --- kids-books (deploy/,/^# --- end kids-books ---/p' /etc/caddy/Caddyfile 2>/dev/null || true)"
+        if [[ "$live" != "$(cat deploy/droplet/Caddyfile.books)" ]]; then
+            echo "caddy: WARNING live block differs from deploy/droplet/Caddyfile.books;" \
+                 "run: sudo ~/kids-books/deploy/droplet/install.sh" >&2
+        else
+            echo "caddy: block up to date"
+        fi
         exit 0
     fi
     sleep 1
